@@ -1,0 +1,106 @@
+# (Neo)vim
+[commander-nvim]
+src.git = "https://github.com/FeiyouG/commander.nvim"
+fetch.github = "FeiyouG/commander.nvim"
+
+[portal-nvim]
+src.git = "https://github.com/cbochs/portal.nvim"
+fetch.github = "cbochs/portal.nvim"
+
+[nvim-devdocs]
+src.git = "https://github.com/luckasRanarison/nvim-devdocs"
+fetch.github = "luckasRanarison/nvim-devdocs"
+
+[middleclass-nvim]
+src.git = "https://github.com/kikito/middleclass"
+fetch.github = "kikito/middleclass"
+
+# not using nix packaged version atm
+[one-small-step-for-vimkind-nvim]
+src.git = "https://github.com/jbyuki/one-small-step-for-vimkind"
+fetch.github = "jbyuki/one-small-step-for-vimkind"
+
+[nvim-telescope-hop]
+src.git = "https://github.com/nvim-telescope/telescope-hop.nvim"
+fetch.github = "nvim-telescope/telescope-hop.nvim"
+
+[nvim-guess-indent]
+src.git = "https://github.com/NMAC427/guess-indent.nvim"
+fetch.github = "NMAC427/guess-indent.nvim"
+
+[easypick-nvim]
+src.git = "https://github.com/axkirillov/easypick.nvim"
+fetch.github = "axkirillov/easypick.nvim"
+
+[neozoom-nvim]
+src.git = "https://github.com/nyngwang/NeoZoom.lua"
+fetch.github = "nyngwang/NeoZoom.lua"
+
+# not using atm
+[sessions-nvim]
+src.git = "https://github.com/natecraddock/sessions.nvim"
+fetch.github = "natecraddock/sessions.nvim"
+
+[fm-nvim]
+src.git = "https://github.com/is0n/fm-nvim"
+fetch.github = "is0n/fm-nvim"
+
+[yazi-nvim]
+src.git = "https://github.com/mikavilpas/yazi.nvim"
+fetch.github = "mikavilpas/yazi.nvim"
+
+[magma-nvim]
+src.git = "https://github.com/dccsillag/magma-nvim"
+fetch.github = "dccsillag/magma-nvim"
+
+[telescope-tabs]
+src.git = "https://github.com/LukasPietzschmann/telescope-tabs"
+fetch.github = "LukasPietzschmann/telescope-tabs"
+
+[telescope-env]
+src.git = "https://github.com/LinArcX/telescope-env.nvim"
+fetch.github = "LinArcX/telescope-env.nvim"
+
+[telescope-undo]
+src.git = "https://github.com/debugloop/telescope-undo.nvim"
+fetch.github = "debugloop/telescope-undo.nvim"
+
+[telescope-changes]
+src.git = "https://github.com/LinArcX/telescope-changes.nvim"
+fetch.github = "LinArcX/telescope-changes.nvim"
+
+[telescope-luasnip]
+src.git = "https://github.com/benfowler/telescope-luasnip.nvim"
+fetch.github = "benfowler/telescope-luasnip.nvim"
+
+[telescope-lazy-nvim]
+src.git = "https://github.com/tsakirist/telescope-lazy.nvim"
+fetch.github = "tsakirist/telescope-lazy.nvim"
+
+[telescope-menufacture]
+src.git = "https://github.com/molecule-man/telescope-menufacture"
+fetch.github = "molecule-man/telescope-menufacture"
+
+[telescope-all-recent]
+src.git = "https://github.com/prochri/telescope-all-recent.nvim"
+fetch.github = "prochri/telescope-all-recent.nvim"
+
+[telescope-live-grep-args-nvim]
+src.git = "https://github.com/nvim-telescope/telescope-live-grep-args.nvim"
+fetch.github = "nvim-telescope/telescope-live-grep-args.nvim"
+
+[browser-bookmarks-nvim]
+src.git = "https://github.com/dhruvmanila/browser-bookmarks.nvim"
+fetch.github = "dhruvmanila/browser-bookmarks.nvim"
+
+[cmp-nixpkgs]
+src.git = "https://github.com/gravndal/cmp-nixpkgs"
+fetch.github = "gravndal/cmp-nixpkgs"
+
+[terminal-nvim]
+src.git = "https://github.com/rebelot/terminal.nvim"
+fetch.github = "rebelot/terminal.nvim"
+
+[vim-doge]
+src.git = "https://github.com/kkoomen/vim-doge"
+fetch.github = "kkoomen/vim-doge"
