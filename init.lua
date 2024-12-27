@@ -10,12 +10,6 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = nixCats 'have_nerd_font'
 
-KraftnixUtils = require 'kraftnix.utils.all'
-KraftnixHelper = require 'kraftnix.utils.helper'
-MiddleClass = require 'kraftnix.utils.vendor.middleclass'
-
-require 'kraftnix.config.options'
-
 -- NOTE: nixCats: You might want to move the lazy-lock.json file
 local function getlockfilepath()
   if require('nixCatsUtils').isNixCats and type(require('nixCats').settings.unwrappedCfgPath) == 'string' then
