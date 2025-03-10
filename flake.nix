@@ -67,6 +67,7 @@
           lspsAndRuntimeDeps = with pkgs; {
             general = [
               lua-language-server
+              vscode-langservers-extracted
 
               nixd
               gopls
@@ -108,29 +109,16 @@
               nvim-tree-lua
 
               ## Git
-              vim-fugitive
               diffview-nvim
+
+              ## random
+              firenvim
 
               ## LSP
               nvim-lspconfig # Top level LSP configuratio
               fidget-nvim
               neodev-nvim # Lua LS
               lsp_signature-nvim # Show function signatur
-              # "sg.nvim" = sg-nvim; # Sourcegraph
-
-              ## cmp
-              blink-cmp # nvim-cmp replacement
-              nvim-cmp
-              cmp-cmdline
-              cmp-buffer
-              cmp-path
-              cmp-rg
-              cmp_luasnip
-              cmp-latex-symbols
-              luasnip
-              cmp-nvim-lsp
-              friendly-snippets
-              lspkind-nvim
 
               ## UI
               plenary-nvim
@@ -161,27 +149,17 @@
               pkgs.fzf
               zk-nvim
 
-              ## Telescope
-              telescope-nvim
-              telescope-fzf-native-nvim
-              telescope-file-browser-nvim
-              telescope-manix # nix manix search
-              telescope-cheat-nvim # cheatsheet search
-              telescope-live-grep-args-nvim # Being able to pass arguments for ripgrep (used by live grep in Telescope)
-              telescope-undo-nvim
-
-              # colorscheme
-              onedark-nvim
-              nightfox-nvim
-
               # Note taking
               obsidian-nvim
-              markdown-preview-nvim
 
               ## Treesitter
               nvim-treesitter-textobjects
               nvim-treesitter-context
               nvim-treesitter-refactor
+
+              # AI
+              # Waiting for this to have release 0.23
+              # avante-nvim
             ];
             general = [
               ## Lib
@@ -211,13 +189,6 @@
               nvim-nu # old-school null-ls nushell LSP
               none-ls-nvim # none-ls (language agnostic LSP)
               lsp_signature-nvim # LSP Signature Info (old, noice instead)
-              lspkind-nvim # LSP Icons (can use in cmp)
-              lspsaga-nvim # LSP extra functions
-              trouble-nvim # LSP extra functions
-              nvim-luadev # repl you can run in neovim for lua code
-              vim-doge # documentation generation (lua)
-              neogen # better annotation generation
-              nvim-devdocs # open devdocs.io from vim
             ];
           };
 
@@ -238,8 +209,11 @@
                 telescope-dap-nvim # telescope picker for DAP
                 nvim-dap-python # python dap adapter
               ];
-              go = [ nvim-dap-go ];
             };
+            colorscheme = with pkgs.vimPlugins; [
+              onedark-nvim
+              nightfox-nvim
+            ];
             lint = with pkgs.vimPlugins; [
               nvim-lint
             ];
@@ -258,6 +232,22 @@
                 terminal-nvim # toggle terminals
               ];
               cmp = with pkgs.vimPlugins; [
+                ## cmp
+                blink-cmp # nvim-cmp replacement
+                nvim-cmp
+                cmp-cmdline
+                cmp-buffer
+                cmp-path
+                cmp-rg
+                cmp_luasnip
+                cmp-latex-symbols
+                luasnip
+                cmp-nvim-lsp
+                friendly-snippets
+                lspkind-nvim
+
+                # chris below
+
                 # cmp stuff
                 cmp-nvim-lua
                 cmp-nvim-lsp-signature-help
@@ -267,19 +257,9 @@
                 nvim-cmp # core
                 cmp-nvim-lsp # lsp completions
                 cmp-cmdline # wilder equiv
-                cmp-cmdline-history # include history of commands/searchs
+                cmp-cmdline-history # include history of commands/searchs TODO: look into this
                 cmp-buffer # buffer sources
                 cmp-path # path sources
-                cmp-async-path # path (async) sources
-                cmp-treesitter # treesitter sources
-                cmp-rg # rg source, searches well across buffers
-                cmp-under-comparator # lowers priority of __ in completions (comparator)
-                cmp_luasnip # complete luasnip snippets in cmp (source)
-                luasnip # luasnip snippets
-                sniprun # run snippets with a binding (lua + rust)
-                friendly-snippets # extra snippet source
-                wilder-nvim # cmdline/search completion (use cmp now)
-                cpsm # wilder dependency
               ];
               treesitter = with pkgs.vimPlugins; [
                 nvim-treesitter-textobjects # move/swap/peek/select objects
@@ -296,6 +276,17 @@
                 })
               ];
               telescope = with pkgs.vimPlugins; [
+                telescope-nvim
+                telescope-fzf-native-nvim
+                telescope-file-browser-nvim
+                telescope-manix # nix manix search
+                telescope-cheat-nvim # cheatsheet search
+                telescope-live-grep-args-nvim # Being able to pass arguments for ripgrep (used by live grep in Telescope)
+                telescope-undo-nvim
+
+
+                # chris
+
                 telescope-nvim # picker
                 telescope-fzf-native-nvim # use fzf-native for faster search
                 telescope-file-browser-nvim # file browser
@@ -330,13 +321,13 @@
                 vim-oscyank # yank out of neovim through ssh/tmux with OSC52 escape
                 vim-suda # sudo write file with w!!
                 vim-sleuth # detect tabstop and shiftwidth automatically
+                undotree # Show tree view of changes
 
                 # git
                 vim-fugitive # tpope git core plugin
                 gitlinker-nvim # open/copy external git forge links (GBrowse replacement)
                 gitsigns-nvim # git signs in the columns
                 diffview-nvim # Diif/Merge view UI
-                neogit # new Magit based Git UI
 
                 # Movement / buffer mgmt
                 treesj # fancy split/join of TS objects
@@ -351,8 +342,6 @@
               extra = with pkgs.vimPlugins; [
                 fidget-nvim
                 # lualine-lsp-progress
-                comment-nvim
-                undotree
                 indent-blankline-nvim
                 vim-startuptime
                 # If it was included in your flake inputs as plugins-hlargs,
@@ -378,10 +367,6 @@
                 oil-nvim # nvim file manager in buffer
                 neo-tree-nvim # tree-based file structure in side panel
                 yazi-nvim # integrate yazi + nvim
-
-                # Lists
-                vim-togglelist # simple, add vim commands for toggle quickfix/loclist TODO: replace
-                nvim-bqf # better quick fix list, has a hover TODO: replace with trouble
               ];
             };
           };
@@ -440,6 +425,7 @@
       # (and other information to pass to lua)
       categories = {
         dani = true;
+
         general = true;
         gitPlugins = true;
         customPlugins = true;
