@@ -10,7 +10,8 @@ wk.register({
 	["<C-Down>"] = { "<cmd>resize +1<cr>", "Continuous window vertical resize" },
 	["<C-Left>"] = { "<cmd>vertical resize +1<cr>", "Continuous window horizontal resize" },
 	["<C-Right>"] = { "<cmd>vertical resize -1<cr>", "Continuous window horizontal resize" },
-	["<leader>yb"] = { '<cmd>let @" = expand("%")<cr>', "[y]ank [b]uffer path" },
+	["<leader>yb"] = { '<cmd>let @" = expand("%:p")<CR>:echo "Yanked path: " . expand("%:p")<cr>', "[y]ank [b]uffer relative path to cwd" },
+	["<leader>yB"] = { '<cmd>let @" = expand("%")<CR>:echo "Yanked path: " . expand("%:p")<cr>', "[y]ank [B]uffer absolute path" },
 	["<leader>nw"] = {
 		name = "+[n]o",
 		w = { "<cmd>set wrap!<cr>", "line [w]rap" },
@@ -97,7 +98,6 @@ wk.register({
 				"<cmd>lua require'telescope.builtin'.find_files({cwd='~/Documents/Obsidian Vault/'})<cr>",
 				"Open Obsidian [v]ault",
 			},
-			q = { "<cmd>lua require'telescope.actions'.smart_send_to_qflist()<cr>", "Send search results to [q]uickfix list" },
 		},
 	},
 })
