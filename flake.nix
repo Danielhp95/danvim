@@ -66,6 +66,19 @@
 
           lspsAndRuntimeDeps = with pkgs; {
             general = [
+              ### TODO: under progress
+              # For avante-nvim
+              pkg-config
+              openssl
+              makeWrapper
+              perl
+              # rustup
+              gcc
+              rustc
+              gnumake
+              ###
+
+
               lua-language-server
               vscode-langservers-extracted
 
@@ -158,7 +171,6 @@
               nvim-treesitter-refactor
 
               # AI
-              # Waiting for this to have release 0.23
               # avante-nvim
             ];
             general = [
@@ -281,9 +293,7 @@
                 telescope-file-browser-nvim
                 telescope-manix # nix manix search
                 telescope-cheat-nvim # cheatsheet search
-                telescope-live-grep-args-nvim # Being able to pass arguments for ripgrep (used by live grep in Telescope)
                 telescope-undo-nvim
-
 
                 # chris
 
@@ -291,21 +301,19 @@
                 telescope-fzf-native-nvim # use fzf-native for faster search
                 telescope-file-browser-nvim # file browser
                 telescope-live-grep-args-nvim # use rg for search
-                telescope-manix # nix manix manual search
-                telescope-cheat-nvim # cheatsheet (cheat.sh)
-                telescope-tabs # tabs
+                telescope-cheat-nvim # cheatsheet (cheat.sh)cheatcheat
                 telescope-env # host ENV vars
                 telescope-zoxide # lookup and use host zoxide
                 telescope-menufacture # nice submenus in some core builtins
-                telescope-all-recent # frecency sorting for telescope pickers
+                # telescope-all-recent # frecency sorting for telescope pickers
                 telescope-project-nvim # search git repos in your home dir + cwd to them
-                telescope-undo # undo history
+                telescope-undo-nvim # undo history
                 telescope-lazy-nvim # lazy plugins searcher (includes code search, reload, etc.)
                 telescope-changes # changelist history (vendored)
                 telescope-luasnip # luasnip snippet lookup + use
                 telescope-lsp-handlers-nvim # lsp handlers integration
-                browser-bookmarks-nvim # firefox browser lookup
-                easypick-nvim # quickly make telescope pickers for external cli calls
+                # TODO: this seems cool
+                # easypick-nvim # quickly make telescope pickers for external cli calls
                 telescope-ui-select-nvim # use telescope for autocomplete
               ];
               always = with pkgs.vimPlugins; [
@@ -350,8 +358,6 @@
 
                 # keys
                 which-key-nvim # popups for key combos
-                legendary-nvim # cmd/keymapper with a picker
-                commander-nvim # another cmd/keymapper with a picker
 
                 glow-nvim # markdown preview
                 zk-nvim # zk knowledge base lsp

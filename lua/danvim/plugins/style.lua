@@ -82,13 +82,26 @@ local deviconsAutoColors = {
 local markview = {
   'OXY2DEV/markview.nvim',
   -- the README says it is not recommended to lazy load this, I don't know why
-  lazy = true,
-  ft = 'markdown', -- If you decide to lazy-load anyway
-
+  lazy = false,
+  preview = {
+    filetypes ={ "markdown", "Avante" },
+    icon_provider = "mini.icons",
+    -- buf_ignore = ''  "Can I ignore the cmp previews?"
+  },
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
     'nvim-tree/nvim-web-devicons',
+    'echasnovski/mini.icons',  -- Only one is needed, let's try both see which one I like best
   },
+}
+
+local render_markdown = {
+  -- Make sure to set this up properly if you have lazy=true
+  'MeanderingProgrammer/render-markdown.nvim',
+  opts = {
+    file_types = { 'markdown', 'Avante' },
+  },
+  ft = { 'markdown', 'Avante' },
 }
 
 return {

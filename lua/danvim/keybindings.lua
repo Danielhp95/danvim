@@ -254,7 +254,7 @@ wk.register({
 
 -- Development
 wk.register({
-	["<C-s><C-r>"] = { "<cmd>source %<cr>", "[s]ources cu[r]renty file" },
+	["<C-s><C-r>"] = { "<cmd>source %<cr>", "[s]ources cu[r]rent file" },
 })
 
 -- pandoc
