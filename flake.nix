@@ -146,6 +146,8 @@
               trouble-nvim
               yazi-nvim
 
+              snacks-nvim
+
               ## Git
               gitlinker-nvim
               gitsigns-nvim
