@@ -2,7 +2,10 @@
   description = "My Neovim configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    # Try soon if we can go back to following unstable
+    nixpkgs.url =     "github:nixos/nixpkgs?rev=2e384a013e841ae0ae60f5d306e09376aacaa8d9";
+
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
