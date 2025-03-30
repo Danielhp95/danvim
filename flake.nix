@@ -2,9 +2,7 @@
   description = "My Neovim configuration";
 
   inputs = {
-    # nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    # Try soon if we can go back to following unstable
-    nixpkgs.url =     "github:nixos/nixpkgs?rev=2e384a013e841ae0ae60f5d306e09376aacaa8d9";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
     flake-compat.url = "github:edolstra/flake-compat";
@@ -81,7 +79,6 @@
               gnumake
               ###
 
-
               lua-language-server
               vscode-langservers-extracted
 
@@ -90,7 +87,6 @@
               stylua
               yamlfmt
               nixfmt-rfc-style
-              python310Packages.gevent # Never got this to work!
               bash-language-server
               basedpyright
 
@@ -245,7 +241,6 @@
             ];
             general = {
               terminal = with pkgs.vimPlugins; [
-                toggleterm-nvim # toggle terminals in floating windows (old)
                 terminal-nvim # toggle terminals
               ];
               cmp = with pkgs.vimPlugins; [
@@ -262,21 +257,6 @@
                 cmp-nvim-lsp
                 friendly-snippets
                 lspkind-nvim
-
-                # chris below
-
-                # cmp stuff
-                cmp-nvim-lua
-                cmp-nvim-lsp-signature-help
-                lspkind-nvim
-
-                ## cmp + snippets
-                nvim-cmp # core
-                cmp-nvim-lsp # lsp completions
-                cmp-cmdline # wilder equiv
-                cmp-cmdline-history # include history of commands/searchs TODO: look into this
-                cmp-buffer # buffer sources
-                cmp-path # path sources
               ];
               treesitter = with pkgs.vimPlugins; [
                 nvim-treesitter-textobjects # move/swap/peek/select objects
@@ -297,44 +277,16 @@
                 telescope-fzf-native-nvim
                 telescope-file-browser-nvim
                 telescope-manix # nix manix search
-                telescope-cheat-nvim # cheatsheet search
                 telescope-undo-nvim
-
-                # chris
-
-                telescope-nvim # picker
-                telescope-fzf-native-nvim # use fzf-native for faster search
-                telescope-file-browser-nvim # file browser
-                telescope-live-grep-args-nvim # use rg for search
-                telescope-cheat-nvim # cheatsheet (cheat.sh)cheatcheat
-                telescope-env # host ENV vars
-                telescope-zoxide # lookup and use host zoxide
-                telescope-menufacture # nice submenus in some core builtins
-                # telescope-all-recent # frecency sorting for telescope pickers
-                telescope-project-nvim # search git repos in your home dir + cwd to them
-                telescope-undo-nvim # undo history
-                telescope-lazy-nvim # lazy plugins searcher (includes code search, reload, etc.)
-                telescope-changes # changelist history (vendored)
-                telescope-luasnip # luasnip snippet lookup + use
-                telescope-lsp-handlers-nvim # lsp handlers integration
-                # TODO: this seems cool
-                # easypick-nvim # quickly make telescope pickers for external cli calls
-                telescope-ui-select-nvim # use telescope for autocomplete
               ];
               always = with pkgs.vimPlugins; [
                 # misc
-                mini-nvim # mini tools (lots of things)
                 fzf-vim # another fuzzy search tool/picker
                 fzf-lua # another fuzzy search tool/picker
                 pkgs.fzf # for above
                 dial-nvim # smart increment/decrement
                 comment-nvim # comments with easy motion
                 todo-comments-nvim # highlight comments
-                sqlite-lua # sqlite API (used by other plugins)
-                vim-oscyank # yank out of neovim through ssh/tmux with OSC52 escape
-                vim-suda # sudo write file with w!!
-                vim-sleuth # detect tabstop and shiftwidth automatically
-                undotree # Show tree view of changes
 
                 # git
                 vim-fugitive # tpope git core plugin
@@ -351,33 +303,6 @@
                 portal-nvim # jump around lists with keys
                 neoscroll-nvim # animated/speed scrolling (laggy over SSH tho)
                 nvim-surround # autopairs ()[]<>{} completion (with treesitter magic)
-              ];
-              extra = with pkgs.vimPlugins; [
-                fidget-nvim
-                # lualine-lsp-progress
-                indent-blankline-nvim
-                vim-startuptime
-                # If it was included in your flake inputs as plugins-hlargs,
-                # this would be how to add that plugin in your config.
-                # pkgs.neovimPlugins.hlargs
-
-                # keys
-                which-key-nvim # popups for key combos
-
-                glow-nvim # markdown preview
-                zk-nvim # zk knowledge base lsp
-                nvim-neoclip-lua # clipboard/macro manager
-
-                # find/replace
-                ssr-nvim # treesitter-based structural search
-                inc-rename-nvim # incremental rename
-                nvim-spectre # hardcore find replace
-
-                ## File Manager
-                fm-nvim # generic file manager for cli tools (ranger)
-                oil-nvim # nvim file manager in buffer
-                neo-tree-nvim # tree-based file structure in side panel
-                yazi-nvim # integrate yazi + nvim
               ];
             };
           };
@@ -446,7 +371,6 @@
         debug = true;
         cmp = true;
         cmpCmdline = true;
-        extra = true;
         always = true;
 
         have_nerd_font = true;
