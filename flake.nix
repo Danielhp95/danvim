@@ -284,7 +284,6 @@
                 fzf-vim # another fuzzy search tool/picker
                 fzf-lua # another fuzzy search tool/picker
                 pkgs.fzf # for above
-                dial-nvim # smart increment/decrement
                 comment-nvim # comments with easy motion
                 todo-comments-nvim # highlight comments
 
@@ -294,7 +293,7 @@
                 gitsigns-nvim # git signs in the columns
                 diffview-nvim # Diif/Merge view UI
 
-                # Movement / buffer mgmt
+                # Movement / buffer management
                 treesj # fancy split/join of TS objects
                 nvim-autopairs # pair up brackets/quotes etc.
                 nvim-surround # easily change pairs (i.e. "" -> '')
