@@ -1,4 +1,5 @@
 local ColorSchemes = {
+  'Mofiqul/dracula.nvim',
   'navarasu/onedark.nvim',
   dependencies = {
     'EdenEast/nightfox.nvim',

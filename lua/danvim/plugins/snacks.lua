@@ -1,8 +1,10 @@
+vim.g.snacks_animate = false
 return {
   'folke/snacks.nvim',
   priority = 1000,
   lazy = false,
   opts = {
+    animate = { enabled = false },  -- Didn't work!
     terminal = { enabled = true },
     bigfile = { enabled = true },
     dashboard = { enabled = true },

@@ -120,6 +120,9 @@
               undotree
               nvim-tree-lua
 
+              # Colorscheme
+              dracula-nvim
+
               ## Git
               diffview-nvim
 
