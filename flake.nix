@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    stable.url = "github:nixos/nixpkgs/nixos-24.11";
 
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
     flake-compat.url = "github:edolstra/flake-compat";
@@ -108,6 +109,7 @@
               manix
 
               python312Packages.pylatexenc # for rendering latex in render-markdown plugin
+              tectonic  # Fore rendering latex equations (snacks.nvim)
             ];
           };
 
@@ -139,7 +141,7 @@
               plenary-nvim
               lualine-nvim
               which-key-nvim
-              wilder-nvim
+              inputs.stable.legacyPackages.x86_64-linux.vimPlugins.wilder-nvim
               cpsm
               nvim-web-devicons
               nvim-colorizer-lua

@@ -85,14 +85,21 @@ local markview = {
   -- the README says it is not recommended to lazy load this, I don't know why
   lazy = false,
   preview = {
-    filetypes ={ "markdown", "Avante" },
-    icon_provider = "mini.icons",
+    filetypes = { 'markdown', 'Avante' },
+    icon_provider = 'mini.icons',
     -- buf_ignore = ''  "Can I ignore the cmp previews?"
   },
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
     'nvim-tree/nvim-web-devicons',
-    'echasnovski/mini.icons',  -- Only one is needed, let's try both see which one I like best
+    'echasnovski/mini.icons', -- Only one is needed, let's try both see which one I like best
+  },
+  config = {
+    markdown = {
+      list_items = {
+        shift_width = 1,
+      },
+    },
   },
 }
 

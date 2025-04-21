@@ -68,6 +68,7 @@ wk.add {
   { '<leader>ts', "<cmd>lua require('telescope.builtin').lsp_document_symbols({symbol_width = 50})<CR>", desc = 'Buffer lsp [s]ymbols' },
   { '<leader>tt', '<cmd>Telescope<CR>', desc = 'Default [t]elescope' },
   { '<leader>tv', "<cmd>lua require'telescope.builtin'.find_files({cwd='~/Documents/Obsidian Vault/'})<cr>", desc = 'Open Obsidian [v]ault' },
+  { '/', "<cmd>lua require'telescope.builtin'.current_buffer_fuzzy_find({layout_strategy='vertical'})<cr>", desc = 'Search current file' },
 }
 
 -- Spelling
