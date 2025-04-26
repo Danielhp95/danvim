@@ -1,13 +1,13 @@
-vim.g.snacks_animate = false
+vim.g.snacks_animate = false  -- Only this worked to remove snacks.animate
 return {
   'folke/snacks.nvim',
   priority = 1000,
   lazy = false,
   opts = {
     animate = { enabled = false },  -- Didn't work!
+    dashboard = { enabled = false }, -- I don't want a dashboard when I open nvim
     terminal = { enabled = true },
     bigfile = { enabled = true },
-    dashboard = { enabled = true },
     explorer = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
