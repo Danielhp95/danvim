@@ -131,6 +131,6 @@ NvimCmp.config = function()
 end
 
 return {
-  CmpLuaSnip,
-  NvimCmp,
+  -- CmpLuaSnip,
+  -- NvimCmp,
 }

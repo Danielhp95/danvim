@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     stable.url = "github:nixos/nixpkgs/nixos-24.11";
 
-    nixCats.url = "github:BirdeeHub/nixCats-nvim";
+    nixCats.url = "github:BirdeeHub/nixCats-nvim?rev=fa33abe592eb084044e12e9d1e1b6870364a75f9";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
 
@@ -124,12 +124,16 @@
 
               # Colorscheme
               dracula-nvim
+              kanagawa-nvim
 
               ## Git
               diffview-nvim
 
               ## random
               firenvim
+
+              # Completion
+              colorful-menu-nvim
 
               ## LSP
               nvim-lspconfig # Top level LSP configuratio
@@ -249,8 +253,16 @@
                 terminal-nvim # toggle terminals
               ];
               cmp = with pkgs.vimPlugins; [
+
+                ## blink completion engine
+                blink-cmp
+                blink-pairs # TODO: add
+                blink-cmp-git
+                blink-cmp-avante # TODO: Add
+                blink-cmp-dictionary # TODO: add
+                blink-emoji-nvim
+
                 ## cmp
-                blink-cmp # nvim-cmp replacement
                 nvim-cmp
                 cmp-cmdline
                 cmp-buffer
