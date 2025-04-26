@@ -68,7 +68,7 @@ wk.add {
   { '<leader>ts', "<cmd>lua require('telescope.builtin').lsp_document_symbols({symbol_width = 50})<CR>", desc = 'Buffer lsp [s]ymbols' },
   { '<leader>tt', '<cmd>Telescope<CR>', desc = 'Default [t]elescope' },
   { '<leader>tv', "<cmd>lua require'telescope.builtin'.find_files({cwd='~/Documents/Obsidian Vault/'})<cr>", desc = 'Open Obsidian [v]ault' },
-  { '/', "<cmd>lua require'telescope.builtin'.current_buffer_fuzzy_find({layout_strategy='vertical'})<cr>", desc = 'Search current file' },
+  { '<c-f>', "<cmd>lua require'telescope.builtin'.current_buffer_fuzzy_find({layout_strategy='vertical'})<cr>", desc = 'Search current file' },
 }
 
 -- Spelling
@@ -94,7 +94,6 @@ wk.add {
 -- LSP
 local vertical_layout = "{layout_strategy='vertical', layout_config = {mirror = true}}"
 wk.add {
-  { '<C-k>', "<cmd>lua require('lsp_signature').toggle_float_win()<CR>", desc = 'Show signature help' },
   { '<leader>l', group = '[l]sp' },
   { '<leader>lD', "<cmd>lua vim.lsp.buf.definition({layout_strategy='vertical', layout_config = {mirror = true}})<CR>", desc = 'Go to [D]efinition' },
   { '<leader>lI', '<cmd>LspInfo<cr>', desc = '[I]nformation about LSPs' },
@@ -108,7 +107,6 @@ wk.add {
   { '<leader>ln', '<cmd>Lspsaga rename<cr>', desc = 'Re[n]ame' },
   { '<leader>lo', '<cmd>Lspsaga outline<cr>', desc = '[o]utline code structure' },
   { '<leader>lr', '<cmd>Trouble lsp_references<cr>', desc = 'Show [r]eferences' },
-  { 'K', "<cmd>lua vim.lsp.buf.hover({border = 'double'})<CR>", desc = 'Show do[k]umentation' },
   { '<leader>l', group = 'LSP', mode = 'v' },
   { '<leader>lc', '<cmd>lua vim.lsp.buf.code_action()<CR>', desc = '[c]ode actions', mode = 'v' },
 }
