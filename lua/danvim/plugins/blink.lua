@@ -11,6 +11,10 @@ return {
         'Kaiser-Yang/blink-cmp-git',
         dependencies = { 'nvim-lua/plenary.nvim' },
       },
+      {
+        'Kaiser-Yang/blink-cmp-dictionary',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+      },
     },
 
     version = 'v1.*',
@@ -42,7 +46,7 @@ return {
       },
 
       sources = {
-        default = { 'git', 'path', 'lsp', 'snippets', 'cmdline', 'buffer', 'emoji' },
+        default = { 'git', 'path', 'lsp', 'snippets', 'buffer', 'dictionary', 'emoji' },
         providers = {
           git = {
             -- NOTE: if you can't see users / issues, it's probably because you need to login via `gh auth login`
@@ -68,6 +72,21 @@ return {
               return vim.tbl_contains(
                 -- Enable emoji completion only for git commits and markdown.
                 { 'gitcommit', 'markdown' },
+                vim.o.filetype
+              )
+            end,
+          },
+          dictionary = {
+            module = 'blink-cmp-dictionary',
+            name = 'Dict',
+            min_keyword_length = 3,
+            opts = {
+              -- options for blink-cmp-dictionary
+            },
+            should_show_items = function()
+              return vim.tbl_contains(
+                -- Enable emoji completion only for git commits and markdown.
+                { 'text', 'markdown' },
                 vim.o.filetype
               )
             end,

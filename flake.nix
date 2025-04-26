@@ -109,7 +109,7 @@
               manix
 
               python312Packages.pylatexenc # for rendering latex in render-markdown plugin
-              tectonic  # Fore rendering latex equations (snacks.nvim)
+              tectonic # Fore rendering latex equations (snacks.nvim)
             ];
           };
 
@@ -124,7 +124,6 @@
 
               # Colorscheme
               dracula-nvim
-              kanagawa-nvim
 
               ## Git
               diffview-nvim
@@ -258,7 +257,7 @@
                 blink-cmp
                 blink-pairs # TODO: add
                 blink-cmp-git
-                blink-cmp-avante # TODO: Add
+                blink-cmp-avante
                 blink-cmp-dictionary # TODO: add
                 blink-emoji-nvim
 
