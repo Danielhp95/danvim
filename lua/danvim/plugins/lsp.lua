@@ -40,7 +40,6 @@ local lspconfig_toplevel = {
   dependencies = {
     -- Useful status updates for LSP
     { 'j-hui/fidget.nvim', event = 'LspAttach', opts = {} },
-    'ray-x/lsp_signature.nvim',
     'folke/neodev.nvim',
   },
   config = function()
@@ -106,13 +105,6 @@ local lspconfig_toplevel = {
     -- Hyprland cofig
     -- DOES NOT support folds nicely, which is a must for my config file
     -- lspconfig.hyprls.setup({})
-    -- lspconfig.type
-    require('lsp_signature').setup {
-      bind = true, -- This is mandatory, otherwise border config won't get registered.
-      handler_opts = {
-        border = 'rounded',
-      },
-    }
   end,
 }
 
