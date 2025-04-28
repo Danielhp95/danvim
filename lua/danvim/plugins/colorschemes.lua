@@ -18,9 +18,10 @@ return {
       highlights = {
         -- CmpItemMenu = { bg = '${dark_gray}' },
         PmenuSel = { bg = '${visual_grey}', bold = true },
-        PmenuSbar = { bg = '${green}', fg = '${green}' },
+        -- The little thing telling us how deep into the scrollbar we are
+        PmenuThumb = { fg = '${green}', bg = '${green}' },
         BlinkCmpScrollBarThumb = { fg = '${green}', bg = '${green}' },
-        -- BlinkCmpScrollBarGutter = { fg = "${green}", bg = "${green}" },
+        --
         Folded = { bold = true, fg = '${green}' },
         CmdLine = {
           bg = '${dark_gray}',
