@@ -9,7 +9,6 @@ wk.add {
   { '<C-Right>', '<cmd>vertical resize -1<cr>', desc = 'Continuous window horizontal resize' },
   { '<C-Up>', '<cmd>resize -1<cr>', desc = 'Continuous window vertical resize' },
   { '<C-s><C-s>', '<cmd>w<cr>', desc = '[s]ave buffer' },
-  { '<leader>f', '<cmd> NeoZoomToggle<cr>', desc = '[f]ocuses on current window' },
   { '<leader>nw', group = '[n]o' },
   { '<leader>nwh', '<cmd>noh<cr>', desc = '[h]ighlight' },
   { '<leader>nww', '<cmd>set wrap!<cr>', desc = 'line [w]rap' },
@@ -20,7 +19,7 @@ wk.add {
   { 'gf', '<cmd>e <cfile><cr>', desc = '[g]o to [f]ile under cursor even if not existing' },
   { '<leader>u', '<cmd>UndotreeToggle<cr>', desc = 'Toggle [u]ndotree' },
   { '<leader>tc', '<cmd>TSContextToggle<cr>', desc = '[t]oggle treesitter [c]ontext' },
-  { '<leader>z', '<cmd>lua require("snacks").zen()<cr>', desc = '[z]en mode (Goyo replacement)' },
+  { '<leader>z', '<cmd>lua require("snacks").zen()<cr>', desc = '[z]en mode / zoom' },
 }
 
 -- Git
@@ -157,7 +156,6 @@ wk.add {
   { '<leader><leader>s', '<cmd>ToggleTermSendCurrentLine<cr>', desc = '[s]end cursor line to terminal' },
   { '<leader><leader>t', '<cmd>ToggleTermToggleAll<cr>', desc = 'Toggle all [t]erminals' },
   { '<leader><leader>v', "<cmd>ToggleTerm direction='vertical' size=50<cr>", desc = '[v]ertical terminal' },
-  { '<leader><leader>z', '<cmd>NeoZoomToggle<cr>', desc = '[z]oom current buffer' },
   { '<leader><leader>s', "<cmd>'<,'>ToggleTermSendVisualLines<cr>", desc = '[s]end visually selected lines to terminal', mode = 'v' },
 }
 

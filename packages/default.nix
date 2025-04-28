@@ -17,7 +17,6 @@ let
       # "nvim-nu"
       "nvim-telescope-hop"
       "nvim-guess-indent"
-      "neozoom-nvim"
       "sessions-nvim"
       "fm-nvim"
       "portal-nvim"

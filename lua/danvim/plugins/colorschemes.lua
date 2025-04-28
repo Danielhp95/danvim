@@ -16,7 +16,6 @@ return {
         visual_grey = '#212121',
       },
       highlights = {
-        -- CmpItemMenu = { bg = '${dark_gray}' },
         PmenuSel = { bg = '${visual_grey}', bold = true },
         -- The little thing telling us how deep into the scrollbar we are
         PmenuThumb = { fg = '${green}', bg = '${green}' },

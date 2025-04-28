@@ -68,37 +68,18 @@
 
           lspsAndRuntimeDeps = with pkgs; {
             general = [
-              ### TODO: under progress
-              # For avante-nvim
-              pkg-config
-              openssl
-              makeWrapper
-              perl
-              # rustup
-              gcc
-              rustc
-              gnumake
-              ###
+              lua-language-server # lua
+              vscode-langservers-extracted # HTML/CSS/JSON/ESLint
+              nixd # nix
+              bash-language-server # bash
+              basedpyright # python
+              marksman # markdown
+              texlab # LaTex
+              nodePackages.yaml-language-server # yaml
+              nodePackages.dockerfile-language-server-nodejs # dockerfile
+              nodePackages.typescript-language-server # typescript
 
-              lua-language-server
-              vscode-langservers-extracted
-
-              nixd
-              gopls
-              stylua
-              yamlfmt
-              nixfmt-rfc-style
-              bash-language-server
-              basedpyright
-
-              nodejs_22 # for sourcegraph
-              nodePackages.yaml-language-server
-              nodePackages.dockerfile-language-server-nodejs
-              docker-compose-language-service
               libgit2
-              nodePackages.typescript-language-server
-              marksman
-              texlab
               cargo
 
               ripgrep
@@ -115,16 +96,16 @@
 
           startupPlugins = with pkgs.vimPlugins; {
             dani = [
-              lazy-nvim
-              nvim-autopairs
-              nvim-surround
+              nvim-autopairs # pair up brackets/quotes etc.
+              nvim-surround # autopairs ()[]<>{} completion (with treesitter magic)
               comment-nvim
               undotree
 
               ## Git
-              diffview-nvim # For showing diffs / merge conflicts
-              gitlinker-nvim
-              gitsigns-nvim # Look into more modern capabilities in this plugin
+              vim-fugitive # tpope git core plugin
+              gitlinker-nvim # open/copy external git forge links (GBrowse replacement)
+              gitsigns-nvim # git signs in the columns  (TODO: look more things in this plugin)
+              diffview-nvim # Diif/Merge view UI
 
               # Completion
               colorful-menu-nvim # Better tresitter integration in completion engine
@@ -135,8 +116,7 @@
               neodev-nvim # Lua LS
 
               ## UI
-              plenary-nvim
-              lualine-nvim
+              lualine-nvim # status line!
               which-key-nvim
               inputs.stable.legacyPackages.x86_64-linux.vimPlugins.wilder-nvim # Remove in favour of noice
               cpsm # needed for wilder
@@ -146,6 +126,7 @@
               trouble-nvim
               yazi-nvim
 
+              # Library
               snacks-nvim
 
               ## General
@@ -210,25 +191,18 @@
             colorscheme = with pkgs.vimPlugins; [
               onedarkpro-nvim
             ];
-            lint = with pkgs.vimPlugins; [
-              nvim-lint
-            ];
             format = with pkgs.vimPlugins; [
               conform-nvim
+              stylua
+              yamlfmt
+              nixfmt-rfc-style
             ];
             markdown = with pkgs.vimPlugins; [
               markdown-preview-nvim
             ];
-            neonixdev = with pkgs.vimPlugins; [
-              lazydev-nvim
-            ];
             general = {
-              terminal = with pkgs.vimPlugins; [
-                terminal-nvim # toggle terminals
-              ];
-              cmp = with pkgs.vimPlugins; [
-
-                ## blink completion engine
+              blink = with pkgs.vimPlugins; [
+                # blink completion engine
                 blink-cmp
                 blink-cmp-git
                 blink-cmp-avante
@@ -256,24 +230,10 @@
                 # misc
                 fzf-vim # another fuzzy search tool/picker
                 pkgs.fzf # for above
-                comment-nvim # comments with easy motion
-                todo-comments-nvim # highlight comments
-
-                # git
-                vim-fugitive # tpope git core plugin
-                gitlinker-nvim # open/copy external git forge links (GBrowse replacement)
-                gitsigns-nvim # git signs in the columns
-                diffview-nvim # Diif/Merge view UI
 
                 # Movement / buffer management
-                treesj # fancy split/join of TS objects
-                nvim-autopairs # pair up brackets/quotes etc.
-                nvim-surround # easily change pairs (i.e. "" -> '')
                 flash-nvim # jump around with f,t,s
                 harpoon # mark buffers and jump between them
-                portal-nvim # jump around lists with keys
-                neoscroll-nvim # animated/speed scrolling (laggy over SSH tho)
-                nvim-surround # autopairs ()[]<>{} completion (with treesitter magic)
               ];
             };
           };
@@ -340,8 +300,7 @@
         telescope = true;
         treesitter = true;
         debug = true;
-        cmp = true;
-        cmpCmdline = true;
+        blink = true;
         always = true;
 
         have_nerd_font = true;

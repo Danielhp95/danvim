@@ -19,8 +19,4 @@ return {
       },
     },
   },
-  {
-    'nyngwang/NeoZoom.lua',
-    opts = { winopts = { offset = 'left', height = 0.99, width = 0.99 } },
-  },
 }

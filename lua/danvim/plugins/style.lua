@@ -57,10 +57,6 @@ local LuaLine = {
 
 local IndentLines = {
   'lukas-reineke/indent-blankline.nvim',
-  dependencies = {
-    -- TODO: Not working!
-    'TheGLander/indent-rainbowline.nvim', -- This plugin is used to make configuratino for indent-blankline.nvim
-  },
   main = 'ibl',
   show_start = false,
   show_end = false,
@@ -87,7 +83,6 @@ local markview = {
   preview = {
     filetypes = { 'markdown', 'Avante' },
     icon_provider = 'mini.icons',
-    -- buf_ignore = ''  "Can I ignore the cmp previews?"
   },
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
