@@ -18,6 +18,8 @@ wk.add {
   { 'H', '<cmd>tabp<cr>', desc = 'Previous tab' },
   { 'L', '<cmd>tabn<cr>', desc = 'Next tab' },
   { 'gf', '<cmd>e <cfile><cr>', desc = '[g]o to [f]ile under cursor even if not existing' },
+  { '<leader>u', '<cmd>UndotreeToggle<cr>', desc = 'Toggle [u]ndotree' },
+  { '<leader>tc', '<cmd>TSContextToggle<cr>', desc = '[t]oggle treesitter [c]ontext' },
 }
 
 -- Git
