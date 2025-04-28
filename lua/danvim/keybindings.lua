@@ -20,6 +20,7 @@ wk.add {
   { 'gf', '<cmd>e <cfile><cr>', desc = '[g]o to [f]ile under cursor even if not existing' },
   { '<leader>u', '<cmd>UndotreeToggle<cr>', desc = 'Toggle [u]ndotree' },
   { '<leader>tc', '<cmd>TSContextToggle<cr>', desc = '[t]oggle treesitter [c]ontext' },
+  { '<leader>z', '<cmd>lua require("snacks").zen()<cr>', desc = '[z]en mode (Goyo replacement)' },
 }
 
 -- Git

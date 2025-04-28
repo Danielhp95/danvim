@@ -9,7 +9,6 @@ vim.filetype.add({
 vim.g.nofoldenable = true
 vim.g.completeopt = "menu,menuone,noselect"
 vim.g.noswapfile = true
-vim.g.oscyank_max_length = 100000000
 vim.g.timeoutlen = 100
 vim.g.nowrap = true
 

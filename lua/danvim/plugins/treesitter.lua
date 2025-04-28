@@ -24,7 +24,6 @@ local Treesitter = {
   dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects',
     'nvim-treesitter/nvim-treesitter-refactor',
-    'nvim-treesitter/playground',
     'RRethy/nvim-treesitter-textsubjects',
     Context,
     'hiphish/rainbow-delimiters.nvim',
@@ -53,20 +52,13 @@ local Treesitter = {
           node_decremental = '<BS>',
         },
       },
-      -- TODO: look up what this is
       refactor = {
         highlight_definitions = {
           enable = true,
           clear_on_cursor_move = true,
         },
-        highlight_current_scope = true,
-        smart_rename = {
-          enable = true,
-          -- Assign keymaps to false to disable them, e.g. `smart_rename = false`.
-          keymaps = {
-            smart_rename = 'grr',
-          },
-        },
+        highlight_current_scope = { enable = false },
+        smart_rename = { enable = false }, -- Not as powerful as LSP saga
       },
     }
   end,

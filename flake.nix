@@ -120,33 +120,26 @@
               nvim-surround
               comment-nvim
               undotree
-              nvim-tree-lua
-
-              # Colorscheme
-              dracula-nvim
 
               ## Git
-              diffview-nvim
-
-              ## random
-              firenvim
+              diffview-nvim # For showing diffs / merge conflicts
+              gitlinker-nvim
+              gitsigns-nvim # Look into more modern capabilities in this plugin
 
               # Completion
-              colorful-menu-nvim
+              colorful-menu-nvim # Better tresitter integration in completion engine
 
               ## LSP
               nvim-lspconfig # Top level LSP configuratio
               fidget-nvim
               neodev-nvim # Lua LS
-              lsp_signature-nvim # Show function signatur
 
               ## UI
               plenary-nvim
               lualine-nvim
               which-key-nvim
-              inputs.stable.legacyPackages.x86_64-linux.vimPlugins.wilder-nvim
-              cpsm
-              nvim-web-devicons
+              inputs.stable.legacyPackages.x86_64-linux.vimPlugins.wilder-nvim # Remove in favour of noice
+              cpsm # needed for wilder
               nvim-colorizer-lua
               indent-blankline-nvim
               bufferline-nvim
@@ -155,26 +148,19 @@
 
               snacks-nvim
 
-              ## Git
-              gitlinker-nvim
-              gitsigns-nvim
-
               ## General
               sqlite-lua
-              vim-oscyank
               toggleterm-nvim
               vim-floaterm
               term-edit-nvim
 
-              vim-togglelist
-              nvim-bqf
-              pkgs.fzf
-              zk-nvim
+              nvim-bqf # TODO: learn this!
 
               ## Treesitter
               nvim-treesitter-textobjects
-              nvim-treesitter-context
-              nvim-treesitter-refactor
+              nvim-treesitter-context # conceals top part of screen in deeply nested code
+              nvim-ts-context-commentstring # add commentstring context to treesitter
+              nvim-treesitter-refactor # smart rename (current scope) + highlight scope + backup go to def/ref
 
               # AI
               # avante-nvim
@@ -182,12 +168,9 @@
             general = [
               ## Lib
               plenary-nvim # toolbox/lib for many libs
-              middleclass-nvim # smarter class implementation
-              tokyonight-nvim
               lazy-nvim
 
               oil-nvim
-              nvim-web-devicons
 
               ## UI
               lualine-nvim # status/tabline
@@ -197,15 +180,11 @@
               noice-nvim # meta UI plugin, message routing, lsp, cmdline, etc.
               nui-nvim # UI library (noice + dap-ui)
               nvim-notify # notification handler (used by noice)
-              tabline-nvim # tabline (old, replaced by lualine)
-              zen-mode-nvim # remove distractions
               urlview-nvim # picker (ui.select support) for URLs
 
               ## LSP
               nvim-lspconfig # configure LSPs
               neodev-nvim # configure lua + neovim projects
-              nvim-nu # old-school null-ls nushell LSP
-              none-ls-nvim # none-ls (language agnostic LSP)
               lsp_signature-nvim # LSP Signature Info (old, noice instead)
             ];
           };
@@ -251,33 +230,15 @@
 
                 ## blink completion engine
                 blink-cmp
-                blink-pairs # TODO: add
                 blink-cmp-git
                 blink-cmp-avante
-                blink-cmp-dictionary # TODO: add
                 blink-emoji-nvim
-
-                ## cmp
-                nvim-cmp
-                cmp-cmdline
-                cmp-buffer
-                cmp-path
-                cmp-rg
-                cmp_luasnip
-                cmp-latex-symbols
-                luasnip
-                cmp-nvim-lsp
                 friendly-snippets
-                lspkind-nvim
               ];
               treesitter = with pkgs.vimPlugins; [
                 nvim-treesitter-textobjects # move/swap/peek/select objects
                 nvim-treesitter-textsubjects # select textsubjects up/down
-                nvim-treesitter-context # conceals top part of screen in deeply nested code
-                nvim-treesitter-refactor # smart rename (current scope) + highlight scope + backup go to def/ref
-                nvim-ts-context-commentstring # add commentstring context to treesitter
                 rainbow-delimiters-nvim # fancy rainbow brackets
-                playground
 
                 nvim-treesitter.withAllGrammars
                 ((pkgs.neovimUtils.grammarToPlugin pkgs.tree-sitter-grammars.tree-sitter-nu).overrideAttrs {

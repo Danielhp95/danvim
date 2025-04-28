@@ -11,7 +11,6 @@ return {
   'sanfusu/neovim-undotree',
   'folke/which-key.nvim',
   { 'windwp/nvim-autopairs', event = 'InsertEnter', opts = {} },
-  { 'nvim-tree/nvim-tree.lua', opts = {} },
   {
     'kylechui/nvim-surround',
     opts = {
