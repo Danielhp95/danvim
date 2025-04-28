@@ -229,8 +229,7 @@
               ];
             };
             colorscheme = with pkgs.vimPlugins; [
-              onedark-nvim
-              nightfox-nvim
+              onedarkpro-nvim
             ];
             lint = with pkgs.vimPlugins; [
               nvim-lint
