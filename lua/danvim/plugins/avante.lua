@@ -35,8 +35,6 @@ return {
           drag_and_drop = {
             insert_mode = true,
           },
-          -- required for Windows users
-          use_absolute_path = true,
         },
         rag_service = {
           enabled = true, -- Enables the RAG service
@@ -48,15 +46,5 @@ return {
         },
       },
     },
-    -- TODO(Dani): figure out how to use markview.nvim. Or even better, how to get render-markdown in
-    -- my main 
-    -- {
-    --   -- Make sure to set this up properly if you have lazy=true
-    --   'MeanderingProgrammer/render-markdown.nvim',
-    --   opts = {
-    --     file_types = { 'markdown', 'Avante' },
-    --   },
-    --   ft = { 'markdown', 'Avante' },
-    -- },
   },
 }

@@ -2,8 +2,8 @@ return {
   'olimorris/onedarkpro.nvim',
   lazy = false,
   config = function()
-    local onedarkpro = require('onedarkpro')
-    onedarkpro.setup({
+    local onedarkpro = require 'onedarkpro'
+    onedarkpro.setup {
       log_level = 'debug',
       caching = true,
       colors = {
@@ -13,17 +13,15 @@ return {
         darkest_gray = '#080808',
         color_column = '#181919',
         bg_statusline = '#1f1f23',
-
-        -- glance.nvim
-        GlancePreviewNormal = "require('onedarkpro.helpers').darken('bg', 6, 'onedark')",
-        GlancePreviewLineNr = "require('onedarkpro.helpers').darken('bg', 6, 'onedark')",
-        GlancePreviewSignColumn = "require('onedarkpro.helpers').darken('bg', 6, 'onedark')",
-        GlancePreviewCursorLine = "require('onedarkpro.helpers').darken('bg', 4, 'onedark')",
+        visual_grey = '#212121',
       },
       highlights = {
-        CmpItemMenu = { bg = '${dark_gray}' },
-        PMenuSel = {bg = '${green}', bold = true},
-        Folded = {bold = true, fg='${green}'},
+        -- CmpItemMenu = { bg = '${dark_gray}' },
+        PmenuSel = { bg = '${visual_grey}', bold = true },
+        PmenuSbar = { bg = '${green}', fg = '${green}' },
+        BlinkCmpScrollBarThumb = { fg = '${green}', bg = '${green}' },
+        -- BlinkCmpScrollBarGutter = { fg = "${green}", bg = "${green}" },
+        Folded = { bold = true, fg = '${green}' },
         CmdLine = {
           bg = '${dark_gray}',
           fg = '${fg}',
@@ -53,7 +51,7 @@ return {
         },
         TelescopePromptCounter = { fg = '${fg}' },
         TelescopePromptNormal = { fg = '${fg}', bg = '${darker_gray}' },
-        TelescopeWindowBorder = { fg = '${green}'},
+        TelescopeWindowBorder = { fg = '${green}' },
         TelescopePromptPrefix = {
           fg = '${green}',
           bg = '${darker_gray}',
@@ -79,47 +77,13 @@ return {
         TelescopeNormal = { bg = '${darkest_gray}' },
         TelescopeSelection = { bg = '${darker_gray}' },
 
-        -- mini.trailspace
-        MiniTrailspace = { bg = '${red}' },
-
-        WinBar = { bg = '${bg_statusline}' },
-        WinBarNC = { bg = '${bg_statusline}' },
-
-        -- glance.nvim
-        GlancePreviewNormal = { bg = '${GlancePreviewNormal}' },
-        GlancePreviewLineNr = { bg = '${GlancePreviewLineNr}' },
-        GlancePreviewCursorLine = { bg = '${GlancePreviewCursorLine}' },
-        GlancePreviewSignColumn = { bg = '${GlancePreviewSignColumn}' },
-
-        -- nvim-navic
-        NavicText = { fg = '${fg}', bg = '${bg_statusline}' },
-        NavicIconsClass = { fg = '${purple}', bg = '${bg_statusline}' },
-        NavicIconsFunction = { fg = '${blue}', bg = '${bg_statusline}' },
-        NavicIconsVariable = { fg = '${orange}', bg = '${bg_statusline}' },
-        NavicIconsConstant = { fg = '${orange}', bg = '${bg_statusline}' },
-        NavicIconsBoolean = { fg = '${orange}', bg = '${bg_statusline}' },
-        NavicIconsString = { fg = '${green}', bg = '${bg_statusline}' },
-        NavicIconsObject = { fg = '${purple}', bg = '${bg_statusline}' },
-        NavicIconsProperty = { fg = '${fg}', bg = '${bg_statusline}' },
-        NavicSeparator = { fg = '${gray}', bg = '${bg_statusline}' },
+        -- WinBar = { bg = '${bg_statusline}' },
+        -- WinBarNC = { bg = '${bg_statusline}' },
 
         -- LSP inlay hints are too dark/not enough contrast with the default nvim_lsp theme plugin
-        LspInlayHint = { fg = '${light_gray}', bg = '${darker_gray}' },
+        -- LspInlayHint = { fg = '${light_gray}', bg = '${darker_gray}' },
       },
-      plugins = {
-        all = false,
-        gitsigns = true,
-        indentline = true,
-        neotest = true,
-        nvim_cmp = true,
-        nvim_lsp = true,
-        nvim_tree = true,
-        nvim_ts_rainbow = true,
-        op_nvim = true,
-        trouble = true,
-        treesitter = true,
-        telescope = true,
-      },
+      plugins = { all = true },
       options = {
         bold = true,
         italic = true,
@@ -130,7 +94,7 @@ return {
         comments = 'italic',
         keywords = 'italic',
       },
-    })
-    vim.cmd.colorscheme('onedark_dark')
+    }
+    vim.cmd.colorscheme 'onedark_dark'
   end,
 }

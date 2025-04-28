@@ -171,9 +171,6 @@
               pkgs.fzf
               zk-nvim
 
-              # Note taking
-              obsidian-nvim
-
               ## Treesitter
               nvim-treesitter-textobjects
               nvim-treesitter-context
@@ -298,7 +295,6 @@
               always = with pkgs.vimPlugins; [
                 # misc
                 fzf-vim # another fuzzy search tool/picker
-                fzf-lua # another fuzzy search tool/picker
                 pkgs.fzf # for above
                 comment-nvim # comments with easy motion
                 todo-comments-nvim # highlight comments

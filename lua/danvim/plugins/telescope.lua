@@ -112,7 +112,6 @@ telescope.config = function()
   require('telescope').load_extension 'undo'
   require('telescope').load_extension 'env'
   -- require('telescope').load_extension('dap') -- TODO: fix
-  require('telescope').load_extension 'fzf'
 end
 return {
   telescope,
