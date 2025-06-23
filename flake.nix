@@ -73,14 +73,19 @@
               nixd # nix
               bash-language-server # bash
               basedpyright # python
+              ty # python
+              pyrefly # python
               marksman # markdown
               texlab # LaTex
+
               nodePackages.yaml-language-server # yaml
               nodePackages.dockerfile-language-server-nodejs # dockerfile
               nodePackages.typescript-language-server # typescript
 
               libgit2
               cargo
+
+              gh # GitHub CLI, for octo-nvim
 
               ripgrep
               git
@@ -91,6 +96,14 @@
 
               python312Packages.pylatexenc # for rendering latex in render-markdown plugin
               tectonic # Fore rendering latex equations (snacks.nvim)
+
+              nodejs
+
+              # Formatters
+              stylua
+              yamlfmt
+              ruff
+              nixfmt-rfc-style
             ];
           };
 
@@ -106,12 +119,14 @@
               gitlinker-nvim # open/copy external git forge links (GBrowse replacement)
               gitsigns-nvim # git signs in the columns  (TODO: look more things in this plugin)
               diffview-nvim # Diif/Merge view UI
+              octo-nvim # GitHub CLI integration for neovim
 
               # Completion
               colorful-menu-nvim # Better tresitter integration in completion engine
 
               ## LSP
-              nvim-lspconfig # Top level LSP configuratio
+              # TODO(add back)
+              # nvim-lspconfig # Top level LSP configuratio
               fidget-nvim
               neodev-nvim # Lua LS
 
@@ -145,6 +160,9 @@
 
               # AI
               # avante-nvim
+              copilot-lua
+              blink-copilot
+
             ];
             general = [
               ## Lib
@@ -164,9 +182,12 @@
               urlview-nvim # picker (ui.select support) for URLs
 
               ## LSP
-              nvim-lspconfig # configure LSPs
+              # nvim-lspconfig # configure LSPs
               neodev-nvim # configure lua + neovim projects
               lsp_signature-nvim # LSP Signature Info (old, noice instead)
+            ];
+            format = with pkgs.vimPlugins; [
+              conform-nvim
             ];
           };
 
@@ -190,12 +211,7 @@
             };
             colorscheme = with pkgs.vimPlugins; [
               onedarkpro-nvim
-            ];
-            format = with pkgs.vimPlugins; [
-              conform-nvim
-              stylua
-              yamlfmt
-              nixfmt-rfc-style
+              catppuccin-nvim
             ];
             markdown = with pkgs.vimPlugins; [
               markdown-preview-nvim
@@ -203,7 +219,8 @@
             general = {
               blink = with pkgs.vimPlugins; [
                 # blink completion engine
-                blink-cmp
+                # blink-cmp  Too old in nixpkgs
+                blink-copilot
                 blink-cmp-git
                 blink-cmp-avante
                 blink-emoji-nvim
@@ -313,19 +330,10 @@
             # see :help nixCats.flake.outputs.settings
             settings.wrapRc = true;
             settings.configDirName = "nvim";
-            settings.neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            # TODO(dani): uncomment when neovim-unwrapped gets maintainer
+            # settings.neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
             categories = categories // {
               configDirName = "nvim";
-            };
-          };
-        nvimLocal =
-          { pkgs, ... }:
-          {
-            settings.wrapRc = false;
-            # settings.configDirName = "nvim";
-            settings.neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
-            categories = categories // {
-              local = true;
             };
           };
         nvimStable =

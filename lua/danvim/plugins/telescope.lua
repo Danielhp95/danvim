@@ -1,4 +1,4 @@
-local telescope = {'nvim-telescope/telescope.nvim'}
+local telescope = { 'nvim-telescope/telescope.nvim' }
 telescope.dependencies = {
   'nvim-lua/plenary.nvim',
   'LinArcX/telescope-env.nvim',
@@ -69,16 +69,6 @@ telescope.config = function()
           ['<c-l>'] = require('trouble.sources.telescope').open,
           ['<c-f>'] = actions.send_to_qflist + actions.open_qflist,
           ['<tab>'] = actions.toggle_selection,
-          -- TODO: not working Select all
-          ['<c-a>'] = function(prompt_bufnr)
-            local current_picker = require('telescope.state').get_current_picker(prompt_bufnr)
-            local current_picker = require('telescope.state').get_current_picker(prompt_bufnr)
-            local manager = current_picker.manager
-            manager.selected = {}
-            for i = 1, #manager.get_candidates() do
-              table.insert(manager.selected, i)
-            end
-          end,
         },
         n = {
           ['<esc>'] = actions.close,

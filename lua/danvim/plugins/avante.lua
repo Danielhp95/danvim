@@ -37,11 +37,11 @@ return {
         },
         rag_service = {
           enabled = true, -- Enables the RAG service
-          host_mount = os.getenv("HOME"), -- Host mount path for the rag service
-          provider = "ollama", -- The provider to use for RAG service (e.g. openai or ollama)
-          llm_model = "phi4:14b", -- The LLM model to use for RAG service
-          embed_model = "omic-embed-text", -- The embedding model to use for RAG service. (default)
-          endpoint = "http://localhost:11434", -- The API endpoint for RAG service
+          host_mount = os.getenv 'HOME', -- Host mount path for the rag service
+          provider = 'ollama', -- The provider to use for RAG service (e.g. openai or ollama)
+          llm_model = 'phi4:14b', -- The LLM model to use for RAG service
+          embed_model = 'omic-embed-text', -- The embedding model to use for RAG service. (default)
+          endpoint = 'http://localhost:11434', -- The API endpoint for RAG service
         },
       },
     },

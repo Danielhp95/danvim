@@ -7,7 +7,8 @@ return {
         layout = 'diff3_mixed',
       },
     },
-  } },
+    }
+  },
   {
     'rbong/vim-flog',
     lazy = true,

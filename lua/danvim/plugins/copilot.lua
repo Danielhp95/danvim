@@ -2,12 +2,14 @@ local copilot = {
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",
   event = "InsertEnter",
-  config = function()
-    require("copilot").setup({
-      suggestion = { enabled = false }, -- disable Copilot's built-in inline UI
-      panel = { enabled = false },
-    })
-  end,
+  opts = {
+    suggestion = { enabled = false },
+    panel = { enabled = false },
+    filetypes = {
+      markdown = true,
+      help = true,
+    },
+  },
 }
 
 return {copilot}

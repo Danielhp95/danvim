@@ -1,6 +1,6 @@
 local wk = require 'which-key'
 
-vim.keymap.set('t', '<ESC>', '<C-\\><C-n>')
+vim.keymap.set('t', '<ESC>', '<C-\\><C-n>') -- Use <ESC> in terminal mode
 
 -- Miscelaneous small quality of life stuff
 wk.add {
@@ -8,6 +8,7 @@ wk.add {
   { '<C-Left>', '<cmd>vertical resize +1<cr>', desc = 'Continuous window horizontal resize' },
   { '<C-Right>', '<cmd>vertical resize -1<cr>', desc = 'Continuous window horizontal resize' },
   { '<C-Up>', '<cmd>resize -1<cr>', desc = 'Continuous window vertical resize' },
+  { '<leader>z', ':SimpleZoomToggle<CR>', desc = 'Toggle zoom for current window' },
   { '<C-s><C-s>', '<cmd>w<cr>', desc = '[s]ave buffer' },
   { '<leader>nw', group = '[n]o' },
   { '<leader>nwh', '<cmd>noh<cr>', desc = '[h]ighlight' },
@@ -17,9 +18,15 @@ wk.add {
   { 'H', '<cmd>tabp<cr>', desc = 'Previous tab' },
   { 'L', '<cmd>tabn<cr>', desc = 'Next tab' },
   { 'gf', '<cmd>e <cfile><cr>', desc = '[g]o to [f]ile under cursor even if not existing' },
+  { 'gp', '`[v`]', desc = '[g]o to and visually select last [p]asted text' },
   { '<leader>u', '<cmd>UndotreeToggle<cr>', desc = 'Toggle [u]ndotree' },
   { '<leader>tc', '<cmd>TSContextToggle<cr>', desc = '[t]oggle treesitter [c]ontext' },
-  { '<leader>z', '<cmd>lua require("snacks").zen()<cr>', desc = '[z]en mode / zoom' },
+}
+
+-- Quickfix list
+wk.add {
+  { ']q', '<cmd>cnext<CR>', desc = '[n]next item quickfix list' },
+  { '[q', '<cmd>cprev<CR>', desc = '[p]rev item quickfix list' },
 }
 
 -- Git
@@ -31,7 +38,7 @@ wk.add {
   { '<leader>gb', '<cmd>Gitsigns blame_line<cr>', desc = '[b]lame current line' },
   { '<leader>gc', '<cmd>Git commit<cr>', desc = 'Git [c]ommit' },
   { '<leader>gd', group = '[d]iff' },
-  { '<leader>gdc', '<cmd>DiffviewClose<cr>', desc = '[c]lose diff merger' },
+  { '<leader>gdc', '<cmd>DiffviewClose<cr>|<cmd>tabprevious<cr>', desc = '[c]lose diff merger and go to previous tab' },
   { '<leader>gdf', '<cmd>DiffviewFileHistory %<cr>', desc = '[d]iff history for current [f]ile' },
   { '<leader>gdo', '<cmd>DiffviewOpen<cr>', desc = '[o]pen new tab with diff merger' },
   { '<leader>gdr', '<cmd>DiffviewRefresh<cr>', desc = '[r]efresh git merge state' },
@@ -41,6 +48,8 @@ wk.add {
   { '<leader>gha', '<cmd>Gitsigns stage_hunk<CR>', desc = 'St[a]ge hunk' },
   { '<leader>ghn', "<cmd>lua require('gitsigns').next_hunk({wrap = true})<CR>", desc = '[n]ext hunk' },
   { '<leader>ghp', "<cmd>lua require('gitsigns').prev_hunk({wrap = true})<CR>", desc = '[p]revious hunk' },
+  { ']g', "<cmd>lua require('gitsigns').next_hunk({wrap = true})<CR>", desc = '[n]ext hunk' },
+  { '[g', "<cmd>lua require('gitsigns').prev_hunk({wrap = true})<CR>", desc = '[p]revious hunk' },
   { '<leader>ghs', "<cmd>lua require('gitsigns').preview_hunk()<CR>", desc = '[s]how hunk diff' },
   { '<leader>ghu', '<cmd>Gitsigns undo_stage_hunk<CR>', desc = '[U]ndo stage hunk' },
   { '<leader>gl', group = '[l]og' },
@@ -61,6 +70,7 @@ wk.add {
   { '<leader>td', "<cmd>lua require'telescope.builtin'.find_files({cwd='~/nix_config'})<cr>", desc = 'Open NIX config [d]irectory' },
   { '<leader>tf', '<cmd>Telescope find_files<CR>', desc = 'Find [f]iles' },
   { '<leader>tg', "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>", desc = 'Live [g]rep' },
+  { '<leader>tG', '<cmd>Telescope git_branches<CR>', desc = '[G]it branches' },
   { '<leader>th', '<cmd>Telescope help_tags<CR>', desc = 'NVIM [h]elp' },
   { '<leader>tk', '<cmd>Telescope keymaps<CR>', desc = '[k]eymaps' },
   { '<leader>to', '<cmd>Telescope oldfiles<CR>', desc = 'Last [o]pened files' },
@@ -105,7 +115,6 @@ wk.add {
   { '<leader>lf', "<cmd>lua require('conform').format()<cr>", desc = '[F]ormat file' },
   { '<leader>lh', '<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>', desc = 'Toggle lsp [h]ints' },
   { '<leader>li', "<cmd>lua vim.lsp.buf.implementation({layout_strategy='vertical', layout_config = {mirror = true}})<CR>", desc = 'Go to [i]mplementation' },
-  { '<leader>ll', '<cmd>LspLensToggle<cr>', desc = '[t]oggle codelens' },
   { '<leader>ln', '<cmd>Lspsaga rename<cr>', desc = 'Re[n]ame' },
   { '<leader>lo', '<cmd>Lspsaga outline<cr>', desc = '[o]utline code structure' },
   { '<leader>lr', '<cmd>Trouble lsp_references<cr>', desc = 'Show [r]eferences' },
@@ -157,11 +166,6 @@ wk.add {
   { '<leader><leader>t', '<cmd>ToggleTermToggleAll<cr>', desc = 'Toggle all [t]erminals' },
   { '<leader><leader>v', "<cmd>ToggleTerm direction='vertical' size=50<cr>", desc = '[v]ertical terminal' },
   { '<leader><leader>s', "<cmd>'<,'>ToggleTermSendVisualLines<cr>", desc = '[s]end visually selected lines to terminal', mode = 'v' },
-}
-
--- Lua Development
-wk.add {
-  { '<leader>rr', ":'<,'>SnipRun<cr>", desc = '[r]un selected snippet', mode = 'v' },
 }
 
 -- pandoc

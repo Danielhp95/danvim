@@ -1,4 +1,12 @@
 return {
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   cmd = "Copilot",
+  --   event = "InsertEnter",
+  --   config = function()
+  --     require("copilot").setup({})
+  --   end,
+  -- },
   {
     'saghen/blink.cmp',
     event = 'InsertEnter',
@@ -7,6 +15,7 @@ return {
       'moyiz/blink-emoji.nvim',
       'Kaiser-Yang/blink-cmp-avante',
       'xzbdmw/colorful-menu.nvim',
+      "fang2hou/blink-copilot",
       {
         'Kaiser-Yang/blink-cmp-git',
         dependencies = { 'nvim-lua/plenary.nvim' },
@@ -25,7 +34,7 @@ return {
       -- TODO: cmdline is not working for some reason!
       keymap = {
         ['<CR>'] = { 'select_and_accept', 'fallback' },
-        ['<C-space>'] = {
+        ['<C-,>'] = {
           function(cmp)
             if cmp.is_visible() then
               return cmp.select_and_accept()
@@ -56,8 +65,17 @@ return {
       },
 
       sources = {
-        default = { 'git', 'path', 'lsp', 'snippets', 'buffer', 'emoji' },
+        default = { 'copilot', 'avante', 'git', 'path', 'lsp', 'snippets', 'buffer', 'emoji' },
         providers = {
+          lsp = {
+            async = true, -- basedpyright is slow, do we want this
+          },
+          copilot = {
+            name = "copilot",
+            module = "blink-copilot",
+            score_offset = 100,
+            async = true,
+          },
           git = {
             -- NOTE: if you can't see users / issues, it's probably because you need to login via `gh auth login`
             module = 'blink-cmp-git',
@@ -78,13 +96,13 @@ return {
             name = 'Emoji',
             score_offset = 15, -- Tune by preference
             opts = { insert = true }, -- Insert emoji (default) or complete its name
-            should_show_items = function()
-              return vim.tbl_contains(
-                -- Enable emoji completion only for git commits and markdown.
-                { 'gitcommit', 'markdown' },
-                vim.o.filetype
-              )
-            end,
+            -- should_show_items = function()
+            --   return vim.tbl_contains(
+            --     -- Enable emoji completion only for git commits and markdown.
+            --     { 'gitcommit', 'markdown' },
+            --     vim.o.filetype
+            --   )
+            -- end,
           },
           -- dictionary = {
           --   module = 'blink-cmp-dictionary',
@@ -117,12 +135,11 @@ return {
       },
       completion = {
         -- TODO: look into this!
-        -- list = {
-        --   selection = {
-        --     preselect = false,
-        --     auto_insert = true,
-        --   },
-        -- },
+        list = {
+          selection = {
+            preselect = false,
+          },
+        },
         ghost_text = {
           enabled = false,
           show_with_menu = true,
@@ -137,7 +154,8 @@ return {
         menu = {
           border = 'rounded',
           draw = {
-            columns = { { 'label' }, { 'kind_icon', 'kind', gap = 1 }, { 'extra_info' } },
+            -- columns = { { 'label' }, { 'kind_icon', 'kind', gap = 1 }, { 'extra_info' } },
+            columns = { { 'label' }, { 'kind_icon', 'kind', gap = 1 } },
             components = {
               label_description = { ellipsis = false }, -- Show full description
               label = {

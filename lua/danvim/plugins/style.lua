@@ -1,6 +1,7 @@
 local ColorSchemes = {
   'Mofiqul/dracula.nvim',
   'navarasu/onedark.nvim',
+  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
   dependencies = {
     'EdenEast/nightfox.nvim',
     'nvim-tree/nvim-web-devicons',
@@ -23,9 +24,20 @@ local BufferLine = {
   },
 }
 
+local function IsZoomedIn()
+  if vim.t['simple-zoom'] == nil then
+    return ''
+  elseif vim.t['simple-zoom'] == 'zoom' then
+    return '🔭'
+  end
+end
+
 -- Status Bar
 local LuaLine = {
   'nvim-lualine/lualine.nvim',
+  dependencies = {
+    'fasterius/simple-zoom.nvim',
+  },
   opts = {
     options = {
       icons_enabled = true,
@@ -35,7 +47,7 @@ local LuaLine = {
       globalstatus = false,
     },
     sections = {
-      lualine_a = { "%{&spell ? 'SPELL' : ':3'}", 'mode' },
+      lualine_a = { "%{&spell ? 'SPELL' : ':3'}", 'mode', { IsZoomedIn } },
       lualine_b = { 'branch', 'diff', 'diagnostics' },
       lualine_c = { 'filename' },
       lualine_x = { 'filetype' },
@@ -110,6 +122,13 @@ local render_markdown = {
 return {
   ColorSchemes,
   LuaLine,
+  {
+    'fasterius/simple-zoom.nvim',
+    opts = {
+      hide_tabline = false,
+    },
+    config = true,
+  },
   IndentLines,
   BufferLine,
   { 'junegunn/goyo.vim' },

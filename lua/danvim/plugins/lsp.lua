@@ -57,6 +57,28 @@ local lspconfig_toplevel = {
         },
       },
     }
+
+    vim.lsp.config('ty', {
+      { cmd = { 'ty', 'server' }, filetypes = { 'python' }, root_markers = { 'ty.toml', 'pyproject.toml', '.git' } },
+    })
+
+    -- vim.lsp._enabled_configs('pyrefly', {
+    --   cmd = { 'pyrefly', 'lsp' },
+    --   filetypes = { 'python' },
+    --   root_markers = {
+    --     'pyrefly.toml',
+    --     'pyproject.toml',
+    --     'setup.py',
+    --     'setup.cfg',
+    --     'requirements.txt',
+    --     'Pipfile',
+    --     '.git',
+    --   },
+    --   on_exit = function(code, _, _)
+    --     vim.notify('Closing Pyrefly LSP exited with code: ' .. code, vim.log.levels.INFO)
+    --   end,
+    -- })
+
     -- lua
     lspconfig.lua_ls.setup {
       cmd = { 'lua-language-server' },
@@ -100,11 +122,29 @@ local lspconfig_toplevel = {
         },
       },
     }
+
+    --JSON
+    vim.lsp.config('jsonls', {
+      cmd = { 'vscode-json-languageserver', '--stdio' },
+      filetypes = { 'json', 'jsonc' },
+      {
+        init_options = { provideFormatter = true },
+      },
+    })
+    vim.lsp.enable 'jsonls'
+
     -- Markdown: TODO: not in love with this
     lspconfig.marksman.setup {}
     -- Hyprland cofig
     -- DOES NOT support folds nicely, which is a must for my config file
     -- lspconfig.hyprls.setup({})
+
+    -- NUSHELL
+    vim.lsp.config('nushell', {
+      cmd = { 'nu', '--lsp' },
+      filetypes = { 'nu' },
+    })
+    vim.lsp.enable 'nushell'
   end,
 }
 
