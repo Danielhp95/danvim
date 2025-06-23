@@ -104,6 +104,9 @@
               yamlfmt
               ruff
               nixfmt-rfc-style
+
+              # TESTING
+              fzf
             ];
           };
 
