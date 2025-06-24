@@ -15,7 +15,8 @@ return {
       'moyiz/blink-emoji.nvim',
       'Kaiser-Yang/blink-cmp-avante',
       'xzbdmw/colorful-menu.nvim',
-      "fang2hou/blink-copilot",
+      'fang2hou/blink-copilot',
+      'archie-judd/blink-cmp-words',
       {
         'Kaiser-Yang/blink-cmp-git',
         dependencies = { 'nvim-lua/plenary.nvim' },
@@ -65,14 +66,14 @@ return {
       },
 
       sources = {
-        default = { 'copilot', 'avante', 'git', 'path', 'lsp', 'snippets', 'buffer', 'emoji' },
+        default = { 'dictionary', 'copilot', 'avante', 'git', 'path', 'lsp', 'snippets', 'buffer', 'emoji' },
         providers = {
           lsp = {
             async = true, -- basedpyright is slow, do we want this
           },
           copilot = {
-            name = "copilot",
-            module = "blink-copilot",
+            name = 'copilot',
+            module = 'blink-copilot',
             score_offset = 100,
             async = true,
           },
@@ -96,29 +97,28 @@ return {
             name = 'Emoji',
             score_offset = 15, -- Tune by preference
             opts = { insert = true }, -- Insert emoji (default) or complete its name
-            -- should_show_items = function()
-            --   return vim.tbl_contains(
-            --     -- Enable emoji completion only for git commits and markdown.
-            --     { 'gitcommit', 'markdown' },
-            --     vim.o.filetype
-            --   )
-            -- end,
           },
-          -- dictionary = {
-          --   module = 'blink-cmp-dictionary',
-          --   name = 'Dict',
-          --   min_keyword_length = 3,
-          --   opts = {
-          --     -- options for blink-cmp-dictionary
-          --   },
-          --   should_show_items = function()
-          --     return vim.tbl_contains(
-          --       -- Enable emoji completion only for git commits and markdown.
-          --       { 'text', 'markdown' },
-          --       vim.o.filetype
-          --     )
-          --   end,
-          -- },
+          dictionary = {
+            name = 'blink-cmp-words',
+            module = 'blink-cmp-words.dictionary',
+            -- All available options
+            opts = {
+              -- A score offset applied to returned items.
+              -- By default the highest score is 0 (item 1 has a score of -1, item 2 of -2 etc..).
+              score_offset = 0,
+
+              -- Default pointers define the lexical relations listed under each definition,
+              -- see Pointer Symbols below.
+              -- Default is as below ("antonyms", "similar to" and "also see").
+              pointer_symbols = { '!', '&', '^' },
+            },
+          },
+        },
+        -- Setup completion by filetype
+        per_filetype = {
+          text = { 'dictionary' },
+          markdown = { 'dictionary' },
+          gitcommit = { 'emoji', 'dictionary' },
         },
       },
       signature = {
