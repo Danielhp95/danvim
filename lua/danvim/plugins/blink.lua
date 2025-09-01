@@ -1,12 +1,4 @@
 return {
-  -- {
-  --   "zbirenbaum/copilot.lua",
-  --   cmd = "Copilot",
-  --   event = "InsertEnter",
-  --   config = function()
-  --     require("copilot").setup({})
-  --   end,
-  -- },
   {
     'saghen/blink.cmp',
     event = 'InsertEnter',
@@ -35,7 +27,7 @@ return {
       -- TODO: cmdline is not working for some reason!
       keymap = {
         ['<CR>'] = { 'select_and_accept', 'fallback' },
-        ['<C-,>'] = {
+        ['<C-CR>'] = {
           function(cmp)
             if cmp.is_visible() then
               return cmp.select_and_accept()
@@ -64,9 +56,9 @@ return {
         },
         ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
       },
-
       sources = {
-        default = { 'dictionary', 'copilot', 'avante', 'git', 'path', 'lsp', 'snippets', 'buffer', 'emoji' },
+        -- add 'dictionary' in the future, it was unfortunately slowing typing
+        default = { 'copilot', 'avante', 'git', 'path', 'lsp', 'snippets', 'buffer', 'emoji' },
         providers = {
           lsp = {
             async = true, -- basedpyright is slow, do we want this
@@ -113,12 +105,6 @@ return {
               pointer_symbols = { '!', '&', '^' },
             },
           },
-        },
-        -- Setup completion by filetype
-        per_filetype = {
-          text = { 'dictionary' },
-          markdown = { 'dictionary' },
-          gitcommit = { 'emoji', 'dictionary' },
         },
       },
       signature = {
