@@ -8,7 +8,7 @@ wk.add {
   { '<C-Left>', '<cmd>vertical resize +1<cr>', desc = 'Continuous window horizontal resize' },
   { '<C-Right>', '<cmd>vertical resize -1<cr>', desc = 'Continuous window horizontal resize' },
   { '<C-Up>', '<cmd>resize -1<cr>', desc = 'Continuous window vertical resize' },
-  { '<leader>z', ':SimpleZoomToggle<CR>', desc = 'Toggle zoom for current window' },
+  { '<leader>z', ':SimpleZoomToggle<CR>', desc = 'Toggle [z]oom for current window' },
   { '<C-s><C-s>', '<cmd>w<cr>', desc = '[s]ave buffer' },
   { '<leader>nw', group = '[n]o' },
   { '<leader>nwh', '<cmd>noh<cr>', desc = '[h]ighlight' },
@@ -21,6 +21,7 @@ wk.add {
   { 'gp', '`[v`]', desc = '[g]o to and visually select last [p]asted text' },
   { '<leader>u', '<cmd>UndotreeToggle<cr>', desc = 'Toggle [u]ndotree' },
   { '<leader>tc', '<cmd>TSContextToggle<cr>', desc = '[t]oggle treesitter [c]ontext' },
+  { '<leader>vi', '<cmd>vnew term://ipython -c "%load_ext autoreload; %autoreload 2" -i %<cr>', desc = '[v]ertical split with [i]python sourcing current buffer' },
 }
 
 -- Quickfix list
@@ -45,6 +46,7 @@ wk.add {
   { '<leader>gdw', '<cmd>windo diffthis<cr>', desc = '[d]iff all files in [w]indow' },
   { '<leader>gh', group = '[h]unks' },
   { '<leader>ghS', "<cmd>lua require('gitsigns').stage_hunk()<CR>", desc = '[S]tage hunk under cursor' },
+  { '<leader>ghr', "<cmd>lua require('gitsigns').reset_hunk()<CR>", desc = '[r]eset hunk under cursor' },
   { '<leader>gha', '<cmd>Gitsigns stage_hunk<CR>', desc = 'St[a]ge hunk' },
   { '<leader>ghn', "<cmd>lua require('gitsigns').next_hunk({wrap = true})<CR>", desc = '[n]ext hunk' },
   { '<leader>ghp', "<cmd>lua require('gitsigns').prev_hunk({wrap = true})<CR>", desc = '[p]revious hunk' },
@@ -109,7 +111,7 @@ wk.add {
   { '<leader>l', group = '[l]sp' },
   { '<leader>lD', "<cmd>lua vim.lsp.buf.definition({layout_strategy='vertical', layout_config = {mirror = true}})<CR>", desc = 'Go to [D]efinition' },
   { '<leader>lI', '<cmd>LspInfo<cr>', desc = '[I]nformation about LSPs' },
-  { '<leader>lR', '<cmd>LspRestart<cr>', desc = '[R]estart LSP' },
+  { '<leader>lR', ':LspRestart ', desc = '[R]estart LSP' },
   { '<leader>lc', '<cmd>Lspsaga code_action<cr>', desc = '[c]ode actions' },
   { '<leader>ld', '<cmd>Lspsaga peek_definition<CR>', desc = 'Peek [d]efinition' },
   { '<leader>lf', "<cmd>lua require('conform').format()<cr>", desc = '[F]ormat file' },
@@ -118,6 +120,7 @@ wk.add {
   { '<leader>ln', '<cmd>Lspsaga rename<cr>', desc = 'Re[n]ame' },
   { '<leader>lo', '<cmd>Lspsaga outline<cr>', desc = '[o]utline code structure' },
   { '<leader>lr', '<cmd>Trouble lsp_references<cr>', desc = 'Show [r]eferences' },
+  { '<leader>ll', '<cmd>LenslineToggleView<cr>', desc = 'Toggle [l]enseline' },
   { '<leader>l', group = 'LSP', mode = 'v' },
   { '<leader>lc', '<cmd>lua vim.lsp.buf.code_action()<CR>', desc = '[c]ode actions', mode = 'v' },
 }
