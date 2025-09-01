@@ -12,7 +12,6 @@ telescope.dependencies = {
 
 telescope.config = function()
   local actions = require 'telescope.actions'
-  local action_set = require 'telescope.actions.set'
   require('trouble').setup { auto_preview = true }
 
   local action_layout = require 'telescope.actions.layout'
@@ -43,7 +42,7 @@ telescope.config = function()
       layout_strategy = 'vertical',
       mappings = {
         i = {
-          -- TODO: 
+          -- TODO:
           -- layout changing
           -- Scrolling preview
           ['<C-u>'] = false,
