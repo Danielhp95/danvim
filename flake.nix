@@ -75,6 +75,7 @@
               basedpyright # python
               ty # python
               pyrefly # python
+
               marksman # markdown
               texlab # LaTex
 
@@ -143,6 +144,9 @@
               bufferline-nvim
               trouble-nvim
               yazi-nvim
+
+              # The obsidian.nvim fork
+              obsidian-nvim
 
               # Library
               snacks-nvim
