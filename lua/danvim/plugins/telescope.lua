@@ -15,14 +15,6 @@ telescope.config = function()
   local action_set = require 'telescope.actions.set'
   require('trouble').setup { auto_preview = true }
 
-  local function action_edit_ctrl_l(prompt_bufnr)
-    return action_set.select(prompt_bufnr, 'ctrl-l')
-  end
-
-  local function action_edit_ctrl_r(prompt_bufnr)
-    return action_set.select(prompt_bufnr, 'ctrl-r')
-  end
-
   local action_layout = require 'telescope.actions.layout'
   require('telescope').setup {
     defaults = {
@@ -48,21 +40,24 @@ telescope.config = function()
         },
       },
       sorting_strategy = 'descending',
-      layout_strategy = 'horizontal',
+      layout_strategy = 'vertical',
       mappings = {
         i = {
+          -- TODO: 
+          -- layout changing
+          -- Scrolling preview
           ['<C-u>'] = false,
           ['<C-q>'] = require('telescope-live-grep-args.actions').quote_prompt(),
           ['<C-j>'] = actions.move_selection_next,
           ['<C-k>'] = actions.move_selection_previous,
+          ['<m-d>'] = actions.preview_scrolling_down,
+          ['<m-u>'] = actions.preview_scrolling_up,
           ['<CR>'] = actions.select_default + actions.center,
           ['<C-s>'] = actions.select_horizontal,
-          -- ["<esc>"] = actions.close,
-          ['<C-l>'] = action_edit_ctrl_l,
-          ['<C-r>'] = action_edit_ctrl_r,
           ['<C-n>'] = actions.cycle_history_next,
           ['<C-p>'] = actions.cycle_history_prev,
-          ['<a-L>'] = function(prompt_bufnr)
+          -- m stands for "alt"
+          ['<m-s-u>'] = function(prompt_bufnr)
             action_layout.cycle_layout_prev(prompt_bufnr)
           end,
           ['<c-d>'] = actions.drop_all, -- Drop all selections from multi select
