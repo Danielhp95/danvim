@@ -1,36 +1,40 @@
 return {
-  {
-    'epwalsh/obsidian.nvim',
-    version = '*', -- recommended, use latest release instead of latest commit
-    lazy = true,
-    ft = 'markdown',
-    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-    -- event = {
-    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
-    --   "BufReadPre path/to/my-vault/**.md",
-    --   "BufNewFile path/to/my-vault/**.md",
-    -- },
-    dependencies = {
-      -- Required.
-      'nvim-lua/plenary.nvim',
-    },
-    opts = {
-      workspaces = {
-        {
-          name = 'Obsidian',
-          path = '~/vaults/Obsidian',
-        },
-        {
-          name = 'SonyAI',
-          path = '~/vaults/sony_ai',
-        },
-        {
-          name = 'NewYork',
-          path = '~/vaults/new_york',
-        },
-      },
-    },
-  },
-  { 'iamcco/markdown-preview.nvim', cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' }, ft = { 'markdown' } },
+  -- { 'iamcco/markdown-preview.nvim', cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' }, ft = { 'markdown' } },
+  -- {
+  --   'obsidian-nvim/obsidian.nvim',
+  --   version = '*', -- recommended, use latest release instead of latest commit
+  --   lazy = true,
+  --   ft = 'markdown',
+  --   -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+  --   -- event = {
+  --   --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+  --   --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+  --   --   -- refer to `:h file-pattern` for more examples
+  --   --   "BufReadPre path/to/my-vault/*.md",
+  --   --   "BufNewFile path/to/my-vault/*.md",
+  --   -- },
+  --   ---@module 'obsidian'
+  --   ---@type obsidian.config
+  --   opts = {
+  --     completion = {
+  --       nvim_cmp = false, -- Enables completion using nvim_cmp
+  --       blink = true, -- Enables completion using blink.cmp
+  --       min_chars = 0, -- Trigger completion at 2 chars.
+  --       create_new = true, -- Set to false to disable new note creation in the picker
+  --     },
+  --     picker = {
+  --       name = 'telescope.nvim', -- Use telescope.nvim for the picker
+  --     },
+  --     workspaces = {
+  --       {
+  --         name = 'SonyAI',
+  --         path = '~/vaults/sony_ai',
+  --       },
+  --       {
+  --         name = 'NewYork',
+  --         path = '~/vaults/new_york',
+  --       },
+  --     },
+  --   },
+  -- },
 }
