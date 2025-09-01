@@ -4,9 +4,12 @@ return {
   event = 'VeryLazy',
   opts = {
     provider = 'ollama',
-    ollama = {
-      model = 'phi4:14b',
-    },
+    providers = {
+      ollama = {
+        -- model = 'phi4:14b',
+        model = 'copilot/claude-sonnet-4',
+      },
+    };
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   -- build = 'make',
