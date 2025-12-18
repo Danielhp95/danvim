@@ -12,6 +12,10 @@ local Conform = {
       python = { 'ruff_format', 'ruff' },
       yaml = { 'yamlfmt' },
       nix = { 'nixfmt' },
+      json = { 'jq' },
+      -- Use the "_" filetype to run formatters on filetypes that don't
+      -- have other formatters configured.
+      ['_'] = { 'trim_whitespace' },
     },
     notify_on_error = true,
   },
@@ -40,47 +44,54 @@ local lspconfig_toplevel = {
   dependencies = {
     -- Useful status updates for LSP
     { 'j-hui/fidget.nvim', event = 'LspAttach', opts = {} },
-    'folke/neodev.nvim',
+    neodev,
   },
   config = function()
-    local lspconfig = require 'lspconfig'
-
-    lspconfig.basedpyright.setup {
-      root_dir = lspconfig.util.find_git_ancestor,
-      settings = {
-        basedpyright = {
-          analysis = {
-            autoSearchPaths = true,
-            diagnosticMode = 'openFilesOnly',
-            useLibraryCodeForTypes = true,
-          },
+    vim.lsp.config['ty'] = {
+      cmd = { 'ty', 'server' },
+      filetypes = { 'python' },
+      root_markers = { 'ty.toml', 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', '.git' },
+      capabilities = {
+        textDocument = {
+          diagnostic = {},
         },
       },
     }
+    -- vim.lsp.enable 'ty'
 
-    vim.lsp.config('ty', {
-      { cmd = { 'ty', 'server' }, filetypes = { 'python' }, root_markers = { 'ty.toml', 'pyproject.toml', '.git' } },
-    })
+    vim.lsp.config['pyrefly'] = {
+      cmd = { 'pyrefly', 'lsp' },
+      -- This does not seem to work
+      initializationOptions = {
+        analyzer = true,
+        typechecking = 'strict',
+        diagnostics = true,
+      },
+      --
+      filetypes = { 'python' },
+      -- root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', '.git' },
+      root_markers = { '.git' },
+      capabilities = {
+        textDocument = {
+          publishDiagnostics = {},
+          diagnostic = {},
+        },
+      },
+      -- Don't show hover finally works
+      settings = {
+        python = {
+          diagnostics = true,
+          analysis = {
+            showHoverGoToLinks = false,
+          },
+        },
+      },
+      --
+    }
+    vim.lsp.enable 'pyrefly'
 
-    -- vim.lsp._enabled_configs('pyrefly', {
-    --   cmd = { 'pyrefly', 'lsp' },
-    --   filetypes = { 'python' },
-    --   root_markers = {
-    --     'pyrefly.toml',
-    --     'pyproject.toml',
-    --     'setup.py',
-    --     'setup.cfg',
-    --     'requirements.txt',
-    --     'Pipfile',
-    --     '.git',
-    --   },
-    --   on_exit = function(code, _, _)
-    --     vim.notify('Closing Pyrefly LSP exited with code: ' .. code, vim.log.levels.INFO)
-    --   end,
-    -- })
-
-    -- lua
-    lspconfig.lua_ls.setup {
+    -- -- lua
+    vim.lsp.config['lua_ls'] = {
       cmd = { 'lua-language-server' },
       settings = {
         Lua = {
@@ -102,49 +113,26 @@ local lspconfig_toplevel = {
         },
       },
     }
-    -- latex
-    lspconfig.texlab.setup {}
+    vim.lsp.enable 'lua_ls'
+    -- -- latex
+    vim.lsp.enable 'textlab'
     -- NIX
-    lspconfig.nixd.setup {}
+    vim.lsp.enable 'nixd'
     -- BASH
-    lspconfig.bashls.setup {
-      cmd = { 'bash-language-server', 'start' },
-    }
+    vim.lsp.enable 'bashls'
     -- DOCKER
-    lspconfig.docker_compose_language_service.setup {}
+    vim.lsp.enable 'docker_language_server'
     -- YAML
-    lspconfig.yamlls.setup {
-      settings = {
-        redhat = {
-          telemetry = {
-            enabled = false,
-          },
-        },
-      },
-    }
-
+    vim.lsp.enable 'yamlls'
     --JSON
-    vim.lsp.config('jsonls', {
-      cmd = { 'vscode-json-languageserver', '--stdio' },
-      filetypes = { 'json', 'jsonc' },
-      {
-        init_options = { provideFormatter = true },
-      },
-    })
     vim.lsp.enable 'jsonls'
-
-    -- Markdown: TODO: not in love with this
-    lspconfig.marksman.setup {}
-    -- Hyprland cofig
-    -- DOES NOT support folds nicely, which is a must for my config file
-    -- lspconfig.hyprls.setup({})
-
-    -- NUSHELL
-    vim.lsp.config('nushell', {
-      cmd = { 'nu', '--lsp' },
-      filetypes = { 'nu' },
-    })
-    vim.lsp.enable 'nushell'
+    -- -- Markdown: TODO: not in love with this
+    -- vim.lsp.enable 'marksman'
+    -- -- Hyprland cofig
+    -- -- DOES NOT support folds nicely, which is a must for my config file
+    -- -- lspconfig.hyprls.setup({})
+    -- -- NUSHELL
+    -- vim.lsp.enable 'nushell'
   end,
 }
 
@@ -154,11 +142,6 @@ local LspSaga = {
     require('lspsaga').setup { lightbulb = { enable = false } }
   end,
 }
-
--- Add rounded borders to hover
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
-  border = 'rounded',
-})
 
 return {
   lspconfig_toplevel,

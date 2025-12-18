@@ -26,23 +26,29 @@ return {
   },
   {
     'oribarilan/lensline.nvim',
-    event = 'LspAattach',
+    event = 'LspAttach',
     opts = {
-      providers = {
+      -- placement = 'inline',
+      profiles = {
         {
-          name = "references",
-          enabled = true,     -- enable references provider
-          quiet_lsp = true,   -- suppress noisy LSP log messages (e.g., Pyright reference spam)
-        },
-        {
-          name = "last_author",
-          enabled = true,         -- enabled by default with caching optimization
-          cache_max_files = 50,   -- maximum number of files to cache blame data for (default: 50)
-        },
-        {
-          name = 'complexity',
-          enabled = true,
-          min_level = 'L', -- only show L and XL complexity (default)
+          name = 'default',
+          providers = {
+            {
+              name = 'references',
+              enabled = true, -- enable references provider
+              quiet_lsp = true, -- suppress noisy LSP log messages (e.g., Pyright reference spam)
+            },
+            {
+              name = 'last_author',
+              enabled = true, -- enabled by default with caching optimization
+              cache_max_files = 50, -- maximum number of files to cache blame data for (default: 50)
+            },
+            {
+              name = 'complexity',
+              enabled = true,
+              min_level = 'L', -- only show L and XL complexity (default)
+            },
+          },
         },
       },
     },

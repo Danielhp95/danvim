@@ -29,6 +29,7 @@ return {
         ['<CR>'] = { 'select_and_accept', 'fallback' },
         ['<C-CR>'] = {
           function(cmp)
+            vim.lsp.config()
             if cmp.is_visible() then
               return cmp.select_and_accept()
             else
@@ -113,10 +114,18 @@ return {
           show_documentation = true,
           border = 'rounded',
         },
+        trigger = {
+          enabled = true,
+          -- Show the signature help window after typing a trigger character
+          show_on_trigger_character = true,
+          -- Show the signature help window when entering insert mode
+          show_on_insert = true,
+          -- Show the signature help window when the cursor comes after a trigger character when entering insert mode
+          show_on_insert_on_trigger_character = true,
+        },
       },
       appearance = {
         use_nvim_cmp_as_default = false,
-        -- nerd_font_variant = "mono",
         nerd_font_variant = 'normal',
       },
       completion = {

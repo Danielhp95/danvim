@@ -11,7 +11,49 @@ return {
     explorer = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
-    picker = { enabled = true },
+    picker = {
+      enabled = true,
+      sources = {
+        buffers = {
+          win = {
+            keys = {
+              ['<C-r>'] = { 'buf_delete', mode = { 'n', 'i' } },
+            },
+          },
+        },
+      },
+      win = {
+        input = {
+          keys = {
+            -- Map Ctrl+u to clear the input in picker
+            ['<C-u>'] = { 'clear', mode = { 'i', 'n' } },
+            -- ['<Esc>'] = { 'close', mode = { 'i', 'n' } },
+          },
+        },
+      },
+      layouts = {
+        default = {
+          layout = {
+            backdrop = false,
+            row = 1,
+            width = 0.97,
+            min_width = 80,
+            height = 0.99,
+            border = 'none',
+            box = 'vertical',
+            { win = 'preview', title = '{preview}', height = 0.6, border = true },
+            {
+              box = 'vertical',
+              border = true,
+              title = '{title} {live} {flags}',
+              title_pos = 'center',
+              { win = 'input', height = 1, border = 'bottom' },
+              { win = 'list', border = 'none' },
+            },
+          },
+        },
+      },
+    },
     notifier = { enabled = true },
     quickfile = { enabled = true },
     scope = { enabled = true },

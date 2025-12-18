@@ -8,7 +8,17 @@
 -- })
 
 return {
-  'sanfusu/neovim-undotree',
+  {
+    'amitds1997/remote-nvim.nvim',
+    version = '*', -- Pin to GitHub releases
+    dependencies = {
+      'nvim-lua/plenary.nvim', -- For standard functions
+      'MunifTanjim/nui.nvim', -- To build the plugin UI
+      'nvim-telescope/telescope.nvim', -- For picking b/w different remote methods
+    },
+    config = true,
+  },
+  'sanfusu/neovim-undotree',  -- NOTE: checkout built-in version
   'folke/which-key.nvim',
   { 'windwp/nvim-autopairs', event = 'InsertEnter', opts = {} },
   {
@@ -18,5 +28,10 @@ return {
         duration = 0, -- Highlight always on
       },
     },
+  },
+  {
+    'esmuellert/vscode-diff.nvim',
+    dependencies = { 'MunifTanjim/nui.nvim' },
+    cmd = 'CodeDiff',
   },
 }

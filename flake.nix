@@ -9,6 +9,8 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
 
+    pyrefly-flake.url = "github:falkaer/pyrefly-flake";
+
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -74,19 +76,21 @@
               bash-language-server # bash
               basedpyright # python
               ty # python
-              pyrefly # python
+              inputs.pyrefly-flake.packages.x86_64-linux.pyrefly # python
 
               marksman # markdown
               texlab # LaTex
 
               nodePackages.yaml-language-server # yaml
-              nodePackages.dockerfile-language-server-nodejs # dockerfile
+              docker-language-server
               nodePackages.typescript-language-server # typescript
 
               libgit2
               cargo
 
               gh # GitHub CLI, for octo-nvim
+
+              television # for television.nvim
 
               ripgrep
               git
@@ -105,6 +109,7 @@
               yamlfmt
               ruff
               nixfmt-rfc-style
+              jq
 
               # TESTING
               fzf
@@ -170,6 +175,8 @@
               copilot-lua
               blink-copilot
 
+              vscode-diff-nvim
+
             ];
             general = [
               ## Lib
@@ -192,6 +199,8 @@
               # nvim-lspconfig # configure LSPs
               neodev-nvim # configure lua + neovim projects
               lsp_signature-nvim # LSP Signature Info (old, noice instead)
+
+              remote-nvim-nvim  # To connect to docker container
             ];
             format = with pkgs.vimPlugins; [
               conform-nvim

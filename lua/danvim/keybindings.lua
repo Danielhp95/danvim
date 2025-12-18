@@ -21,7 +21,8 @@ wk.add {
   { 'gp', '`[v`]', desc = '[g]o to and visually select last [p]asted text' },
   { '<leader>u', '<cmd>UndotreeToggle<cr>', desc = 'Toggle [u]ndotree' },
   { '<leader>tc', '<cmd>TSContextToggle<cr>', desc = '[t]oggle treesitter [c]ontext' },
-  { '<leader>vi', '<cmd>vnew term://ipython -c "%load_ext autoreload; %autoreload 2" -i %<cr>', desc = '[v]ertical split with [i]python sourcing current buffer' },
+  { '<leader>vi', '<cmd>vnew term://ipython -i %<cr>', desc = '[v]ertical split with [i]python sourcing current buffer' },
+  { '<leader>sf', ':source %<cr>', desc = '[s]ource current [f]ile' },
 }
 
 -- Quickfix list
@@ -38,6 +39,7 @@ wk.add {
   { '<leader>ga', '<cmd>Git add %:p<cr>', desc = 'Git [a]dd file' },
   { '<leader>gb', '<cmd>Gitsigns blame_line<cr>', desc = '[b]lame current line' },
   { '<leader>gc', '<cmd>Git commit<cr>', desc = 'Git [c]ommit' },
+  { '<leader>gp', '<cmd>Git push<cr>', desc = 'Git [p]ush' },
   { '<leader>gd', group = '[d]iff' },
   { '<leader>gdc', '<cmd>DiffviewClose<cr>|<cmd>tabprevious<cr>', desc = '[c]lose diff merger and go to previous tab' },
   { '<leader>gdf', '<cmd>DiffviewFileHistory %<cr>', desc = '[d]iff history for current [f]ile' },
@@ -64,25 +66,44 @@ wk.add {
   { '<leader>gdd', ":'<,'>DiffviewFileHistory<cr>", desc = '[d]iff of changes for selected lines', mode = 'v' },
 }
 
--- Telescope
+-- Telescope / Snacks
 wk.add {
   { '<leader>t', group = '[t]elescope' },
-  { '<leader>tS', "<cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols({symbol_width = 50})<CR>", desc = 'Workspace lsp [S]ymbols' },
-  { '<leader>tb', '<cmd>Telescope buffers<CR>', desc = '[b]uffers' },
+  { '<leader>tS', '<cmd>lua require("snacks").picker.lsp_workspace_symbols()<CR>', desc = 'Workspace lsp [S]ymbols' },
+  { '<leader>tb', '<cmd>lua require("snacks").picker.buffers()<CR>', desc = '[b]uffers' },
   { '<leader>td', "<cmd>lua require'telescope.builtin'.find_files({cwd='~/nix_config'})<cr>", desc = 'Open NIX config [d]irectory' },
-  { '<leader>tf', '<cmd>Telescope find_files<CR>', desc = 'Find [f]iles' },
-  { '<leader>tg', "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>", desc = 'Live [g]rep' },
-  { '<leader>tG', '<cmd>Telescope git_branches<CR>', desc = '[G]it branches' },
-  { '<leader>th', '<cmd>Telescope help_tags<CR>', desc = 'NVIM [h]elp' },
-  { '<leader>tk', '<cmd>Telescope keymaps<CR>', desc = '[k]eymaps' },
+  { '<leader>tf', '<cmd>lua require("snacks").picker.files()<CR>', desc = 'Find [f]iles' },
+  { '<leader>tg', '<cmd>lua require("snacks").picker.grep()<cr>', desc = 'Live [g]rep' },
+  { '<leader>tw', '<cmd>lua require("snacks").picker.grep_word()<CR>', desc = 'Live [g]rep' },
+  { '<leader>tG', '<cmd>lua require("snacks").picker.git_branches()<CR>', desc = '[G]it branches' },
+  { '<leader>th', '<cmd>lua require("snacks").picker.help()<CR>', desc = 'NVIM [h]elp' },
+  { '<leader>tk', '<cmd>lua require("snacks").picker.keymaps()<CR>', desc = '[k]eymaps' },
   { '<leader>to', '<cmd>Telescope oldfiles<CR>', desc = 'Last [o]pened files' },
-  { '<leader>tp', '<cmd>Telescope project<CR>', desc = '[p]rojects' },
-  { '<leader>tr', '<cmd>Telescope resume<CR>', desc = '[r]esume last search' },
-  { '<leader>tm', '<cmd>Telescope marks<CR>', desc = '[m]arks ' },
-  { '<leader>ts', "<cmd>lua require('telescope.builtin').lsp_document_symbols({symbol_width = 50})<CR>", desc = 'Buffer lsp [s]ymbols' },
+  { '<leader>tr', '<cmd>lua require("snacks").picker.resume()<cr>', desc = '[r]esume last search' },
+  { '<leader>tm', '<cmd>lua require("snacks").picker.marks()<cr>', desc = '[m]arks ' },
+  { '<leader>ts', '<cmd>lua require("snacks").picker.lsp_workspace_symbols()<CR>', desc = 'Buffer lsp [s]ymbols' },
   { '<leader>tt', '<cmd>Telescope<CR>', desc = 'Default [t]elescope' },
-  { '<leader>tv', "<cmd>lua require'telescope.builtin'.find_files({cwd='~/Documents/Obsidian Vault/'})<cr>", desc = 'Open Obsidian [v]ault' },
-  { '<c-f>', "<cmd>lua require'telescope.builtin'.current_buffer_fuzzy_find({layout_strategy='vertical'})<cr>", desc = 'Search current file' },
+  { '<c-f>', '<cmd>lua require("snacks").picker.grep_buffers()<cr>', desc = 'Search open [b]uffers' },
+}
+
+-- Snacks
+Print_last_notification = function()
+  local hist = require('snacks.notifier').get_history()
+  local notification = hist[#hist] -- Most recent notification
+  -- Check if the notification exists and contains a message
+  local msg = 'No notifications yet'
+  if notification and notification.msg then
+    -- Extract the message from the notification, removing any surrounding quotes
+    -- (single, double, or backticks) for clean display
+    msg = notification.msg:match '^["\'`]?(.+?)["\'`]?$' or notification.msg
+  end
+  print(msg)
+end
+wk.add {
+  { '<leader>S', group = '[S]nacks' },
+  { '<leader>Sp', "<cmd>lua require('snacks').picker.pickers()<CR>", desc = 'Snacks [p]ickers' },
+  { '<leader>Sn', "<cmd>lua require('snacks').picker.notifications()<CR>", desc = 'Snacks [n]notifications' },
+  { '<leader>SN', '<cmd>lua Print_last_notification()<CR>', desc = 'Print last <S>nacks <N>otification' },
 }
 
 -- Spelling
@@ -130,7 +151,7 @@ wk.add {
   { '<leader>-', '<cmd>Yazi<cr>', desc = 'File manager open in current dir' },
   { '<leader><c-up>', '<cmd>Yazi toggle<cr>', desc = 'Resume last yazi session' },
   { '<leader>_', '<cmd>Yazi cwd<cr>', desc = "Open the file manager in nvim's working directory" },
-  { '<leader>o', '<cmd>Oil --float<cr>', desc = "Oil file manager in current file's directory" },
+  { '<leader>f', '<cmd>Fyler kind=split_left_most<cr>', desc = "[f]ile manager in current file's directory" },
 }
 
 -- Debugger

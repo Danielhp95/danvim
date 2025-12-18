@@ -1,66 +1,65 @@
 -- [[ Setting options ]]
+-- This file configures various Neovim options for an optimized editor experience.
 -- See `:help vim.o`
 
--- TODO: Do we still need this? or is this built-in?
-vim.filetype.add {
-  pattern = { ['.*/hyprland.*%.conf'] = 'hyprlang' },
-}
-
-vim.g.nofoldenable = true
-vim.g.completeopt = 'menu,menuone,noselect'
-vim.g.noswapfile = true
-vim.g.timeoutlen = 100
-vim.g.nowrap = true
-
-vim.o.grepprg = 'rg --vimgrep --no-heading --smart-case'
-vim.o.grepformat = '%f:%l:%c:%m,%f:%l:%m'
-vim.o.relativenumber = true
-vim.o.autoread = true
-vim.o.showcmd = true
-vim.o.showmatch = true
-vim.o.ignorecase = true
-vim.o.smartcase = true
-vim.o.inccommand = 'split'
-vim.o.incsearch = true
-vim.o.tabstop = 2
-vim.o.shiftwidth = 2
-vim.o.cursorline = true
-vim.o.wrap = true
-vim.o.autoindent = true
-vim.o.copyindent = true
-vim.o.splitbelow = false
-vim.o.splitright = true
-vim.o.number = true
--- This breaks nvim by making the file title show up everytime there's an addition!!!
--- title = true
-vim.o.undofile = true
-vim.o.hidden = true
-vim.o.list = true
-vim.o.background = 'dark'
-vim.o.backspace = 'indent,eol,start'
-vim.o.undolevels = 1000000
-vim.o.undoreload = 1000000
-vim.opt.jumpoptions = "stack,view"
-vim.o.foldmethod = 'indent'
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"  -- If we use foldmethod='expr'
-vim.o.foldnestmax = 10
-vim.o.foldlevel = 10
-vim.o.scrolloff = 3
-vim.o.sidescrolloff = 5
-vim.o.listchars = 'tab:  ,trail:●,nbsp:○'
-vim.o.clipboard = 'unnamed,unnamedplus'
-vim.o.formatoptions = 'tcqj'
-vim.o.encoding = 'utf-8'
-vim.o.fileencodings = 'utf-8'
-vim.o.bomb = true
-vim.o.binary = true
-vim.o.matchpairs = '(:),{:},[:],<:>'
-vim.o.expandtab = true
-vim.o.wildmode = 'list:longest,list:full'
-vim.o.modeline = true
-vim.o.conceallevel = 1
-
--- Most useful options for neovim
-vim.o.showmode = false -- Don't show mode, since we have lualine
-vim.o.laststatus = 2 -- Show status line on all
-vim.o.fillchars = 'eob: ,fold: ,diff:╱,msgsep:─,vert:│,horiz:─,horizup:╴,horizdown:╶,vertleft:╴,vertright:╶' -- Better fillchars for neovim
+vim.filetype.add { pattern = { ['.*/hyprland.*%.conf'] = 'hyprlang' } } -- Add custom filetype detection for Hyprland configuration files.
+vim.g.nofoldenable = true -- Disable folding by default.
+vim.g.completeopt = 'menu,menuone,noselect' -- Configure completion options for better interaction with completion menus.
+vim.g.noswapfile = true -- Disable swap files to prevent extra files being written in the directory.
+vim.g.timeoutlen = 100 -- Adjust key sequence timeout length for mapping sequences.
+vim.g.nowrap = true -- Disable line wrapping globally.
+vim.o.grepprg = 'rg --vimgrep --no-heading --smart-case' -- Configure grep program for efficient searches.
+vim.o.grepformat = '%f:%l:%c:%m,%f:%l:%m' -- Define grep format.
+vim.o.relativenumber = true -- Display relative line numbers for easier navigation.
+vim.o.autoread = true -- Automatically reload file if it is changed outside of Neovim.
+vim.o.showcmd = true -- Show command inputs in the status line.
+vim.o.showmatch = true -- Highlight matching parentheses or symbols.
+vim.o.ignorecase = true -- Ignore case in searches unless a capital letter is used.
+vim.o.smartcase = true -- Override `ignorecase` for case-sensitive searches with capital letters.
+vim.o.inccommand = 'split' -- Show effects of commands incrementally.
+vim.o.incsearch = true -- Enable incremental searches.
+vim.o.tabstop = 2 -- Set tabstop to 2 spaces.
+vim.o.shiftwidth = 2 -- Indent by 2 spaces for each shift.
+vim.o.cursorline = true -- Highlight the line where the cursor is located.
+vim.o.wrap = true -- Enable wrapping of lines.
+vim.o.autoindent = true -- Enable automatic indentation based on the current line.
+vim.o.copyindent = true -- Copy structure from existing lines for smart indentation.
+vim.o.splitbelow = false -- Open horizontal splits above the current window.
+vim.o.splitright = true -- Open vertical splits to the right of the current window.
+vim.o.number = true -- Display absolute line numbers.
+vim.o.undofile = true -- Persist undo history to a file.
+vim.o.hidden = true -- Allow switching buffers without saving the current buffer.
+vim.o.list = true -- Show whitespace characters.
+vim.o.background = 'dark' -- Enable dark background for better contrast.
+vim.o.backspace = 'indent,eol,start' -- Specify backspace behavior.
+vim.o.undolevels = 1000000 -- Configure maximum undo levels.
+vim.o.undoreload = 1000000 -- Configure maximum reload levels.
+vim.opt.jumpoptions = "stack,view" -- Enable enhanced jump options for the jump list.
+vim.o.foldmethod = 'indent' -- Use indentation-based folding by default.
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- Use Tree-sitter-based folding expressions.
+vim.o.foldnestmax = 10 -- Set maximum fold nesting limit.
+vim.o.foldlevel = 10 -- Set initial fold level.
+vim.o.scrolloff = 3 -- Keep 3 lines visible above and below the cursor when scrolling.
+vim.o.sidescrolloff = 5 -- Keep 5 columns visible left and right of the cursor when scrolling horizontally.
+vim.o.listchars = 'tab:  ,trail:●,nbsp:○' -- Define special characters for whitespace indicators.
+vim.o.clipboard = 'unnamed,unnamedplus' -- Use the system clipboard for all copy-paste operations.
+vim.o.formatoptions = 'tcqj' -- Set formatting options for text handling.
+vim.o.encoding = 'utf-8' -- Configure default text encoding to UTF-8.
+vim.o.fileencodings = 'utf-8' -- Configure fallback encodings.
+vim.o.bomb = true -- Make files automatically detected as binary.
+vim.o.binary = true -- Create a Byte Order Mark if necessary.
+vim.o.matchpairs = '(:),{:},[:],<:>' -- Specify matching pairs for easier navigation.
+vim.o.expandtab = true -- Replace tabs with spaces.
+vim.o.wildmode = 'list:longest,list:full' -- Display autocompletion suggestions in a user-friendly way.
+vim.o.modeline = true -- Enable modelines for file-specific settings.
+vim.o.conceallevel = 1 -- Show concealed text with low visibility.
+vim.o.showmode = false -- Hide mode in status line (managed by plugins like lualine).
+vim.o.laststatus = 2 -- Use a global status line across all windows.
+vim.o.fillchars = 'eob: ,fold: ,diff:╱,msgsep:─,vert:│,horiz:─,horizup:╴,horizdown:╶,vertleft:╴,vertright:╶' -- Define fill characters for UI items.
+vim.o.diffopt = "internal,filler,closeoff,linematch:40,iwhite"
+-- The `diffopt` options explained:
+-- internal: Use Neovim's internal diff library for better performance and integration.
+-- filler: Show filler lines when displaying `diff` to maintain proper alignment between buffers.
+-- closeoff: Automatically close the `diff` mode state for buffers when changes are resolved or not found.
+-- linematch:40: Perform finer line matching by analyzing adjacent lines (up to 40 lines) to improve diff accuracy.
+-- iwhite: Ignore whitespace differences to focus on actual content changes.
