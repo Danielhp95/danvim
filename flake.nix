@@ -99,6 +99,8 @@
               nix-doc
               manix
 
+              yazi
+
               python312Packages.pylatexenc # for rendering latex in render-markdown plugin
               tectonic # Fore rendering latex equations (snacks.nvim)
 
@@ -200,7 +202,7 @@
               neodev-nvim # configure lua + neovim projects
               lsp_signature-nvim # LSP Signature Info (old, noice instead)
 
-              remote-nvim-nvim  # To connect to docker container
+              remote-nvim-nvim # To connect to docker container
             ];
             format = with pkgs.vimPlugins; [
               conform-nvim
