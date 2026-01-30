@@ -2,6 +2,21 @@ local wk = require 'which-key'
 
 vim.keymap.set('t', '<ESC>', '<C-\\><C-n>') -- Use <ESC> in terminal mode
 
+vim.keymap.set('n', '<leader>q', function()
+  local qf_exists = false
+  for _, win in pairs(vim.fn.getwininfo()) do
+    if win.quickfix == 1 then
+      qf_exists = true
+      break
+    end
+  end
+  if qf_exists then
+    vim.cmd('cclose')
+  else
+    vim.cmd('copen')
+  end
+end, { desc = 'Toggle quickfix list' })
+
 -- Miscelaneous small quality of life stuff
 wk.add {
   { '<C-Down>', '<cmd>resize +1<cr>', desc = 'Continuous window vertical resize' },
