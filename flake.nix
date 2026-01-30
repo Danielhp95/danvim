@@ -100,6 +100,7 @@
               manix
 
               yazi
+              bat
 
               python312Packages.pylatexenc # for rendering latex in render-markdown plugin
               tectonic # Fore rendering latex equations (snacks.nvim)
