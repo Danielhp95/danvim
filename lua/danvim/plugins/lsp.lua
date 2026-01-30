@@ -57,7 +57,7 @@ local lspconfig_toplevel = {
         },
       },
     }
-    -- vim.lsp.enable 'ty'
+    vim.lsp.enable 'ty'
 
     vim.lsp.config['pyrefly'] = {
       cmd = { 'pyrefly', 'lsp' },
@@ -88,7 +88,7 @@ local lspconfig_toplevel = {
       },
       --
     }
-    vim.lsp.enable 'pyrefly'
+    -- vim.lsp.enable 'pyrefly'
 
     -- -- lua
     vim.lsp.config['lua_ls'] = {
