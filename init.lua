@@ -50,3 +50,4 @@ require('nixCatsUtils.lazyCat').setup(nixCats.pawsible { 'allPlugins', 'start', 
 require 'danvim.options'
 require 'danvim.aucmds'
 require 'danvim.keybindings'
+require 'danvim.builtin_plugins'

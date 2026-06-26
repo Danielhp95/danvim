@@ -8,30 +8,57 @@
 -- })
 
 return {
-  {
-    'amitds1997/remote-nvim.nvim',
-    version = '*', -- Pin to GitHub releases
-    dependencies = {
-      'nvim-lua/plenary.nvim', -- For standard functions
-      'MunifTanjim/nui.nvim', -- To build the plugin UI
-      'nvim-telescope/telescope.nvim', -- For picking b/w different remote methods
-    },
-    config = true,
-  },
-  'sanfusu/neovim-undotree',  -- NOTE: checkout built-in version
-  'folke/which-key.nvim',
-  { 'windwp/nvim-autopairs', event = 'InsertEnter', opts = {} },
-  {
-    'kylechui/nvim-surround',
-    opts = {
-      highlight = {
-        duration = 0, -- Highlight always on
-      },
-    },
-  },
-  {
-    'esmuellert/codediff.nvim',
-    dependencies = { 'MunifTanjim/nui.nvim' },
-    cmd = 'CodeDiff',
-  },
+	"folke/which-key.nvim",
+	{ "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },
+	{
+		"kylechui/nvim-surround",
+		dependencies = {
+			"gregorias/nvim-surround-wk", -- which-key hints for nvim-surround
+		},
+		opts = {
+			highlight = {
+				duration = 0, -- Highlight always on
+			},
+		},
+	},
+	{
+		"esmuellert/codediff.nvim",
+		dependencies = { "MunifTanjim/nui.nvim" },
+		cmd = "CodeDiff",
+	},
+	{
+		"folke/flash.nvim",
+		event = "VeryLazy",
+		---@type Flash.Config
+		opts = {},
+		keys = {
+			{
+				"S",
+				mode = { "n", "x", "o" },
+				function()
+					require("flash").jump()
+				end,
+				desc = "Flash",
+			},
+			{
+				-- Restricted to visual/operator-pending modes so it no longer
+				-- shadows the normal-mode <C-s><C-s> "save buffer" chord
+				-- (terminals deliver <C-S> identically to <C-s>).
+				"<c-S>",
+				mode = { "x", "o" },
+				function()
+					require("flash").treesitter()
+				end,
+				desc = "Flash Treesitter",
+			},
+			{
+				"<c-s>",
+				mode = { "c" },
+				function()
+					require("flash").toggle()
+				end,
+				desc = "Toggle Flash Search",
+			},
+		},
+	},
 }

@@ -3,16 +3,18 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    stable.url = "github:nixos/nixpkgs/nixos-25.11";
 
-    nixCats.url = "github:BirdeeHub/nixCats-nvim?rev=fa33abe592eb084044e12e9d1e1b6870364a75f9";
+    nixCats.url = "github:BirdeeHub/nixCats-nvim";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
 
     pyrefly-flake.url = "github:falkaer/pyrefly-flake";
 
     neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
+      type = "git";
+      url = "https://github.com/nix-community/neovim-nightly-overlay";
+      # rev = "80b1f16dba171a70c44c2ee6ec9529876152a7f5";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -74,16 +76,17 @@
               vscode-langservers-extracted # HTML/CSS/JSON/ESLint
               nixd # nix
               bash-language-server # bash
-              basedpyright # python
               ty # python
-              inputs.pyrefly-flake.packages.x86_64-linux.pyrefly # python
+
+              claude-agent-acp
+              claude-code
 
               marksman # markdown
               texlab # LaTex
 
-              nodePackages.yaml-language-server # yaml
+              yaml-language-server # yaml
               docker-language-server
-              nodePackages.typescript-language-server # typescript
+              typescript-language-server # typescript
 
               libgit2
               cargo
@@ -101,7 +104,9 @@
 
               yazi
               bat
+              file # needed for codecompanion
 
+              gnumake # needed for avante
               python312Packages.pylatexenc # for rendering latex in render-markdown plugin
               tectonic # Fore rendering latex equations (snacks.nvim)
 
@@ -111,11 +116,12 @@
               stylua
               yamlfmt
               ruff
-              nixfmt-rfc-style
+              nixfmt
               jq
 
               # TESTING
               fzf
+              python313Packages.pytest
             ];
           };
 
@@ -135,20 +141,20 @@
 
               # Completion
               colorful-menu-nvim # Better tresitter integration in completion engine
+              diffs-nvim
+
+              flash-nvim
 
               ## LSP
               # TODO(add back)
               # nvim-lspconfig # Top level LSP configuratio
               fidget-nvim
-              neodev-nvim # Lua LS
+              lazydev-nvim # Lua nvim API types (replaces neodev)
 
               ## UI
               lualine-nvim # status line!
               which-key-nvim
-              inputs.stable.legacyPackages.x86_64-linux.vimPlugins.wilder-nvim # Remove in favour of noice
-              cpsm # needed for wilder
               nvim-colorizer-lua
-              indent-blankline-nvim
               bufferline-nvim
               trouble-nvim
               yazi-nvim
@@ -161,49 +167,54 @@
 
               ## General
               sqlite-lua
-              toggleterm-nvim
-              vim-floaterm
-              term-edit-nvim
 
               nvim-bqf # TODO: learn this!
 
               ## Treesitter
-              nvim-treesitter-textobjects
+              nvim-treesitter-textobjects # conceals top part of screen in deeply nested code
               nvim-treesitter-context # conceals top part of screen in deeply nested code
               nvim-ts-context-commentstring # add commentstring context to treesitter
-              nvim-treesitter-refactor # smart rename (current scope) + highlight scope + backup go to def/ref
 
               # AI
-              # avante-nvim
+              codecompanion-nvim # needed for avante
+              codecompanion-spinner-nvim
+              codecompanion-lualine-nvim
+              codecompanion-history-nvim
+
+              avante-nvim
+              claudecode-nvim # coder/claudecode.nvim: drive the real `claude` CLI in-editor
+              opencode-nvim
+              # inputs.stable.legacyPackages.x86_64-linux.vimPlugins.copilot-lua
               copilot-lua
               blink-copilot
+            ];
+            # Treesitter parsers - loaded at startup to ensure all grammars are available
+            treesitter = [
+              # NOTE: withAllGrammars doesn't work reliably - parsers not found by Neovim
+              # Keeping commented for future testing:
+              nvim-treesitter.withAllGrammars
+              ((pkgs.neovimUtils.grammarToPlugin pkgs.tree-sitter-grammars.tree-sitter-python).overrideAttrs {
+                installQueries = true;
+              })
 
-              vscode-diff-nvim
-
+              rainbow-delimiters-nvim # fancy rainbow brackets
             ];
             general = [
               ## Lib
               plenary-nvim # toolbox/lib for many libs
               lazy-nvim
 
-              oil-nvim
-
               ## UI
               lualine-nvim # status/tabline
               dressing-nvim # pretty/glossy vim.ui.{select|input}
               nvim-web-devicons # nerd fonts for nvim
               nvim-colorizer-lua # highlight hex codes with their colour
-              noice-nvim # meta UI plugin, message routing, lsp, cmdline, etc.
-              nui-nvim # UI library (noice + dap-ui)
-              nvim-notify # notification handler (used by noice)
+              noice-nvim # floating cmdline popup (top-center)
+              nui-nvim # UI library (required by noice)
               urlview-nvim # picker (ui.select support) for URLs
 
               ## LSP
-              # nvim-lspconfig # configure LSPs
-              neodev-nvim # configure lua + neovim projects
-              lsp_signature-nvim # LSP Signature Info (old, noice instead)
-
-              remote-nvim-nvim # To connect to docker container
+              lsp_signature-nvim # LSP Signature Info
             ];
             format = with pkgs.vimPlugins; [
               conform-nvim
@@ -220,8 +231,8 @@
               default = [
                 ## Dap
                 nvim-dap # Debug Adapter Protocol
-                nvim-dap-ui # nui based ui for DAP
-                nvim-nio # required by nvim-dap-ui
+                nvim-dap-view # minimal modern DAP UI
+                nvim-nio # required by nvim-dap-view
                 nvim-dap-virtual-text # UI / Highlight for DAP virtual text
                 one-small-step-for-vimkind-nvim # lua dap adapter
                 telescope-dap-nvim # telescope picker for DAP
@@ -243,14 +254,11 @@
                 blink-cmp-git
                 blink-cmp-avante
                 blink-emoji-nvim
+                blink-ripgrep-nvim
                 friendly-snippets
               ];
               treesitter = with pkgs.vimPlugins; [
-                nvim-treesitter-textobjects # move/swap/peek/select objects
-                nvim-treesitter-textsubjects # select textsubjects up/down
-                rainbow-delimiters-nvim # fancy rainbow brackets
-
-                nvim-treesitter.withAllGrammars
+                # Nushell parser (not included in withAllGrammars)
                 ((pkgs.neovimUtils.grammarToPlugin pkgs.tree-sitter-grammars.tree-sitter-nu).overrideAttrs {
                   installQueries = true;
                 })
@@ -328,7 +336,6 @@
       # (and other information to pass to lua)
       categories = {
         dani = true;
-
         general = true;
         gitPlugins = true;
         customPlugins = true;
@@ -338,7 +345,6 @@
         debug = true;
         blink = true;
         always = true;
-
         have_nerd_font = true;
       };
       # see :help nixCats.flake.outputs.packageDefinitions
@@ -350,7 +356,7 @@
             settings.wrapRc = true;
             settings.configDirName = "nvim";
             # TODO(dani): uncomment when neovim-unwrapped gets maintainer
-            # settings.neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+            settings.neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.default;
             categories = categories // {
               configDirName = "nvim";
             };
@@ -401,7 +407,7 @@
             pkgs.nvfetcher
           ];
           inputsFrom = [ ];
-          shellHook = '''';
+          shellHook = "";
         };
         checks = self.packages.${system} // self.vimPlugins.${system};
       }

@@ -4,12 +4,17 @@ local Dap = {
 	url = "https://github.com/mfussenegger/nvim-dap",
 	dependencies = {
 		"theHamsta/nvim-dap-virtual-text",
-		"rcarriga/nvim-dap-ui",
 		"nvim-neotest/nvim-nio",
 	},
-	-- opts = {},
 	config = function()
 		local dap = require("dap")
+		-- Set a red circle emoji as the breakpoint sign
+		vim.fn.sign_define("DapBreakpoint", { text = "🔴", texthl = "", linehl = "", numhl = "" })
+
+		require("nvim-dap-virtual-text").setup({
+			commented = true,
+		})
+
 		-- Python
 		dap.adapters.python = {
 			type = "executable",
@@ -27,7 +32,7 @@ local Dap = {
 
 				justMyCode = false,
 				program = "${file}", -- This configuration will launch the current file if used.
-				pythonPath = (os.getenv("VIRTUAL_ENV") or "") .. "/bin/python",
+				pythonPath = "python",
 				gevent = true,
 				subProcess = true,
 			},
@@ -35,7 +40,7 @@ local Dap = {
 				type = "python",
 				request = "launch",
 				name = "run_local",
-				cwd = vim.loop.cwd(),
+				cwd = vim.uv.cwd(),
 				logToFile = true,
 				program = "/home/dev/venv/bin/dart",
 				args = {
@@ -46,54 +51,16 @@ local Dap = {
 				},
 			},
 		}
-
-		require("dapui").setup({
-			layouts = {
-				{
-					elements = {
-						-- Elements can be strings or table with id and size keys.
-						{ id = "scopes", size = 0.25 },
-						"breakpoints",
-						"stacks",
-						"watches",
-					},
-					size = 0.3,
-					position = "left",
-				},
-				{
-					elements = {
-						"repl",
-					},
-					size = 0.25,
-					position = "bottom",
-				},
-			},
-		})
 	end,
 }
 
-local neotest = {
-	"nvim-neotest/neotest",
-	dependencies = {
-		"nvim-neotest/nvim-nio",
-		"nvim-neotest/neotest-plenary",
-		"nvim-neotest/neotest-python",
-		"nvim-neotest/neotest-vim-test",
-		"nvim-lua/plenary.nvim",
-		"antoinemadec/FixCursorHold.nvim",
-		"nvim-treesitter/nvim-treesitter",
-	},
-	config = function()
-		require("neotest").setup({
-			adapters = {
-				require("neotest-python")({
-					dap = { justMyCode = false },
-					python = "python",
-					pytest_discover_instances = true,  -- Experimental, to support @parametrize decorator
-				}),
-			},
-		})
-	end,
+local dap_view = {
+	"igorlfs/nvim-dap-view",
+	lazy = false,
+	version = "1.*",
+	---@module 'dap-view'
+	---@type dapview.Config
+	opts = {},
 }
 
-return { Dap, neotest }
+return { Dap, dap_view }

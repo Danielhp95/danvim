@@ -1,6 +1,7 @@
 -- Highlight, edit, and navigate code
 local context = {
 	"nvim-treesitter/nvim-treesitter-context",
+	lazy = false, -- Load immediately to ensure context is always available
 	opts = {
 		enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
 		multiwindow = false, -- Enable multiwindow support.
@@ -14,7 +15,7 @@ local context = {
 		-- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
 		separator = nil,
 		zindex = 20, -- The Z-index of the context window
-		on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching	},
+		on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 	},
 }
 local treesitter_objects = {
@@ -36,7 +37,7 @@ local treesitter_objects = {
 					["@function.outer"] = "V", -- linewise
 					["@class.outer"] = "<c-v>", -- blockwise
 				},
-				include_surrounding_whitespace = false,
+				include_surrounding_whitespace = true,
 			},
 			move = {
 				-- whether to set jumps in the jumplist
@@ -152,43 +153,16 @@ local Treesitter = {
 		local treesitter = require("nvim-treesitter")
 		vim.api.nvim_create_autocmd("FileType", {
 			callback = function(args)
-				if vim.list_contains(treesitter.get_installed(), vim.treesitter.language.get_lang(args.match)) then
-					vim.treesitter.start(args.buf)
+				local lang = vim.treesitter.language.get_lang(args.match) or args.match
+				if vim.treesitter.language.add(lang) then
+					vim.treesitter.start(args.buf, lang)
+					-- Enable treesitter folding
+					vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+					vim.wo[0][0].foldmethod = "expr"
 				end
 			end,
 		})
 	end,
-	-- 	require("nvim-treesitter.configs").setup({
-	-- 		-- cannot be used when using nixpkgs nvim-treesitter
-	-- 		-- Add languages to be installed here that you want installed for treesitter
-	-- 		-- ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
-	--
-	-- 		-- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-	-- 		auto_install = false,
-	--
-	-- 		highlight = { enable = true }, -- TODO: what is this?
-	-- 		rainbow = { enable = true }, -- Rainbow paranthesis for free!
-	-- 		autotag = { enable = true }, -- TODO: What is this?
-	-- 		indent = { enable = true }, -- TODO: What is this?
-	-- 		incremental_selection = {
-	-- 			enable = true,
-	-- 			keymaps = {
-	-- 				init_selection = "<CR>",
-	-- 				node_incremental = "<CR>",
-	-- 				scope_incremental = "<S-CR>",
-	-- 				node_decremental = "<BS>",
-	-- 			},
-	-- 		},
-	-- 		refactor = {
-	-- 			highlight_definitions = {
-	-- 				enable = true,
-	-- 				clear_on_cursor_move = true,
-	-- 			},
-	-- 			highlight_current_scope = { enable = false },
-	-- 			smart_rename = { enable = false }, -- Not as powerful as LSP saga
-	-- 		},
-	-- 	})
-	-- end,
 }
 
 return {

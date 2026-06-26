@@ -1,27 +1,119 @@
--- TODO: ADD BLINK compatibility
 return {
 	"yetone/avante.nvim",
 	event = "VeryLazy",
 	opts = {
-		provider = "copilot",
+		behaviour = { -- See if we want this!
+			enable_cursor_planning_mode = true,
+		},
+		completion = { -- We are using blink
+			enable = false,
+		},
+		provider = "claude-code",
+		selector = {
+			provider = "telescope",
+		},
 		providers = {
+			copilot = {
+				-- model = "claude-opus-4.6", -- Available: gpt-4o, claude-sonnet-4, etc.
+				model = "gpt-4.1", -- Available: gpt-4o, claude-sonnet-4, etc.
+			},
 			ollama = {
 				model = "qwen3-coder:30b",
 				is_env_set = require("avante.providers.ollama").check_endpoint_alive,
 			},
-			-- copilot = {
-			-- 	endpoint = "https://api.githubcopilot.com",
-			-- 	model = "gpt-4o-2024-05-13",
-			-- 	proxy = nil, -- [protocol://]host[:port] Use this proxy
-			-- 	allow_insecure = false, -- Allow insecure server connections
-			-- 	timeout = 30000, -- Timeout in milliseconds
-			-- 	temperature = 0,
-			-- },
+		},
+		-- ACP agents run an external CLI as a subprocess. claude-code here drives
+		-- the real Claude Code binary, so it reuses your `claude /login` Max-sub
+		-- credentials. No API key needed (and you want ANTHROPIC_API_KEY UNSET in
+		-- your shell, otherwise Claude Code bills the API instead of the sub).
+		acp_providers = {
+			["claude-code"] = {
+				-- Must be on PATH. See notes for installing it declaratively on Nix.
+				-- Quick/dirty alternative: command = "npx", args = { "@zed-industries/claude-code-acp" }
+				command = "claude-agent-acp",
+				args = {},
+				env = {
+					NODE_NO_WARNINGS = "1",
+					-- Tells claude-agent-acp where the `claude` binary is. Without this
+					-- the wrapper can't reach the Max-sub login from `claude /login` and
+					-- falls back to expecting ANTHROPIC_API_KEY → "configuration error".
+					ACP_PATH_TO_CLAUDE_CODE_EXECUTABLE = vim.fn.exepath("claude"),
+					ACP_PERMISSION_MODE = "bypassPermissions",
+					ANTHROPIC_MODEL = "claude-sonnet-4-6",
+				},
+			},
+			["claude-code-opus"] = {
+				command = "claude-agent-acp",
+				args = {},
+				env = {
+					NODE_NO_WARNINGS = "1",
+					ACP_PATH_TO_CLAUDE_CODE_EXECUTABLE = vim.fn.exepath("claude"),
+					ACP_PERMISSION_MODE = "bypassPermissions",
+					ANTHROPIC_MODEL = "claude-opus-4-8",
+				},
+			},
 		},
 	},
-	-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-	-- build = 'make',
-	build = "make BUILD_FROM_SOURCE=true",
+	keys = {
+		{
+			-- Dart vibe
+			"<leader>av",
+			function()
+				-- Get current buffer file path before opening avante
+				local current_file = vim.fn.expand("%:p")
+				-- Start a new chat session
+				require("avante.api").ask()
+				-- Get the sidebar and add files to context
+				vim.defer_fn(function()
+					local sidebar = require("avante").get()
+					if sidebar then
+						-- Add dart_vibe.md
+						local dart_vibe_path = vim.fn.expand("~/sai/dart_vibe.md") -- NOTE: only works inside of SAI docker
+						sidebar.file_selector:add_selected_file(dart_vibe_path)
+						-- Add current buffer file if it exists
+						if current_file ~= "" and vim.fn.filereadable(current_file) == 1 then
+							sidebar.file_selector:add_selected_file(current_file)
+						end
+					end
+				end, 100)
+			end,
+			desc = "Avante: dart vibe session",
+		},
+		{
+			-- Add current file to sidebar
+			"<leader>aA",
+			function()
+				local current_file = vim.fn.expand("%:p")
+				-- Get the sidebar and add files to context
+				vim.defer_fn(function()
+					local sidebar = require("avante").get()
+					if sidebar then
+						if current_file ~= "" and vim.fn.filereadable(current_file) == 1 then
+							sidebar.file_selector:add_selected_file(current_file)
+						end
+					end
+				end, 100)
+			end,
+			desc = "Avante: add current file",
+		},
+		{
+			-- Switch to the Claude Code ACP provider (Max subscription)
+			"<leader>ap",
+			function()
+				require("avante.api").switch_provider("claude-code")
+			end,
+			desc = "Avante: switch to claude-code (Sonnet 4.6)",
+		},
+		{
+			"<leader>aP",
+			function()
+				require("avante.api").switch_provider("claude-code-opus")
+			end,
+			desc = "Avante: switch to claude-code (Opus 4.8)",
+		},
+	},
+	-- Nix-cats builds the avante_lib native component via the avante-nvim
+	-- package, so the upstream `make` build step is not needed here.
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
 		"stevearc/dressing.nvim",
@@ -30,7 +122,7 @@ return {
 		--- The below dependencies are optional,
 		"echasnovski/mini.pick", -- for file_selector provider mini.pick
 		"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-		"ibhagwan/fzf-lua", -- for file_selector provider fzf
+		-- "ibhagwan/fzf-lua", -- for file_selector provider fzf
 		"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 		"zbirenbaum/copilot.lua", -- for providers='copilot'
 		{
@@ -49,37 +141,4 @@ return {
 			},
 		},
 	},
-	{
-  "NickvanDyke/opencode.nvim",
-  dependencies = {
-    -- Recommended for `ask()` and `select()`.
-    -- Required for `snacks` provider.
-    ---@module 'snacks' <- Loads `snacks.nvim` types for configuration intellisense.
-    { "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
-  },
-  config = function()
-    ---@type opencode.Opts
-    vim.g.opencode_opts = {
-      -- Your configuration, if any — see `lua/opencode/config.lua`, or "goto definition" on the type or field.
-    }
-
-    -- Required for `opts.events.reload`.
-    vim.o.autoread = true
-
-    -- Recommended/example keymaps.
-    vim.keymap.set({ "n", "x" }, "<C-a>", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask opencode…" })
-    vim.keymap.set({ "n", "x" }, "<C-x>", function() require("opencode").select() end,                          { desc = "Execute opencode action…" })
-    vim.keymap.set({ "n", "t" }, "<C-.>", function() require("opencode").toggle() end,                          { desc = "Toggle opencode" })
-
-    vim.keymap.set({ "n", "x" }, "go",  function() return require("opencode").operator("@this ") end,        { desc = "Add range to opencode", expr = true })
-    vim.keymap.set("n",          "goo", function() return require("opencode").operator("@this ") .. "_" end, { desc = "Add line to opencode", expr = true })
-
-    vim.keymap.set("n", "<S-C-u>", function() require("opencode").command("session.half.page.up") end,   { desc = "Scroll opencode up" })
-    vim.keymap.set("n", "<S-C-d>", function() require("opencode").command("session.half.page.down") end, { desc = "Scroll opencode down" })
-
-    -- You may want these if you stick with the opinionated "<C-a>" and "<C-x>" above — otherwise consider "<leader>o…".
-    vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
-    vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
-  end,
-}
 }
