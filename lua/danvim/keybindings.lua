@@ -56,7 +56,7 @@ wk.add({
 	{ "<leader>nww", "<cmd>set wrap!<cr>", desc = "line [w]rap" },
 	{
 		"<leader>yB",
-		'<cmd>let @+ = expand("%")<CR>:echo "Yanked path: " . expand("%:p")<cr>',
+		'<cmd>let @+ = expand("%")<CR>:echo "Yanked path: " . expand("%")<cr>',
 		desc = "[y]ank [B]uffer relative path to cwd",
 	},
 	{
@@ -260,7 +260,7 @@ wk.add({
 	{ "<leader>lHs", "<cmd>lua vim.lsp.buf.typehierarchy('supertypes')<CR>", desc = "[s]upertypes" },
 	{ "<leader>lHd", "<cmd>lua vim.lsp.buf.typehierarchy('subtypes')<CR>", desc = "subtypes ([d]erived)" },
 	{ "<leader>ll", "<cmd>LenslineToggleView<cr>", desc = "Toggle [l]enseline" },
-	{ "<leader>lc", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "[c]ode actions"},
+	{ "<leader>lc", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "[c]ode actions" },
 	{ "<leader>l", group = "LSP", mode = "v" },
 	{ "<leader>lc", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "[c]ode actions", mode = "v" },
 })
@@ -336,18 +336,18 @@ wk.add({
 	},
 })
 
-vim.keymap.set({ 'x', 'o', 'n' }, '<BS>', function()
-  require 'vim.treesitter._select'.select_child(vim.v.count1)
-end, { desc = 'Select child node' })
+vim.keymap.set({ "x", "o", "n" }, "<BS>", function()
+	require("vim.treesitter._select").select_child(vim.v.count1)
+end, { desc = "Select child node" })
 
-vim.keymap.set({ 'x' , 'o', 'n'}, '<CR>', function()
-  require 'vim.treesitter._select'.select_parent(vim.v.count1)
-end, { desc = 'Select parent node' })
+vim.keymap.set({ "x", "o", "n" }, "<CR>", function()
+	require("vim.treesitter._select").select_parent(vim.v.count1)
+end, { desc = "Select parent node" })
 
-vim.keymap.set({ 'x', 'o', 'n' }, '<C-BS>', function()
-  require 'vim.treesitter._select'.select_prev(vim.v.count1)
-end, { desc = 'Select previous node' })
+vim.keymap.set({ "x", "o", "n" }, "<C-BS>", function()
+	require("vim.treesitter._select").select_prev(vim.v.count1)
+end, { desc = "Select previous node" })
 
-vim.keymap.set({ 'x' , 'o', 'n'}, '<C-CR>', function()
-  require 'vim.treesitter._select'.select_next(vim.v.count1)
-end, { desc = 'Select next node' })
+vim.keymap.set({ "x", "o", "n" }, "<C-CR>", function()
+	require("vim.treesitter._select").select_next(vim.v.count1)
+end, { desc = "Select next node" })
