@@ -3,13 +3,11 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    stable.url = "github:nixos/nixpkgs/nixos-25.11";
+    stable.url = "github:nixos/nixpkgs/nixos-26.05";
 
     nixCats.url = "github:BirdeeHub/nixCats-nvim";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
-
-    pyrefly-flake.url = "github:falkaer/pyrefly-flake";
 
     neovim-nightly-overlay = {
       type = "git";
