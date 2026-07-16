@@ -71,6 +71,7 @@
           lspsAndRuntimeDeps = with pkgs; {
             general = [
               lua-language-server # lua
+              luau-lsp  # luau lsp
               vscode-langservers-extracted # HTML/CSS/JSON/ESLint
               nixd # nix
               bash-language-server # bash

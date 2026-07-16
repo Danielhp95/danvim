@@ -53,6 +53,26 @@ local lspconfig_toplevel = {
 					diagnostic = {},
 				},
 			},
+			settings = {
+				ty = {
+					-- Diagnostics for the whole project, not just open buffers
+					diagnosticMode = "workspace",
+					completions = {
+						-- Suggest symbols that aren't imported yet and insert the
+						-- import on accept
+						autoImport = true,
+						-- Complete functions/methods as `foo($1)` snippets. blink's
+						-- auto_brackets sees the parens in the item and won't
+						-- double-insert.
+						completeFunctionParentheses = true,
+					},
+					-- Served on demand; toggled client-side with <leader>lh
+					inlayHints = {
+						variableTypes = true,
+						callArgumentNames = true,
+					},
+				},
+			},
 		}
 		vim.lsp.enable("ty")
 
@@ -80,6 +100,29 @@ local lspconfig_toplevel = {
 			},
 		}
 		vim.lsp.enable("lua_ls")
+
+		-- LUAU: noctalia plugin API (noctalia/dart-plugin/*.luau).
+		-- noctalia injects `noctalia`, `barWidget`, `ui`, `panel`, ... straight
+		-- into each plugin VM's global namespace -- there is nothing to
+		-- require() -- so with a bare luau_lsp every one of them is an unknown
+		-- global. Feeding luau-lsp a definitions file is the counterpart to
+		-- putting $VIMRUNTIME on lua_ls's library above. The definitions are
+		-- hand-written (noctalia ships none) and live next to the plugin they
+		-- describe; the lint config that goes with them is noctalia/.luaurc.
+		local noctalia_defs = vim.fn.expand("~/nix_config/noctalia/noctalia.d.luau")
+		local luau_cmd = { "luau-lsp", "lsp" }
+		if vim.uv.fs_stat(noctalia_defs) then
+			table.insert(luau_cmd, "--definitions=" .. noctalia_defs)
+		end
+		vim.lsp.config["luau_lsp"] = {
+			cmd = luau_cmd,
+			settings = {
+				-- Defaults to "roblox", which switches on sourcemap and
+				-- .robloxrc handling that means nothing for noctalia plugins.
+				["luau-lsp"] = { platform = { type = "standard" } },
+			},
+		}
+		vim.lsp.enable("luau_lsp")
 		-- latex
 		vim.lsp.enable("texlab")
 		-- NIX
