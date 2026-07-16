@@ -15,6 +15,8 @@ local ColorSchemes = {
 
 local BufferLine = {
 	"akinsho/bufferline.nvim",
+	-- No room for a buffer bar inside browser text areas
+	cond = not vim.g.started_by_firenvim,
 	opts = {
 		options = {
 			-- Remove close icons as I never use them
@@ -36,6 +38,8 @@ end
 -- Status Bar
 local LuaLine = {
 	"nvim-lualine/lualine.nvim",
+	-- laststatus=0 in firenvim; lualine would force the statusline back on
+	cond = not vim.g.started_by_firenvim,
 	dependencies = {
 		"fasterius/simple-zoom.nvim",
 	},

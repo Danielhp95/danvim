@@ -146,6 +146,8 @@
 
               flash-nvim
 
+              firenvim # embed neovim in browser text areas (needs Firenvim browser extension)
+
               ## LSP
               # TODO(add back)
               # nvim-lspconfig # Top level LSP configuratio
