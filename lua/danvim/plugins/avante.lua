@@ -54,6 +54,30 @@ return {
 			},
 		},
 	},
+	config = function(_, opts)
+		require("avante").setup(opts)
+
+		-- Upstream buffer leak: Sidebar:show_input_hint() creates a fresh
+		-- scratch buffer per input event, but close_input_hint() only deletes
+		-- it while avante still owns the hint window. When the float is closed
+		-- externally (sidebar toggle, tab switch, layout change) the buffer is
+		-- orphaned. Remember the last hint buffer and delete it whenever the
+		-- window was lost before a new one gets created.
+		local Sidebar = require("avante.sidebar")
+		local orig_show_input_hint = Sidebar.show_input_hint
+		function Sidebar:show_input_hint(...)
+			local owned = self.input_hint_window and vim.api.nvim_win_is_valid(self.input_hint_window)
+			local prev = self._last_input_hint_buf
+			if prev and not owned and vim.api.nvim_buf_is_valid(prev) then
+				pcall(vim.api.nvim_buf_delete, prev, { force = true })
+			end
+			local ret = orig_show_input_hint(self, ...)
+			if self.input_hint_window and vim.api.nvim_win_is_valid(self.input_hint_window) then
+				self._last_input_hint_buf = vim.api.nvim_win_get_buf(self.input_hint_window)
+			end
+			return ret
+		end
+	end,
 	keys = {
 		{
 			-- Dart vibe
