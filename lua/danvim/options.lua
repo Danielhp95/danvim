@@ -7,6 +7,7 @@ vim.o.winborder = "rounded" -- Rounded border for all floating windows
 vim.o.foldenable = false -- Disable folding by default.
 vim.o.completeopt = "menu,menuone,noselect" -- Configure completion options for better interaction with completion menus.
 vim.o.swapfile = false -- Disable swap files to prevent extra files being written in the directory.
+-- vim.o.shell = vim.fn.executable("zsh") == 1 and "zsh" or vim.o.shell -- Use zsh for :terminal regardless of $SHELL (e.g. nix develop overwrites it with bash).
 vim.o.timeoutlen = 100 -- Adjust key sequence timeout length for mapping sequences.
 vim.o.wrap = false -- Disable line wrapping globally.
 vim.o.grepprg = "rg --vimgrep --no-heading --smart-case" -- Configure grep program for efficient searches.
@@ -32,8 +33,9 @@ vim.o.hidden = true -- Allow switching buffers without saving the current buffer
 vim.o.list = true -- Show whitespace characters.
 vim.o.background = "dark" -- Enable dark background for better contrast.
 vim.o.backspace = "indent,eol,start" -- Specify backspace behavior.
-vim.o.undolevels = 1000000 -- Configure maximum undo levels.
-vim.o.undoreload = 1000000 -- Configure maximum reload levels.
+vim.o.undolevels = 1000 -- Maximum undo levels (default). Higher values keep every change of a long session in RAM.
+vim.o.undoreload = 10000 -- Maximum lines to save for undo on buffer reload (default).
+vim.opt.shortmess:append("u") -- Silence "back N lines"/undo-redo messages (0.12+).
 vim.opt.jumpoptions = "stack,view" -- Enable enhanced jump options for the jump list.
 vim.o.splitkeep = "screen" -- Keep screen stable when splits open/close (0.9+).
 vim.o.smoothscroll = true -- Smooth scrolling for wrapped lines (0.10+).
@@ -42,6 +44,7 @@ vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- Use Tree-sitter-based fo
 vim.o.foldnestmax = 10 -- Set maximum fold nesting limit.
 vim.o.foldlevel = 10 -- Set initial fold level.
 vim.o.scrolloff = 3 -- Keep 3 lines visible above and below the cursor when scrolling.
+vim.o.scrolloffpad = 0 -- Disable vertical centering of the cursor at end-of-file (0.12+).
 vim.o.sidescrolloff = 5 -- Keep 5 columns visible left and right of the cursor when scrolling horizontally.
 vim.o.listchars = "tab:  ,trail:●,nbsp:○" -- Define special characters for whitespace indicators.
 vim.o.clipboard = "unnamed,unnamedplus" -- Use the system clipboard for all copy-paste operations.
@@ -67,6 +70,16 @@ vim.o.diffopt = "internal,filler,closeoff,linematch:40,iwhite"
 -- closeoff: Automatically close the `diff` mode state for buffers when changes are resolved or not found.
 -- linematch:40: Perform finer line matching by analyzing adjacent lines (up to 40 lines) to improve diff accuracy.
 -- iwhite: Ignore whitespace differences to focus on actual content changes.
+
+-- [[ Diagnostics ]]
+-- Inline virtual_text everywhere, plus full virtual_lines on the cursor line.
+-- `overflow = "wrap"` wraps lines wider than the window onto extra rows (0.12+).
+vim.diagnostic.config({
+	severity_sort = true,
+	virtual_text = { current_line = false },
+	virtual_lines = { current_line = true, overflow = "wrap" },
+	float = { border = "rounded" },
+})
 
 -- Experimental UI2: floating cmdline and messages
 require('vim._core.ui2').enable({

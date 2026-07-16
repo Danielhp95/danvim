@@ -204,8 +204,20 @@ wk.add({
 	{ "<leader>d", group = "[d]iagnostics" },
 	{ "<leader>dP", "<cmd>Trouble diagnostics toggle <CR>", desc = "all [P]roject diagnostics" },
 	{ "<leader>db", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>", desc = "[b]uffer diagnostics" },
-	{ "<leader>dn", '<cmd>lua vim.diagnostic.goto_next({ border = "rounded" })<CR>', desc = "[n]ext diagnostic" },
-	{ "<leader>dp", '<cmd>lua vim.diagnostic.goto_prev({ border = "rounded" })<CR>', desc = "[p]revious diagnostic" },
+	{
+		"<leader>dn",
+		function()
+			vim.diagnostic.jump({ count = 1, float = true })
+		end,
+		desc = "[n]ext diagnostic",
+	},
+	{
+		"<leader>dp",
+		function()
+			vim.diagnostic.jump({ count = -1, float = true })
+		end,
+		desc = "[p]revious diagnostic",
+	},
 	{ "<leader>ds", "<cmd>lua vim.diagnostic.open_float()<CR>", desc = "[s]how diagnostic under cursor" },
 })
 
