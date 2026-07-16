@@ -103,6 +103,7 @@
               yazi
               bat
               file # needed for codecompanion
+              wordnet # `wn` CLI backing blink-cmp-words dictionary source
 
               gnumake # needed for avante
               python312Packages.pylatexenc # for rendering latex in render-markdown plugin
@@ -253,6 +254,10 @@
                 blink-cmp-avante
                 blink-emoji-nvim
                 blink-ripgrep-nvim
+                blink-cmp-spell # spell suggestions from Neovim's spellcheck
+                blink-cmp-words # dictionary/thesaurus source (needs `wn` from wordnet)
+                blink-nerdfont-nvim # Nerd Font icon completion (trigger ":")
+                blink-cmp-env # environment variable ($VAR) completion
                 friendly-snippets
               ];
               treesitter = with pkgs.vimPlugins; [

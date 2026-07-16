@@ -15,6 +15,9 @@ return {
 				dependencies = { "nvim-lua/plenary.nvim" },
 			},
 			"mikavilpas/blink-ripgrep.nvim",
+			"ribru17/blink-cmp-spell", -- Spell suggestions from Neovim's spellcheck
+			"MahanRahmati/blink-nerdfont.nvim", -- Nerd Font icon completion (trigger ":")
+			"bydlw98/blink-cmp-env", -- Environment variable ($VAR) completion
 		},
 
 		version = "v1.*",
@@ -147,15 +150,45 @@ return {
 				sorts = {
 					"exact",
 					"score",
+					-- Tie-break: sink _private/__dunder members below public ones
+					-- (matters mostly for python's `self.` / module completions).
+					-- Only runs on equal fuzzy score, so typing `_` still
+					-- surfaces them.
+					function(a, b)
+						local a_priv = a.label:sub(1, 1) == "_"
+						local b_priv = b.label:sub(1, 1) == "_"
+						if a_priv ~= b_priv then
+							return b_priv
+						end
+					end,
 					"sort_text",
 				},
 			},
 			sources = {
-				-- Use a function to enable completions in comments for all languages (TODO: check if this is still needed)
-				default = function()
-					-- NOTE: we no longer have 'git' because it just got in the way
-					return { "avante", "fuzzy-path", "lsp", "copilot", "snippets", "buffer", "ripgrep", "emoji" }
-				end,
+				-- Code buffers get code sources only; prose/config-only sources
+				-- (emoji, nerdfont, dictionary, spell, env) are added per filetype
+				-- so they stop polluting code completions.
+				-- NOTE: we no longer have 'git' because it just got in the way
+				default = {
+					"lazydev",
+					"fuzzy-path",
+					"lsp",
+					"copilot",
+					"snippets",
+					"buffer",
+					"ripgrep",
+				},
+				per_filetype = {
+					AvanteInput = { "avante" },
+					markdown = { inherit_defaults = true, "emoji", "nerdfont", "dictionary", "spell" },
+					gitcommit = { inherit_defaults = true, "emoji", "spell" },
+					text = { inherit_defaults = true, "dictionary", "spell" },
+					tex = { inherit_defaults = true, "dictionary", "spell" },
+					sh = { inherit_defaults = true, "env" },
+					bash = { inherit_defaults = true, "env" },
+					zsh = { inherit_defaults = true, "env" },
+					nu = { inherit_defaults = true, "env" },
+				},
 				providers = {
 					["fuzzy-path"] = {
 						name = "Fuzzy Path",
@@ -170,13 +203,16 @@ return {
 								"csv",
 								"txt",
 								"yaml",
-								"json",
 							}, -- optional
 						},
 					},
 					ripgrep = {
 						module = "blink-ripgrep",
 						name = "Ripgrep",
+						-- Project words are a fallback, not a rival to the LSP:
+						-- rank them below and only for longer keywords
+						score_offset = -3,
+						min_keyword_length = 4,
 						-- see the full configuration below for all available options
 						---@module "blink-ripgrep"
 						---@type blink-ripgrep.Options
@@ -192,8 +228,13 @@ return {
 					copilot = {
 						name = "copilot",
 						module = "blink-copilot",
-						score_offset = 100,
+						-- 0, not 100: with 100 copilot always outranked the LSP and
+						-- its guesses buried real symbols at the top of the menu
+						score_offset = 0,
 						async = true,
+						opts = {
+							max_completions = 2,
+						},
 					},
 					git = {
 						-- NOTE: if you can't see users / issues, it's probably because you need to login via `gh auth login`
@@ -216,9 +257,36 @@ return {
 						score_offset = 15, -- Tune by preference
 						opts = { insert = true }, -- Insert emoji (default) or complete its name
 					},
+					nerdfont = {
+						module = "blink-nerdfont",
+						name = "Nerd Fonts",
+						score_offset = 15, -- Tune by preference
+						opts = { insert = true }, -- Insert icon (default) or complete its name
+					},
+					spell = {
+						module = "blink-cmp-spell",
+						name = "Spell",
+						-- Only show spell suggestions when 'spell' is set; see opts below
+						opts = {},
+					},
+					env = {
+						module = "blink-cmp-env",
+						name = "Env",
+						opts = {
+							item_kind = require("blink.cmp.types").CompletionItemKind.Variable,
+							show_braces = false,
+							show_documentation_window = true,
+						},
+					},
+					lazydev = {
+						module = "lazydev.integrations.blink",
+						name = "LazyDev",
+						score_offset = 100, -- Show lazydev's items first
+					},
 					dictionary = {
 						name = "blink-cmp-words",
 						module = "blink-cmp-words.dictionary",
+						min_keyword_length = 4,
 						-- All available options
 						opts = {
 							-- A score offset applied to returned items.
@@ -228,7 +296,7 @@ return {
 							-- Default pointers define the lexical relations listed under each definition,
 							-- see Pointer Symbols below.
 							-- Default is as below ("antonyms", "similar to" and "also see").
-							pointer_symbols = { "!", "&", "^" },
+							definition_pointers = { "!", "&", "^" },
 						},
 					},
 				},
@@ -254,7 +322,6 @@ return {
 				nerd_font_variant = "normal",
 			},
 			completion = {
-				-- TODO: look into this!
 				list = {
 					max_items = 200,
 					selection = {
@@ -276,10 +343,15 @@ return {
 				menu = {
 					border = "rounded",
 					draw = {
-						columns = { { "label", "label_description" }, { "kind_icon", "kind", gap = 1 }, { "source_name" } },
+						-- No label_description column: colorful-menu already folds
+						-- the item's detail into the label (truncated at 60 chars).
+						-- A separate un-ellipsized column duplicated it at full
+						-- length, and ty puts entire overload signatures there,
+						-- stretching the menu across the screen.
+						columns = { { "label" }, { "kind_icon", "kind", gap = 1 }, { "source_name" } },
 						components = {
-							label_description = { ellipsis = false }, -- Show full description
 							label = {
+								width = { fill = true, max = 60 },
 								text = require("colorful-menu").blink_components_text,
 								highlight = require("colorful-menu").blink_components_highlight,
 							},
