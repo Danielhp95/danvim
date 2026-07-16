@@ -1,6 +1,32 @@
 local wk = require("which-key")
 
-vim.keymap.set("t", "<ESC>", "<C-\\><C-n>") -- Use <ESC> in terminal mode
+-- Terminal mode: double-tap Ctrl+L to exit (allows programs to use Ctrl+L normally)
+local terminal_exit_state = {
+	pending = false,
+	timeout_id = nil,
+}
+
+vim.keymap.set("t", "<C-l>", function()
+	if terminal_exit_state.pending then
+		-- Second press - exit terminal mode
+		terminal_exit_state.pending = false
+		if terminal_exit_state.timeout_id then
+			vim.fn.timer_stop(terminal_exit_state.timeout_id)
+			terminal_exit_state.timeout_id = nil
+		end
+		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", false)
+	else
+		-- First press - set pending flag and start timeout
+		terminal_exit_state.pending = true
+		if terminal_exit_state.timeout_id then
+			vim.fn.timer_stop(terminal_exit_state.timeout_id)
+		end
+		terminal_exit_state.timeout_id = vim.fn.timer_start(500, function()
+			terminal_exit_state.pending = false
+			terminal_exit_state.timeout_id = nil
+		end)
+	end
+end)
 
 vim.keymap.set("n", "<leader>q", function()
 	local qf_exists = false
@@ -269,12 +295,13 @@ wk.add({
 })
 ]==]
 
--- Terminal (tabterm.nvim: tab-scoped floating workspace; no horizontal/vertical
--- split modes — workspace is a single floating panel + sidebar)
+-- Terminal (terminals.nvim: up to 10 persistent slots with a tab-style header;
+-- <C-S-j>/<C-S-k> cycle terminals, <M-0>…<M-9> jump to a slot — see
+-- plugins/terminal.lua)
 wk.add({
 	{ "<leader><leader>", group = "[t]erminal" },
-	-- Original bindings, remapped to closest tabterm equivalents
-	{ "<leader><leader>f", "<cmd>FloatermToggle<cr>", desc = "[f]loating terminal (toggle workspace)" },
+	{ "<leader><leader>f", "<cmd>ToggleTerminal<cr>", desc = "[f]loating terminal (toggle)" },
+	-- { "<leader><leader>f", "<cmd>FloatermToggle<cr>", desc = "[f]loating terminal (toggle workspace)" },
 	-- { "<leader><leader>t", "<cmd>Tabterm toggle<cr>", desc = "[t]oggle terminal workspace" },
 	-- { "<leader><leader>h", "<cmd>Tabterm shell<cr>", desc = "new s[h]ell terminal" },
 	-- { "<leader><leader>v", "<cmd>Tabterm command<cr>", desc = "new command terminal (in[v]oke)" },
