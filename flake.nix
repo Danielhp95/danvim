@@ -35,7 +35,8 @@
       forEachSystem = utils.eachSystem systems;
       # will not apply to module imports
       extra_pkg_config = {
-        # allowUnfree = true;
+        # Needed for unfree packages in runtime deps (claude-code)
+        allowUnfree = true;
       };
 
       packages = import ./packages {
