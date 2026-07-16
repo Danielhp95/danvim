@@ -14,25 +14,25 @@ return {
 			},
 		},
 	},
-	{
-		"A7Lavinraj/fyler.nvim",
-		dependencies = { "nvim-mini/mini.icons" },
-		branch = "stable",
-		opts = {
-			default_explorer = true, -- replace netrw
-			-- Key mappings
-			mappings = {
-				["q"] = "CloseView",
-				["<CR>"] = "Select",
-				["<C-t>"] = "SelectTab",
-				["|"] = "SelectVSplit",
-				["-"] = "SelectSplit",
-				["^"] = "GotoParent",
-				["="] = "GotoCwd",
-				["."] = "GotoNode",
-				["#"] = "CollapseAll",
-				["<BS>"] = "CollapseNode",
-			},
-		},
-	},
+	-- {
+	-- 	"A7Lavinraj/fyler.nvim",
+	-- 	dependencies = { "nvim-mini/mini.icons" },
+	-- 	branch = "stable",
+	-- 	opts = {
+	-- 		default_explorer = true, -- replace netrw
+	-- 		-- Key mappings
+	-- 		mappings = {
+	-- 			["q"] = "CloseView",
+	-- 			["<CR>"] = "Select",
+	-- 			["<C-t>"] = "SelectTab",
+	-- 			["|"] = "SelectVSplit",
+	-- 			["-"] = "SelectSplit",
+	-- 			["^"] = "GotoParent",
+	-- 			["="] = "GotoCwd",
+	-- 			["."] = "GotoNode",
+	-- 			["#"] = "CollapseAll",
+	-- 			["<BS>"] = "CollapseNode",
+	-- 		},
+	-- 	},
+	-- },
 }

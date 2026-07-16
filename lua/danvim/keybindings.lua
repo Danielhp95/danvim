@@ -270,7 +270,6 @@ wk.add({
 	{ "<leader>-", "<cmd>Yazi<cr>", desc = "File manager open in current dir" },
 	{ "<leader><c-up>", "<cmd>Yazi toggle<cr>", desc = "Resume last yazi session" },
 	{ "<leader>_", "<cmd>Yazi cwd<cr>", desc = "Open the file manager in nvim's working directory" },
-	{ "<leader>f", "<cmd>Fyler kind=split_left_most<cr>", desc = "[f]ile manager in current file's directory" },
 })
 
 -- Debugger
