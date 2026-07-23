@@ -12,7 +12,17 @@ return {
 		input = { enabled = false },
 		picker = {
 			enabled = true,
+			-- also search dotfiles and gitignored files (untracked ones are
+			-- already listed by fd/rg). Toggle live with <a-h> / <a-i>.
+			hidden = true,
+			ignored = true,
+			exclude = { ".git", "node_modules", ".venv", "__pycache__", "result" },
 			sources = {
+				files = { hidden = true, ignored = true },
+				grep = { hidden = true, ignored = true },
+				smart = { hidden = true, ignored = true },
+				explorer = { hidden = true, ignored = true },
+				git_files = { untracked = true, submodules = true },
 				lsp_symbols = {
 					filter = {
 						default = {
