@@ -127,10 +127,32 @@
           };
 
           startupPlugins = with pkgs.vimPlugins; {
-            dani = [
+            # NOTE: with the lazy.nvim wrapper, plugins in `start` are sourced
+            # natively at startup *in addition* to being managed by lazy.nvim,
+            # which defeats every event/cmd/keys lazy-loading trigger. Only
+            # lazy.nvim itself (bootstrap) and the treesitter grammars belong
+            # here; everything else goes in optionalPlugins (the `opt` dir),
+            # where lazy.nvim's dev.path resolver picks them up.
+            general = [
+              lazy-nvim
+            ];
+            # Treesitter parsers - loaded at startup to ensure all grammars are available
+            treesitter = [
+              # NOTE: withAllGrammars doesn't work reliably - parsers not found by Neovim
+              # Keeping commented for future testing:
+              nvim-treesitter.withAllGrammars
+              ((pkgs.neovimUtils.grammarToPlugin pkgs.tree-sitter-grammars.tree-sitter-python).overrideAttrs {
+                installQueries = true;
+              })
+            ];
+          };
+
+          # Under the lazy.nvim wrapper these are resolved by lazy's dev.path,
+          # so loading is governed entirely by the lua plugin specs.
+          optionalPlugins = {
+            dani = with pkgs.vimPlugins; [
               nvim-autopairs # pair up brackets/quotes etc.
               nvim-surround # autopairs ()[]<>{} completion (with treesitter magic)
-              comment-nvim
               undotree
 
               ## Git
@@ -138,13 +160,10 @@
               gitlinker-nvim # open/copy external git forge links (GBrowse replacement)
               gitsigns-nvim # git signs in the columns  (TODO: look more things in this plugin)
               diffview-nvim # Diif/Merge view UI
-              octo-nvim # GitHub CLI integration for neovim
 
               # Completion
               colorful-menu-nvim # Better tresitter integration in completion engine
               diffs-nvim
-
-              flash-nvim
 
               firenvim # embed neovim in browser text areas (needs Firenvim browser extension)
 
@@ -157,75 +176,28 @@
               ## UI
               lualine-nvim # status line!
               which-key-nvim
-              nvim-colorizer-lua
               bufferline-nvim
               trouble-nvim
               yazi-nvim
 
-              # The obsidian.nvim fork
-              obsidian-nvim
-
               # Library
               snacks-nvim
-
-              ## General
-              sqlite-lua
 
               nvim-bqf # TODO: learn this!
 
               ## Treesitter
               nvim-treesitter-textobjects # conceals top part of screen in deeply nested code
               nvim-treesitter-context # conceals top part of screen in deeply nested code
-              nvim-ts-context-commentstring # add commentstring context to treesitter
 
               # AI
-              codecompanion-nvim # needed for avante
-              codecompanion-spinner-nvim
-              codecompanion-lualine-nvim
-              codecompanion-history-nvim
-
               avante-nvim
               claudecode-nvim # coder/claudecode.nvim: drive the real `claude` CLI in-editor
-              opencode-nvim
               # inputs.stable.legacyPackages.x86_64-linux.vimPlugins.copilot-lua
               copilot-lua
-              blink-copilot
-            ];
-            # Treesitter parsers - loaded at startup to ensure all grammars are available
-            treesitter = [
-              # NOTE: withAllGrammars doesn't work reliably - parsers not found by Neovim
-              # Keeping commented for future testing:
-              nvim-treesitter.withAllGrammars
-              ((pkgs.neovimUtils.grammarToPlugin pkgs.tree-sitter-grammars.tree-sitter-python).overrideAttrs {
-                installQueries = true;
-              })
-
-              rainbow-delimiters-nvim # fancy rainbow brackets
-            ];
-            general = [
-              ## Lib
-              plenary-nvim # toolbox/lib for many libs
-              lazy-nvim
-
-              ## UI
-              lualine-nvim # status/tabline
-              dressing-nvim # pretty/glossy vim.ui.{select|input}
-              nvim-web-devicons # nerd fonts for nvim
-              nvim-colorizer-lua # highlight hex codes with their colour
-              noice-nvim # floating cmdline popup (top-center)
-              nui-nvim # UI library (required by noice)
-              urlview-nvim # picker (ui.select support) for URLs
-
-              ## LSP
-              lsp_signature-nvim # LSP Signature Info
             ];
             format = with pkgs.vimPlugins; [
               conform-nvim
             ];
-          };
-
-          # in `lazy.nvim` setup, this is the same as `startupPlugins`
-          optionalPlugins = {
             debug = with pkgs.vimPlugins; {
               # it is possible to add default values.
               # there is nothing special about the word "default"
@@ -250,6 +222,16 @@
               markdown-preview-nvim
             ];
             general = {
+              ui = with pkgs.vimPlugins; [
+                ## Lib
+                plenary-nvim # toolbox/lib for many libs
+
+                ## UI
+                dressing-nvim # pretty/glossy vim.ui.{select|input}
+                nvim-web-devicons # nerd fonts for nvim
+                noice-nvim # floating cmdline popup (top-center)
+                nui-nvim # UI library (required by noice)
+              ];
               blink = with pkgs.vimPlugins; [
                 # blink completion engine
                 # blink-cmp  Too old in nixpkgs
