@@ -106,15 +106,18 @@ return {
 return {
 	{
 		"sassanh/terminals.nvim",
-		cmd = { "Terminal", "ToggleTerminal", "CloseTerminal" },
-		keys = { "<leader><leader>f" },
+		-- load eagerly: setup() is what creates the global maps (<M-0>…<M-9>
+		-- slot jumps, <M-m> layout cycle), so they must exist before any
+		-- lazy-load trigger fires
+		lazy = false,
 		config = function()
-			require("terminals").setup({
+			local terminals = require("terminals")
+			terminals.setup({
 				keys = {
 					-- defaults use macOS <D-…> (Cmd); remap to match the old
 					-- floaterm setup on Linux
 					toggle = "<leader><leader>f",
-          cycle_layout = "<D-m>",
+					cycle_layout = "<M-m>",
 					-- cycle terminals, same as the old floaterm buffer maps
 					go_right = "<C-S-j>",
 					go_left = "<C-S-k>",
@@ -124,11 +127,20 @@ return {
 					unfocus = "<M-S-i>",
 					leave = "<M-[>",
 					toggle_reverse_search = "<M-/>",
-					paste = "<M-p>",
-					paste_in_place = "<M-S-p>",
+					paste = "<C-S-v>",
+					paste_in_place = "<C-S-p>",
 					-- <M-0>…<M-9> jump to terminal slots (Alt instead of Cmd)
 					modifier = "M",
-					width = "90%",
+				},
+				layouts = {
+					-- near-fullscreen
+					{ width = "95%", height = "99%", row = 0 },
+					-- left half
+					{ width = "50%", height = terminals.default_height, row = 0, col = 0 },
+					-- right half
+					{ width = "50%", height = terminals.default_height, row = 0, col = "right" },
+					-- bottom half
+					{ width = "100%", height = "50%", row = "bottom", col = 0 },
 				},
 				preserved_keys = {},
 			})
