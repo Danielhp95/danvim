@@ -56,13 +56,13 @@ wk.add({
 	{ "<leader>nww", "<cmd>set wrap!<cr>", desc = "line [w]rap" },
 	{
 		"<leader>yB",
-		'<cmd>let @+ = expand("%")<CR>:echo "Yanked path: " . expand("%")<cr>',
-		desc = "[y]ank [B]uffer relative path to cwd",
+		'<cmd>let @+ = expand("%:p")<CR>:echo "Yanked path: " . expand("%:p")<cr>',
+		desc = "[y]ank [B]uffer absolute path",
 	},
 	{
 		"<leader>yb",
-		'<cmd>let @+ = expand("%:p")<CR>:echo "Yanked path: " . expand("%:p")<cr>',
-		desc = "[y]ank [b]uffer absolute path",
+		'<cmd>let @+ = expand("%:.")<CR>:echo "Yanked path: " . expand("%:.")<cr>',
+		desc = "[y]ank [b]uffer relative path to cwd",
 	},
 	{ "H", "<cmd>tabp<cr>", desc = "Previous tab" },
 	{ "L", "<cmd>tabn<cr>", desc = "Next tab" },
