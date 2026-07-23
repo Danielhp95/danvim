@@ -103,12 +103,15 @@ return {
 					providers = {
 						{
 							name = "references",
-							enabled = true, -- enable references provider
+							-- Disabled: fires textDocument/references for every lens in
+							-- every attached buffer, the main source of per-buffer lag
+							enabled = false,
 							quiet_lsp = true, -- suppress noisy LSP log messages (e.g., Pyright reference spam)
 						},
 						{
 							name = "last_author",
-							enabled = true, -- enabled by default with caching optimization
+							-- Disabled: runs git blame per buffer
+							enabled = false,
 							cache_max_files = 50, -- maximum number of files to cache blame data for (default: 50)
 						},
 						{
