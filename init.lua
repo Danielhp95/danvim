@@ -7,6 +7,19 @@ require('nixCatsUtils').setup {
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Skip unused builtin runtime plugins. Must be set BEFORE lazy.nvim's setup
+-- below — lazy sources the rtp plugin files itself at the end of setup(), and
+-- its own disabled_plugins list is inert because lazyCat sets
+-- performance.rtp.reset = false. matchparen is intentionally kept.
+vim.g.loaded_gzip = 1
+vim.g.loaded_tarPlugin = 1
+vim.g.loaded_zipPlugin = 1
+vim.g.loaded_2html_plugin = 1
+vim.g.loaded_tutor_mode_plugin = 1
+-- netrw fully off: `nvim <dir>` no longer opens a listing (yazi covers it)
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 1
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = nixCats 'have_nerd_font'
 
@@ -20,6 +33,8 @@ local function getlockfilepath()
 end
 local lazyOptions = {
   lockfile = getlockfilepath(),
+  -- Config lives in the nix store (wrapRc) — nothing to watch for changes
+  change_detection = { enabled = false, notify = false },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
