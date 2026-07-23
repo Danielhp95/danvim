@@ -3,6 +3,9 @@
 -- See `:help vim.o`
 
 vim.filetype.add({ pattern = { [".*/hyprland.*%.conf"] = "hyprlang" } }) -- Add custom filetype detection for Hyprland configuration files.
+vim.o.updatetime = 250 -- CursorHold/swap latency; default 4000ms delays gitsigns blame & friends.
+-- NOTE: the vim.g.loaded_* builtin-plugin guards live in init.lua — they must
+-- be set before lazy.nvim's setup, which sources rtp plugin files itself.
 vim.o.winborder = "rounded" -- Rounded border for all floating windows
 vim.o.foldenable = false -- Disable folding by default.
 vim.o.completeopt = "menu,menuone,noselect" -- Configure completion options for better interaction with completion menus.
@@ -54,6 +57,10 @@ vim.o.fileencodings = "utf-8" -- Configure fallback encodings.
 vim.o.bomb = false -- Do not write a UTF-8 BOM.
 vim.o.binary = false -- Keep normal text-mode buffer behavior (EOL handling intact).
 vim.o.matchpairs = "(:),{:},[:],<:>" -- Specify matching pairs for easier navigation.
+-- Pin the spell dictionary to a stable, writable path. Without this, `zg`
+-- writes to the first writable spell/ dir on the runtimepath — with wrapRc
+-- that was a random lazy.nvim plugin checkout, dirtying its git tree.
+vim.o.spellfile = vim.fn.stdpath("data") .. "/spell/en.utf-8.add"
 vim.o.expandtab = true -- Replace tabs with spaces.
 vim.o.wildmode = "list:longest,list:full" -- Display autocompletion suggestions in a user-friendly way.
 vim.o.modeline = true -- Enable modelines for file-specific settings.
