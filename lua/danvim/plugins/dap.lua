@@ -2,6 +2,8 @@
 -- Look into this to have pytest integration https://github.com/mfussenegger/nvim-dap-python
 local Dap = {
 	url = "https://github.com/mfussenegger/nvim-dap",
+	-- lua keymaps that call require('dap') load it via lazy's module hook
+	cmd = { "DapNew", "DapContinue", "DapToggleBreakpoint", "DapSetLogLevel", "DapShowLog", "DapEval" },
 	dependencies = {
 		"theHamsta/nvim-dap-virtual-text",
 		"nvim-neotest/nvim-nio",
@@ -56,7 +58,8 @@ local Dap = {
 
 local dap_view = {
 	"igorlfs/nvim-dap-view",
-	lazy = false,
+	cmd = { "DapViewOpen", "DapViewToggle", "DapViewWatch" },
+	dependencies = { "mfussenegger/nvim-dap" },
 	version = "1.*",
 	---@module 'dap-view'
 	---@type dapview.Config

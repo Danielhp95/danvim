@@ -352,8 +352,14 @@ return {
 						components = {
 							label = {
 								width = { fill = true, max = 60 },
-								text = require("colorful-menu").blink_components_text,
-								highlight = require("colorful-menu").blink_components_highlight,
+								-- Deferred requires: colorful-menu lives in `opt`, so it is
+								-- not on the rtp when this spec table is built at startup
+								text = function(...)
+									return require("colorful-menu").blink_components_text(...)
+								end,
+								highlight = function(...)
+									return require("colorful-menu").blink_components_highlight(...)
+								end,
 							},
 							source_name = {
 								width = { max = 15 },

@@ -1,16 +1,16 @@
+-- Dormant colorschemes (ember is the active one, in colorschemes.lua):
+-- lazy = true keeps them installed but off the startup path; a
+-- require('onedark') or :colorscheme load still pulls them in on demand.
 local ColorSchemes = {
-	"NvChad/nvim-colorizer.lua", -- highlights colors
-	"Mofiqul/dracula.nvim",
-	"navarasu/onedark.nvim",
-	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
-	"EdenEast/nightfox.nvim",
+	{ "Mofiqul/dracula.nvim", lazy = true },
 	{
-		"nvim-tree/nvim-web-devicons",
-		config = function()
-			require("onedark").setup({ style = "deep", toggle_style_key = "<C-q>" })
-			-- vim.api.nvim_command("colorscheme carbonfox")
-		end,
+		"navarasu/onedark.nvim",
+		lazy = true,
+		opts = { style = "deep", toggle_style_key = "<C-q>" },
 	},
+	{ "catppuccin/nvim", name = "catppuccin", lazy = true },
+	{ "EdenEast/nightfox.nvim", lazy = true },
+	"nvim-tree/nvim-web-devicons",
 }
 
 local BufferLine = {

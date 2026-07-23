@@ -5,6 +5,8 @@
 -- Formmater
 local Conform = {
 	"stevearc/conform.nvim",
+	-- <leader>lf calls require('conform') and loads it via lazy's module hook
+	cmd = "ConformInfo",
 	opts = {
 		formatters_by_ft = {
 			lua = { "stylua" },
@@ -35,14 +37,21 @@ local lazydev = {
 	},
 }
 
+-- Useful status updates for LSP. Standalone spec, NOT a dependency of
+-- lspconfig: lazy.nvim force-loads dependencies with their parent, which
+-- would defeat the LspAttach trigger.
+local fidget = {
+	"j-hui/fidget.nvim",
+	event = "LspAttach",
+	opts = {},
+}
+
 -- LSP Configuration & Plugins
 local lspconfig_toplevel = {
 	"neovim/nvim-lspconfig",
-	dependencies = {
-		-- Useful status updates for LSP
-		{ "j-hui/fidget.nvim", event = "LspAttach", opts = {} },
-		lazydev,
-	},
+	-- vim.lsp.enable() only registers FileType autocmds; BufReadPre fires
+	-- before FileType, so deferring to first real buffer loses nothing
+	event = { "BufReadPre", "BufNewFile" },
 	config = function()
 		vim.lsp.config["ty"] = {
 			cmd = { "ty", "server" },
@@ -142,5 +151,7 @@ local lspconfig_toplevel = {
 
 return {
 	lspconfig_toplevel,
+	fidget,
+	lazydev,
 	Conform,
 }

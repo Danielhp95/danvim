@@ -19,7 +19,11 @@ return {
 			},
 			ollama = {
 				model = "qwen3-coder:30b",
-				is_env_set = require("avante.providers.ollama").check_endpoint_alive,
+				-- Deferred: requiring avante here would load it at startup, since
+				-- this spec table is built when lazy imports the plugin specs
+				is_env_set = function(...)
+					return require("avante.providers.ollama").check_endpoint_alive(...)
+				end,
 			},
 		},
 		-- ACP agents run an external CLI as a subprocess. claude-code here drives

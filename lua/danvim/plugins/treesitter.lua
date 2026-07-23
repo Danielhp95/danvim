@@ -1,7 +1,7 @@
 -- Highlight, edit, and navigate code
 local context = {
 	"nvim-treesitter/nvim-treesitter-context",
-	lazy = false, -- Load immediately to ensure context is always available
+	event = { "BufReadPost", "BufNewFile" }, -- attaches before the first buffer is shown
 	opts = {
 		enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
 		multiwindow = false, -- Enable multiwindow support.
@@ -21,6 +21,7 @@ local context = {
 local treesitter_objects = {
 	"nvim-treesitter/nvim-treesitter-textobjects",
 	branch = "main",
+	event = "VeryLazy", -- ~40 keymaps; nothing here is needed before the UI is up
 	dependencies = { "nvim-treesitter/nvim-treesitter", branch = "main" },
 	init = function()
 		vim.g.no_plugin_maps = true
@@ -146,7 +147,8 @@ local Treesitter = {
 		-- { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
 		-- { "nvim-treesitter/nvim-treesitter-refactor", branch = "master" },
 		-- "RRethy/nvim-treesitter-textsubjects",
-		context,
+		-- NOTE: context intentionally not a dependency — it has its own event
+		-- trigger and listing it here would force-load it with treesitter
 		-- "hiphish/rainbow-delimiters.nvim",
 	},
 	config = function()

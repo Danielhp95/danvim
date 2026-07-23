@@ -37,6 +37,6 @@ return {
 			end
 		end,
 	},
-	{ "serhez/teide.nvim" },
-	{ "initsyscall/themeInitNvim" },
+	{ "serhez/teide.nvim", lazy = true },
+	{ "initsyscall/themeInitNvim", lazy = true },
 }

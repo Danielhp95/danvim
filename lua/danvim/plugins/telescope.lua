@@ -1,4 +1,6 @@
 local telescope = { 'nvim-telescope/telescope.nvim' }
+-- keymaps that call require('telescope.builtin') load it via lazy's module hook
+telescope.cmd = 'Telescope'
 telescope.dependencies = {
   'nvim-lua/plenary.nvim',
   'LinArcX/telescope-env.nvim',
@@ -12,7 +14,6 @@ telescope.dependencies = {
 
 telescope.config = function()
   local actions = require 'telescope.actions'
-  require('trouble').setup { auto_preview = true }
 
   local action_layout = require 'telescope.actions.layout'
   require('telescope').setup {
@@ -99,4 +100,9 @@ telescope.config = function()
 end
 return {
   telescope,
+  {
+    'folke/trouble.nvim',
+    cmd = 'Trouble',
+    opts = { auto_preview = true },
+  },
 }

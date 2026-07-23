@@ -1,7 +1,8 @@
 return {
-	"tpope/vim-fugitive",
+	{ "tpope/vim-fugitive", event = "VeryLazy" },
 	{ -- Treesitter-powered Diff Syntax highlighting for Neovim
 		"barrettruth/diffs.nvim",
+		event = "VeryLazy",
 		init = function()
 			vim.g.diffs = {
 				integrations = {
@@ -13,9 +14,19 @@ return {
 			}
 		end,
 	},
-	{ "lewis6991/gitsigns.nvim", opts = {} },
+	{ "lewis6991/gitsigns.nvim", event = { "BufReadPre", "BufNewFile" }, opts = {} },
 	{
 		"sindrets/diffview.nvim",
+		cmd = {
+			"DiffviewOpen",
+			"DiffviewOpenConflicts",
+			"DiffviewFileHistory",
+			"DiffviewClose",
+			"DiffviewRefresh",
+			"DiffviewToggleFiles",
+			"DiffviewFocusFiles",
+			"DiffviewLog",
+		},
 		opts = {
 			view = {
 				merge_tool = {
@@ -74,6 +85,7 @@ return {
 	},
 	{
 		"ruifm/gitlinker.nvim",
+		event = "VeryLazy",
 		dependencies = {
 			"ojroques/vim-oscyank",
 			"nvim-lua/plenary.nvim",

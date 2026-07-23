@@ -8,10 +8,11 @@
 -- })
 
 return {
-	"folke/which-key.nvim",
+	"folke/which-key.nvim", -- eager: keybindings.lua requires it right after lazy setup
 	{ "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },
 	{
 		"kylechui/nvim-surround",
+		event = "VeryLazy",
 		dependencies = {
 			"gregorias/nvim-surround-wk", -- which-key hints for nvim-surround
 		},
@@ -21,6 +22,12 @@ return {
 			},
 		},
 	},
+	-- Was a nix `start` plugin with no spec; now in `opt` so it needs one
+	{ "mbbill/undotree", cmd = "UndotreeToggle" },
+	-- Better quickfix window; only useful once a quickfix buffer exists
+	{ "kevinhwang91/nvim-bqf", ft = "qf" },
+	-- vim.ui.select/input replacement; load before avante would pull it in
+	{ "stevearc/dressing.nvim", event = "VeryLazy", opts = {} },
 	{
 		"esmuellert/codediff.nvim",
 		dependencies = { "MunifTanjim/nui.nvim" },
