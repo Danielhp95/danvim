@@ -337,17 +337,17 @@ wk.add({
 })
 
 vim.keymap.set({ "x", "o", "n" }, "<BS>", function()
-	require("vim.treesitter._select").select_child(vim.v.count1)
+	vim.treesitter.select("child", vim.v.count1)
 end, { desc = "Select child node" })
 
 vim.keymap.set({ "x", "o", "n" }, "<CR>", function()
-	require("vim.treesitter._select").select_parent(vim.v.count1)
+	vim.treesitter.select("parent", vim.v.count1)
 end, { desc = "Select parent node" })
 
 vim.keymap.set({ "x", "o", "n" }, "<C-BS>", function()
-	require("vim.treesitter._select").select_prev(vim.v.count1)
+	vim.treesitter.select("prev", vim.v.count1)
 end, { desc = "Select previous node" })
 
 vim.keymap.set({ "x", "o", "n" }, "<C-CR>", function()
-	require("vim.treesitter._select").select_next(vim.v.count1)
+	vim.treesitter.select("next", vim.v.count1)
 end, { desc = "Select next node" })
