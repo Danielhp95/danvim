@@ -372,10 +372,29 @@ return {
 				keymap = {
 					preset = "inherit",
 					["<CR>"] = { "accept", "fallback" },
-					["<C-j>"] = { "select_next", "fallback" },
-					["<C-k>"] = { "select_prev", "fallback" },
-					["<Tab>"] = { "select_next", "fallback" },
-					["<S-Tab>"] = { "select_prev", "fallback" },
+					-- No "fallback" on the cycling keys. Whenever the menu is closed or
+					-- the list is momentarily empty (a source re-running, nothing
+					-- matching), blink passed the raw key through to the cmdline — where
+					-- <C-j> is <NL>, which *submits* the search, and <C-k> opens digraph
+					-- entry, swallowing the next two keys. "show_and_insert" returns nil
+					-- when the menu is already open, so cycling still falls through to
+					-- select_next/prev; when the menu dropped out it just reopens it.
+					-- The "prev" keys open on the *last* item (idx -1), matching blink's
+					-- own cmdline preset for <S-Tab>.
+					["<C-j>"] = { "show_and_insert", "select_next" },
+					["<C-k>"] = {
+						function(cmp)
+							return cmp.show_and_insert({ initial_selected_item_idx = -1 })
+						end,
+						"select_prev",
+					},
+					["<Tab>"] = { "show_and_insert", "select_next" },
+					["<S-Tab>"] = {
+						function(cmp)
+							return cmp.show_and_insert({ initial_selected_item_idx = -1 })
+						end,
+						"select_prev",
+					},
 					["<C-e>"] = { "hide", "fallback" },
 				},
 				completion = {
@@ -388,7 +407,16 @@ return {
 					list = {
 						selection = {
 							preselect = false,
-							auto_insert = true,
+							-- Deliberately false. With auto_insert, every <C-j>/<C-k>
+							-- rewrote the cmdline to the highlighted candidate, which
+							-- re-ran the sources and re-fuzzied the list against the new
+							-- text. blink only restores the previous selection when the
+							-- item resurfaces within the top 10 (completion/list.lua), so
+							-- past a few steps the selection kept resetting and cycling
+							-- wandered instead of stepping. Now the list stays pinned to
+							-- what you typed; <CR> accepts the highlighted item into the
+							-- cmdline, a second <CR> runs it.
+							auto_insert = false,
 						},
 					},
 				},
