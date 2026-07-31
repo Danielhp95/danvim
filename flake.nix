@@ -194,7 +194,7 @@
               nvim-treesitter-context # conceals top part of screen in deeply nested code
 
               # AI
-              avante-nvim
+              # avante-nvim
               claudecode-nvim # coder/claudecode.nvim: drive the real `claude` CLI in-editor
               # inputs.stable.legacyPackages.x86_64-linux.vimPlugins.copilot-lua
               copilot-lua
