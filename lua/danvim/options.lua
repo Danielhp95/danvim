@@ -42,7 +42,7 @@ vim.o.autoindent = true -- Enable automatic indentation based on the current lin
 vim.o.copyindent = true -- Copy structure from existing lines for smart indentation.
 vim.o.splitbelow = false -- Open horizontal splits above the current window.
 vim.o.splitright = true -- Open vertical splits to the right of the current window.
-vim.o.number = true -- Display absolute line numbers.
+vim.o.number = true -- Display absolute line number on the current line
 vim.o.undofile = true -- Persist undo history to a file.
 vim.o.hidden = true -- Allow switching buffers without saving the current buffer.
 vim.o.list = true -- Show whitespace characters.
@@ -104,11 +104,19 @@ require('vim._core.ui2').enable({
   enable = true,
   msg = {
     targets = {
-      [''] = 'msg',
+      -- 'default' is the key for "any kind not listed below". The old extui API
+      -- spelled it [''], which this table used to use — but ui2 now treats a ''
+      -- key as a Lua pattern matched against string message IDs, and '' matches
+      -- everything, so it hijacked unrelated messages at random.
+      default = 'msg',
       empty = 'cmd',
       bufwrite = 'msg',
       confirm = 'cmd',
-      emsg = 'pager',
+      -- NOT 'pager': the pager is a real window and ui2 focuses it
+      -- (nvim_set_current_win), so a routine "E486: Pattern not found" from a
+      -- failed search yanked the cursor out of the buffer until you pressed q.
+      -- Multi-line errors worth reading (echoerr/lua_error/rpc_error) still go there.
+      emsg = 'msg',
       echo = 'msg',
       echomsg = 'msg',
       echoerr = 'pager',
