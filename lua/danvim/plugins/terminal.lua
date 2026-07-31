@@ -36,6 +36,9 @@ return {
 		keys = { "<leader><leader>" },
 		opts = {
 			ui = {
+				-- Set explicitly to track 'winborder': tabterm is third-party and has
+				-- its own default rather than reading the option, so it is the one
+				-- border that does not follow options.lua on its own.
 				border = "rounded",
 				sidebar_width = 30,
 				float = {

@@ -305,7 +305,6 @@ return {
 				enabled = true,
 				window = {
 					show_documentation = true,
-					border = "rounded",
 				},
 				trigger = {
 					enabled = true,
@@ -336,12 +335,8 @@ return {
 					auto_show = true,
 					auto_show_delay_ms = 100,
 					treesitter_highlighting = true,
-					window = {
-						border = "rounded",
-					},
 				},
 				menu = {
-					border = "rounded",
 					draw = {
 						-- No label_description column: colorful-menu already folds
 						-- the item's detail into the label (truncated at 60 chars).

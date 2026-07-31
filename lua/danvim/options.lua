@@ -4,9 +4,21 @@
 
 vim.filetype.add({ pattern = { [".*/hyprland.*%.conf"] = "hyprlang" } }) -- Add custom filetype detection for Hyprland configuration files.
 vim.o.updatetime = 250 -- CursorHold/swap latency; default 4000ms delays gitsigns blame & friends.
--- NOTE: the vim.g.loaded_* builtin-plugin guards live in init.lua — they must
--- be set before lazy.nvim's setup, which sources rtp plugin files itself.
-vim.o.winborder = "rounded" -- Rounded border for all floating windows
+-- THIS IS THE ONLY PLACE TO SET IT. Everything else defers to 'winborder' when
+-- it isn't given an explicit border, so don't reintroduce per-plugin values:
+--   * blink.cmp — menu/documentation/signature all default `border = nil`,
+--     documented as falling back to vim.o.winborder on 0.11+.
+--   * vim.diagnostic floats — vim.lsp.util.open_floating_preview resolves
+--     `opts.border or vim.o.winborder`.
+--   * the ui2 cmdline/message windows — ui2 leaves the msg window's border nil,
+--     so it inherits too; the set_config call below only repositions it.
+-- The one exception is tabterm's `ui.border` in plugins/terminal.lua, which is
+-- third-party and has to be kept in sync by hand.
+--
+-- Note this sets the border *shape* only. blink remaps FloatBorder away via
+-- winhighlight, so its border *colour* needs its own groups — see the
+-- BlinkCmp*Border overrides in plugins/colorschemes.lua.
+vim.o.winborder = "rounded"
 vim.o.foldenable = false -- Disable folding by default.
 vim.o.completeopt = "menu,menuone,noselect" -- Configure completion options for better interaction with completion menus.
 vim.o.swapfile = false -- Disable swap files to prevent extra files being written in the directory.
@@ -85,7 +97,6 @@ vim.diagnostic.config({
 	severity_sort = true,
 	virtual_text = { current_line = false },
 	virtual_lines = { current_line = true, overflow = "wrap" },
-	float = { border = "rounded" },
 })
 
 -- Experimental UI2: floating cmdline and messages
@@ -146,7 +157,6 @@ msgs.set_pos = function(tgt)
 			anchor = "NE",
 			row = 1,
 			col = vim.o.columns - 1,
-			border = "rounded",
 		})
 	end
 end
