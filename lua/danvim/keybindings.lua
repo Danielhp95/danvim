@@ -186,6 +186,32 @@ wk.add({
 	{ "<leader>SN", "<cmd>lua Print_last_notification()<CR>", desc = "Print last <S>nacks <N>otification" },
 })
 
+-- Snacks images (render plots/PDFs/video frames inline in docs)
+wk.add({
+	{ "<leader>Si", group = "[S]nacks [i]mages" },
+	-- Toggle logic lives in snacks.lua (SnacksImageToggle) because it must patch
+	-- the renderer's discovery pass to make the flag actually take effect.
+	{ "<leader>Sit", "<cmd>SnacksImageToggle<CR>", desc = "[t]oggle inline images" },
+	{ "<leader>Sih", "<cmd>lua Snacks.image.hover()<CR>", desc = "[h]over image at cursor" },
+	{
+		"<leader>Sir",
+		function()
+			local buf = vim.api.nvim_get_current_buf()
+			require("snacks.image.placement").clean(buf)
+			require("snacks.image.doc").attach(buf)
+		end,
+		desc = "[r]efresh inline images (buffer)",
+	},
+	{
+		"<leader>Sic",
+		function()
+			require("snacks.image.placement").clean(vim.api.nvim_get_current_buf())
+		end,
+		desc = "[c]lear inline images (buffer)",
+	},
+	{ "<leader>SiH", "<cmd>checkhealth snacks<CR>", desc = "image [H]ealth / terminal support" },
+})
+
 -- Spelling
 wk.add({
 	{ "<leader>s", group = "[s]pelling" },

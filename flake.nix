@@ -110,6 +110,9 @@
               gnumake # needed for avante
               python312Packages.pylatexenc # for rendering latex in render-markdown plugin
               tectonic # Fore rendering latex equations (snacks.nvim)
+              imagemagick # `magick`/`convert` for snacks.image (inline PNGs in markdown)
+              ghostscript # `gs` — ImageMagick's delegate for rasterizing PDF pages (snacks.image)
+              ffmpeg # ImageMagick's `video:decode` delegate — extracts a frame from mp4/mkv/webm (snacks.image)
 
               nodejs
 
