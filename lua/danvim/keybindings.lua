@@ -141,6 +141,13 @@ wk.add({
 	{ "<leader>gdd", ":'<,'>DiffviewFileHistory<cr>", desc = "[d]iff of changes for selected lines", mode = "v" },
 })
 
+-- Octo (GitHub issues/PRs/reviews). Actual keymaps live in the plugin spec
+-- (lua/danvim/plugins/octo.lua); this just labels the which-key group.
+wk.add({
+	{ "<leader>o", group = "[o]cto" },
+	{ "<leader>oc", group = "[c]omments" },
+})
+
 -- Telescope / Snacks
 wk.add({
 	{ "<leader>t", group = "[t]elescope" },

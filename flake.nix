@@ -163,6 +163,7 @@
               gitlinker-nvim # open/copy external git forge links (GBrowse replacement)
               gitsigns-nvim # git signs in the columns  (TODO: look more things in this plugin)
               diffview-nvim # Diif/Merge view UI
+              octo-nvim # GitHub issues/PRs/reviews as buffers (uses `gh`, see lspsAndRuntimeDeps)
 
               # Completion
               colorful-menu-nvim # Better tresitter integration in completion engine
