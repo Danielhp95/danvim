@@ -52,6 +52,17 @@ return {
 					hl["PmenuThumb"] = thumb
 					hl["BlinkCmpScrollBarThumb"] = thumb
 
+					-- terminals.nvim's border is not a real 'border': it draws ╭─╮│╰╯ as
+					-- *text* in a dedicated window sitting behind the terminal, and points
+					-- both that window and the terminal window at `Normal:WindowBorder`.
+					-- Colouring WindowBorder would therefore repaint every line of
+					-- uncoloured shell output coral too, so the border window gets a group
+					-- of its own (terminal.lua rewrites its winhighlight to this).
+					--
+					-- Same coral as PmenuThumb above — as fg, since here it really is text.
+					-- The tab headers drawn into that window ride along with it.
+					hl["TerminalsBorder"] = { fg = syn.coral }
+
 					-- Float border colour ('winborder' = "rounded", options.lua). Banked
 					-- coral: mid-ramp, warm enough to belong to the palette without
 					-- borrowing the hero coral that the thumb and accents already use.

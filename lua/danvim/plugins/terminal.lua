@@ -147,6 +147,29 @@ return {
 				},
 				preserved_keys = {},
 			})
+
+			-- Coral border. terminals.nvim sets `winhighlight=Normal:WindowBorder`
+			-- on *both* the border window and the terminal window, so defining
+			-- WindowBorder would tint uncoloured shell output along with it.
+			-- Repoint the border window alone at TerminalsBorder (colorschemes.lua).
+			--
+			-- Wrapping activate_terminal rather than setting it once: the border
+			-- window is destroyed by close_terminal and rebuilt here, and every
+			-- caller (toggle, slot jump, navigate, move) goes through the module
+			-- table, so the wrapper catches each rebuild.
+			local logic = require("terminals.logic")
+			local activate_terminal = logic.activate_terminal
+			logic.activate_terminal = function(...)
+				local result = activate_terminal(...)
+				if logic.border_window and vim.api.nvim_win_is_valid(logic.border_window) then
+					vim.api.nvim_set_option_value(
+						"winhighlight",
+						"Normal:TerminalsBorder",
+						{ win = logic.border_window }
+					)
+				end
+				return result
+			end
 		end,
 	},
 }
