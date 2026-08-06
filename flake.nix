@@ -13,7 +13,9 @@
       type = "git";
       url = "https://github.com/nix-community/neovim-nightly-overlay";
       # rev = "80b1f16dba171a70c44c2ee6ec9529876152a7f5";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # No nixpkgs.follows: building neovim against the overlay's own locked
+      # nixpkgs is what makes the nix-community cache hit; following ours
+      # meant compiling neovim locally on every nightly bump.
     };
   };
 
@@ -162,7 +164,9 @@
               vim-fugitive # tpope git core plugin
               gitlinker-nvim # open/copy external git forge links (GBrowse replacement)
               gitsigns-nvim # git signs in the columns  (TODO: look more things in this plugin)
-              diffview-nvim # Diif/Merge view UI
+              # Maintained fork; sindrets/diffview.nvim's last commit was 2024-06-13.
+              # Drop-in: same commands, same opts, CI runs on nightly.
+              diffview-plus-nvim # Diif/Merge view UI
               octo-nvim # GitHub issues/PRs/reviews as buffers (uses `gh`, see lspsAndRuntimeDeps)
 
               # Completion
@@ -214,7 +218,6 @@
                 nvim-nio # required by nvim-dap-view
                 nvim-dap-virtual-text # UI / Highlight for DAP virtual text
                 one-small-step-for-vimkind-nvim # lua dap adapter
-                telescope-dap-nvim # telescope picker for DAP
                 nvim-dap-python # python dap adapter
               ];
             };
@@ -233,8 +236,8 @@
                 ## UI
                 dressing-nvim # pretty/glossy vim.ui.{select|input}
                 nvim-web-devicons # nerd fonts for nvim
-                noice-nvim # floating cmdline popup (top-center)
-                nui-nvim # UI library (required by noice)
+                tiny-cmdline-nvim # floating cmdline popup (top-center), repositions ui2's own window
+                nui-nvim # UI library (required by codediff)
               ];
               blink = with pkgs.vimPlugins; [
                 # blink completion engine
@@ -255,13 +258,6 @@
                 ((pkgs.neovimUtils.grammarToPlugin pkgs.tree-sitter-grammars.tree-sitter-nu).overrideAttrs {
                   installQueries = true;
                 })
-              ];
-              telescope = with pkgs.vimPlugins; [
-                telescope-nvim
-                telescope-fzf-native-nvim
-                telescope-file-browser-nvim
-                telescope-manix # nix manix search
-                telescope-undo-nvim
               ];
               always = with pkgs.vimPlugins; [
                 # misc
@@ -333,7 +329,6 @@
         gitPlugins = true;
         customPlugins = true;
         test = true;
-        telescope = true;
         treesitter = true;
         debug = true;
         blink = true;
