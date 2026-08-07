@@ -74,7 +74,7 @@
           lspsAndRuntimeDeps = with pkgs; {
             general = [
               lua-language-server # lua
-              luau-lsp  # luau lsp
+              luau-lsp # luau lsp
               vscode-langservers-extracted # HTML/CSS/JSON/ESLint
               nixd # nix
               bash-language-server # bash
@@ -221,10 +221,6 @@
                 nvim-dap-python # python dap adapter
               ];
             };
-            colorscheme = with pkgs.vimPlugins; [
-              onedarkpro-nvim
-              catppuccin-nvim
-            ];
             markdown = with pkgs.vimPlugins; [
               markdown-preview-nvim
             ];
@@ -344,7 +340,8 @@
             settings.wrapRc = true;
             settings.configDirName = "nvim";
             # TODO(dani): uncomment when neovim-unwrapped gets maintainer
-            settings.neovim-unwrapped = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.default;
+            settings.neovim-unwrapped =
+              inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.default;
             categories = categories // {
               configDirName = "nvim";
             };
