@@ -220,3 +220,61 @@ with no parser.
 `flake.nix` still has no entry — the plugin is sourced from `~/Projects` with
 `dev = true`, per the design's development-phase instruction. Pushing it to
 GitHub and swapping the spec over is the remaining step.
+
+## Performance pass (same day)
+
+The design said nothing about performance and the first implementation followed
+it literally: every pass sized to the buffer. On a 1555-line palette consumer
+that was **89.6 ms per repaint, on every edit** — six times the debounce window
+it was supposed to fit inside.
+
+| | baseline | after |
+| --- | --- | --- |
+| 1555-line consumer, edit | 89.6 ms | 13.6 ms |
+| 554-line `style.lua`, edit | 9.8 ms | 1.6 ms |
+| repaint at a new scroll position | — | 0.25 ms |
+| scroll inside the painted cushion | — | 0.002 ms |
+| real files in this config, edit | — | 0.05–0.40 ms |
+
+The structural fix is that a swatch nobody can see is worth nothing: both passes
+are now bounded by the visible rows plus a cushion. The one pass that cannot be
+bounded — finding the definitions, since `p` is bound on line 1 and used on line
+900 — is cached against `changedtick`, so it runs once per edit and never on a
+scroll.
+
+Then, in the order the profiler asked for them:
+
+- `disable_capture` drops `@local.reference` from the whole-buffer pass inside
+  the query engine — 12245 of 14889 captures, before a Lua node handle exists
+  for any of them. On a private copy of the query, because the one
+  `query.get` returns is cached per language and shared with the whole editor.
+- Definitions are rejected on a line scan before the tree walk that finds their
+  value. Most bindings in a config file are `M.group = { fg = p.bg }`.
+- Scopes became byte intervals rather than node identities: the obvious
+  ancestor walk costs a `node:id()` per level, and `id()` allocates.
+- The literal pass became a line scan rather than a tree walk — 5x cheaper, at
+  the documented cost of also swatching colours inside comments.
+
+Two changes that looked like optimisations measured worse and were reverted:
+memoising the value-lookup strategy per node type (`node:type()` costs more
+than the `field()` calls it saves), and a fixed `row * K + col` deduplication
+key (a long line makes any `K` a lie, silently dropping swatches).
+
+### Two correctness bugs the profiling surfaced
+
+Both were live in the committed version:
+
+- `@local.definition.associated` binds to `(_)` — the *object* of
+  `M.field = ...`, not a name being bound. Reading it as a definition invented
+  a binding called `M` that could shadow the real one.
+- The literal scan matched `#def` inside `#define`, for want of a trailing
+  `%f[%W]` frontier. Any word starting with three hex letters got a swatch.
+
+### Degrading instead of stalling
+
+Line count predicts the definition scan's cost badly — 500 lines of highlight
+groups outweigh 5000 lines of prose. So the valve is the clock: a scan that
+blows `analysis_budget_ms` demotes that buffer to literals-only and says so.
+A 10 000-line file where every line binds a colour table costs one ~200 ms scan
+and then settles at 0 ms with its literals still shown. `:ColorRefs refresh`
+retries.
