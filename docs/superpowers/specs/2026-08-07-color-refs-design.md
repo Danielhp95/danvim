@@ -1,6 +1,8 @@
 # color-refs.nvim — design
 
 Date: 2026-08-07
+Status: **built** — see "As built" at the end for where the code departs from
+this document. The design below is kept as written, not retrofitted.
 
 ## Problem
 
@@ -137,3 +139,84 @@ is easiest to validate visually). Manual validation:
   is an acceptable gap rather than a bug to chase.
 - Deleting a definition line and confirming its reference swatches clear
   on the next debounced pass.
+
+## As built
+
+Implemented at `~/Projects/color-refs.nvim` (commit `fae26b4`), wired into
+danvim via `lua/danvim/plugins/color_refs.lua`. Four deviations from the design
+above, all discovered while building it.
+
+### 1. `require`-resolution, because the spec contradicted itself
+
+"Scope" says reference tracking is same-buffer only. "Testing" says every
+`p.<name>` in the rest of the config must get a swatch. Both cannot hold:
+`p` is `require("danvim.palette")`, so the colour lives in another file and
+same-buffer locals can never reach it. The motivating screenshot is the
+cross-file case.
+
+Resolved in favour of "Testing", since that is the feature actually being
+asked for. A definition whose value is a colour *table* now carries a `fields`
+map, and a member access onto it (`p.steel`) resolves through it. Tables come
+from two places:
+
+- one written out in the buffer — `local t = { steel = "#7890a0" }`
+- one named by `require("mod")` — read from the **running Neovim's**
+  `package.loaded`, not by opening and parsing the other file
+
+The `require` path is why this is not really "cross-file resolution": nothing
+reads `palette.lua`. It asks the interpreter for a table it has already loaded.
+That keeps the no-LSP, no-file-IO property the design wanted, and costs one
+table lookup. Modules not already loaded are only `require`d when listed in the
+new `modules` option, because `require` runs arbitrary Lua and doing that
+silently on whatever a buffer mentions would be a code-execution footgun.
+
+Measured on `lua/danvim/plugins/style.lua`: 101 swatches, all on `p.<name>`.
+
+### 2. A definition→reference resolver had to be written
+
+The design assumed "Scoping is handled by the locals query itself — no manual
+scope-walking needed." Not so: Neovim ships the `locals` *queries* but no
+resolver (nvim-treesitter's `locals` module, which had one, is gone on `main`).
+`locals.lua` therefore builds the scope tree from `@local.scope` captures,
+files each `@local.definition` under its nearest enclosing scope, and resolves
+each `@local.reference` by walking outward. Shadowing works as a result.
+
+Consequence for the API: `references_for` takes the analysis object rather than
+a bare `def_node`, since the scope map is what makes the answer computable.
+
+### 3. `text.lua`, a module the design did not anticipate
+
+Both passes ask for the text of nearly every node, and
+`vim.treesitter.get_node_text` is a buffer round trip each time. Slicing one
+cached copy of the lines took `style.lua` from 12.6 ms to 9.1 ms per pass —
+comfortably inside the 150 ms debounce, where the original was borderline.
+
+### 4. Smaller things
+
+- Alpha (`#rrggbbaa`, `rgba()`, `hsl(... / a)`) is parsed for acceptance and
+  then dropped. A swatch sits on an unknown backdrop, so blending would be a
+  guess.
+- The literal pass stops descending at the first node whose *whole* text is a
+  colour, which is what keeps `a = "#deadbeef"` from matching as well as the
+  string inside it. `parse.color_at` is whole-string for this reason.
+- `:ColorRefs` takes `on` / `off` / `toggle` (default) / `refresh`.
+
+### Verified
+
+Against the design's three manual cases, live in danvim via the `VIMINIT`
+override (`wrapRc = true`, so the repo is not what the installed `nvim` reads):
+
+- `palette.lua` — 25 literal swatches; `style.lua` — 101 reference swatches
+- CSS `rgb(120 144 160)` / `hsl(20 70% 62%)` literals; `var()` gets nothing, as
+  predicted
+- deleting a definition clears its reference swatches on the next debounce
+
+Also covered, beyond the design's list: shadowing (an inner `local a` wins over
+an outer one), JS `const`/object members, and the regex fallback on a filetype
+with no parser.
+
+### Not done
+
+`flake.nix` still has no entry — the plugin is sourced from `~/Projects` with
+`dev = true`, per the design's development-phase instruction. Pushing it to
+GitHub and swapping the spec over is the remaining step.
