@@ -55,7 +55,7 @@ vim.opt.jumpoptions = "stack,view" -- Enable enhanced jump options for the jump 
 vim.o.splitkeep = "screen" -- Keep screen stable when splits open/close (0.9+).
 vim.o.smoothscroll = true -- Smooth scrolling for wrapped lines (0.10+).
 vim.o.foldmethod = "indent" -- Use indentation-based folding by default.
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- Use Tree-sitter-based folding expressions.
+vim.wo.foldexpr = vim.treesitter.foldexpr -- Use Tree-sitter-based folding expressions.
 vim.o.foldnestmax = 10 -- Set maximum fold nesting limit.
 vim.o.foldlevel = 10 -- Set initial fold level.
 vim.o.scrolloff = 3 -- Keep 3 lines visible above and below the cursor when scrolling.
@@ -79,7 +79,11 @@ vim.o.modeline = true -- Enable modelines for file-specific settings.
 vim.o.conceallevel = 1 -- Show concealed text with low visibility.
 vim.o.showmode = false -- Hide mode in status line (managed by plugins like lualine).
 vim.o.laststatus = 2 -- Use a global status line across all windows.
-vim.o.cmdheight = 1 -- Reserve one line below statusline for commands and messages.
+-- 0, not 1: the cmdline lives in a floating window (plugins/cmdline.lua), so
+-- reserving a row below the statusline would just leave a permanent gap.
+-- tiny-cmdline forces this to 0 at runtime anyway; setting it here avoids the
+-- two fighting on startup. It temporarily bumps to 1 during a search.
+vim.o.cmdheight = 0
 vim.o.fillchars =
 	"eob: ,fold: ,diff:╱,msgsep:─,vert:│,horiz:─,horizup:╴,horizdown:╶,vertleft:╴,vertright:╶" -- Define fill characters for UI items.
 vim.o.diffopt = "internal,filler,closeoff,linematch:40,iwhite"
