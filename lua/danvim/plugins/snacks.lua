@@ -49,7 +49,7 @@ return {
 			-- already listed by fd/rg). Toggle live with <a-h> / <a-i>.
 			hidden = true,
 			ignored = true,
-			exclude = { ".git", "node_modules", ".venv", "__pycache__", "result" },
+			exclude = { ".git", "node_modules", ".venv", "__pycache__", ".mypy_cache", "result" },
 			sources = {
 				files = { hidden = true, ignored = true },
 				grep = { hidden = true, ignored = true },
