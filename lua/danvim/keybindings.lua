@@ -49,7 +49,7 @@ wk.add({
 	{ "<C-Left>", "<cmd>vertical resize +1<cr>", desc = "Continuous window horizontal resize" },
 	{ "<C-Right>", "<cmd>vertical resize -1<cr>", desc = "Continuous window horizontal resize" },
 	{ "<C-Up>", "<cmd>resize -1<cr>", desc = "Continuous window vertical resize" },
-	{ "<leader>z", ":SimpleZoomToggle<CR>", desc = "Toggle [z]oom for current window" },
+	{ "<leader>z", ":Maximize<CR>", desc = "Toggle [z]oom for current window" },
 	{ "<C-s><C-s>", "<cmd>w<cr>", desc = "[s]ave buffer" },
 	{ "<leader>nw", group = "[n]o" },
 	{ "<leader>nwh", "<cmd>noh<cr>", desc = "[h]ighlight" },
@@ -70,6 +70,7 @@ wk.add({
 	{ "gp", "`[v`]", desc = "[g]o to and visually select last [p]asted text" },
 	{ "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Toggle [u]ndotree" },
 	{ "<leader>tc", "<cmd>TSContextToggle<cr>", desc = "[t]oggle treesitter [c]ontext" },
+	{ "<leader>C", "<cmd>ColorRefs<cr>", desc = "Toggle [C]olour swatches (color-refs)" },
 	{
 		"<leader>vi",
 		"<cmd>vnew term://ipython -i %<cr>",
@@ -148,15 +149,15 @@ wk.add({
 	{ "<leader>oc", group = "[c]omments" },
 })
 
--- Telescope / Snacks
+-- Pickers (snacks.picker)
 wk.add({
-	{ "<leader>t", group = "[t]elescope" },
+	{ "<leader>t", group = "Pickers" },
 	{ "<leader>tS", '<cmd>lua require("snacks").picker.lsp_workspace_symbols()<CR>', desc = "Workspace lsp [S]ymbols" },
 	{ "<leader>ts", '<cmd>lua require("snacks").picker.lsp_symbols()<CR>', desc = "buffer lsp [s]ymbols" },
 	{ "<leader>tb", '<cmd>lua require("snacks").picker.buffers()<CR>', desc = "[b]uffers" },
 	{
 		"<leader>td",
-		"<cmd>lua require'telescope.builtin'.find_files({cwd='~/nix_config'})<cr>",
+		'<cmd>lua require("snacks").picker.files({ cwd = "~/nix_config" })<cr>',
 		desc = "Open NIX config [d]irectory",
 	},
 	{ "<leader>tf", '<cmd>lua require("snacks").picker.files()<CR>', desc = "Find [f]iles" },
@@ -169,7 +170,8 @@ wk.add({
 	{ "<leader>to", '<cmd>lua require("snacks").picker.smart()<CR>', desc = "Last [o]pened files" },
 	{ "<leader>tr", '<cmd>lua require("snacks").picker.resume()<cr>', desc = "[r]esume last search" },
 	{ "<leader>tm", '<cmd>lua require("snacks").picker.marks()<cr>', desc = "[m]arks " },
-	{ "<leader>tt", "<cmd>Telescope<CR>", desc = "Default [t]elescope" },
+	-- Same as <leader>Sp; kept here because <leader>t is the picker namespace
+	{ "<leader>tt", '<cmd>lua require("snacks").picker.pickers()<CR>', desc = "All pickers" },
 	{ "<c-f>", '<cmd>lua require("snacks").picker.grep_buffers()<cr>', desc = "Search open [b]uffers" },
 })
 
@@ -227,7 +229,7 @@ wk.add({
 	{ "<leader>sp", "[s", desc = "[p]revious spelling error" },
 	{
 		"<leader>ss",
-		"<cmd>lua require('telescope.builtin').spell_suggest(require('telescope.themes').get_cursor())<cr>",
+		'<cmd>lua require("snacks").picker.spelling()<cr>',
 		desc = "[s]uggestion",
 	},
 	{ "<leader>st", "<cmd>set spell!<cr>", desc = "[t]oggle spell check" },
@@ -256,12 +258,11 @@ wk.add({
 })
 
 -- LSP
-local vertical_layout = "{layout_strategy='vertical', layout_config = {mirror = true}}"
 wk.add({
 	{ "<leader>l", group = "[l]sp" },
 	{
 		"<leader>lD",
-		"<cmd>lua vim.lsp.buf.definition({layout_strategy='vertical', layout_config = {mirror = true}})<CR>",
+		"<cmd>lua require('snacks').picker.lsp_definitions()<CR>",
 		desc = "Go to [D]efinition",
 	},
 	{ "<leader>lI", "<cmd>checkhealth vim.lsp<cr>", desc = "[I]nformation about LSPs" },
@@ -275,14 +276,14 @@ wk.add({
 	},
 	{
 		"<leader>li",
-		"<cmd>lua vim.lsp.buf.implementation({layout_strategy='vertical', layout_config = {mirror = true}})<CR>",
+		"<cmd>lua require('snacks').picker.lsp_implementations()<CR>",
 		desc = "Go to [i]mplementation",
 	},
 	{ "<leader>ln", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Re[n]ame" },
 	{ "<leader>lr", "<cmd>Trouble lsp_references<cr>", desc = "Show [r]eferences" },
 	{
 		"<leader>lt",
-		"<cmd>lua vim.lsp.buf.type_definition({layout_strategy='vertical', layout_config = {mirror = true}})<CR>",
+		"<cmd>lua require('snacks').picker.lsp_type_definitions()<CR>",
 		desc = "Go to [t]ype definition",
 	},
 	{ "<leader>le", "<cmd>lua vim.lsp.buf.declaration()<CR>", desc = "Go to d[e]claration" },
@@ -324,6 +325,9 @@ wk.add({
 	{ "<leader>be", "<cmd>DapViewWatch<cr>", desc = "[e]valuate / watch expression" },
 	{ "<leader>bi", "<cmd>lua require'dap'.terminate()<cr>", desc = "[i]nterrupt debugger session" },
 	{ "<leader>bl", group = "[l]ist" },
+	-- BROKEN if revived: telescope (and telescope-dap) were removed from this
+	-- config. snacks.picker has no DAP sources, so these five need either
+	-- nvim-dap-view's own listings or a hand-rolled picker.
 	{ "<leader>blC", "<cmd>Telescope dap configurations<cr>", desc = "[C]onfigurations" },
 	{ "<leader>blb", "<cmd>Telescope dap list_breakpoints<cr>", desc = "[b]reakpoints" },
 	{ "<leader>blc", "<cmd>Telescope dap commands<cr>", desc = "[c]ommands" },
