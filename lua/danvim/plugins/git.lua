@@ -16,7 +16,13 @@ return {
 	},
 	{ "lewis6991/gitsigns.nvim", event = { "BufReadPre", "BufNewFile" }, opts = {} },
 	{
-		"sindrets/diffview.nvim",
+		-- Maintained fork of sindrets/diffview.nvim (dead since 2024-06-13).
+		-- The name matters beyond cosmetics: nixCats' dev.path resolver looks up
+		-- pack/myNeovimPackages/opt/<spec name>, so leaving this as
+		-- "sindrets/diffview.nvim" makes lazy miss the nix package and silently
+		-- git-clone the dead upstream instead. Commands, opts and the module
+		-- name (`require("diffview")`) are unchanged by the fork.
+		"dlyongemallo/diffview-plus.nvim",
 		cmd = {
 			"DiffviewOpen",
 			"DiffviewOpenConflicts",
