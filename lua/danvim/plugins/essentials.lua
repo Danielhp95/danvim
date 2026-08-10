@@ -9,6 +9,7 @@
 
 return {
 	"folke/which-key.nvim", -- eager: keybindings.lua requires it right after lazy setup
+	{ "declancm/maximize.nvim", config = true },
 	{ "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },
 	{
 		"kylechui/nvim-surround",
