@@ -1,3 +1,5 @@
+local p = require("danvim.palette")
+
 return {
 	{
 		"ember-theme/nvim",
@@ -6,6 +8,32 @@ return {
 				on_highlights = function(hl, theme)
 					local syn = theme.syn
 
+					-- The upstream theme's palette has drifted from palette.nix, which
+					-- is what tmux, starship, zsh and the terminals all render from.
+					-- Two hues are off:
+					--
+					--   * sage is a shade colder here than the palette's.
+					--   * rose does not exist in the system palette at all any more —
+					--     tmux dropped it when its colours were generated from
+					--     palette.nix, so nvim was the only thing still emitting it.
+					--
+					-- Rewriting them here rather than per-group catches every use,
+					-- including groups this config never names.
+					local drift = {
+						["#80a090"] = p.sage,
+						["#b07878"] = p.accentDim,
+					}
+					for _, spec in pairs(hl) do
+						if type(spec) == "table" then
+							for _, key in ipairs({ "fg", "bg", "sp" }) do
+								local corrected = type(spec[key]) == "string" and drift[spec[key]:lower()]
+								if corrected then
+									spec[key] = corrected
+								end
+							end
+						end
+					end
+
 					-- Bold visual selection (the ColorScheme autocmd in aucmds.lua
 					-- can fire too late for the startup colorscheme)
 					hl["Visual"] = { bg = theme.ui.visual, bold = true }
@@ -13,18 +41,29 @@ return {
 					-- Parameters get their own color (mauve — otherwise unused in syntax)
 					hl["@variable.parameter"] = { fg = syn.mauve, italic = true }
 
-					-- self/cls/this distinct from keywords: rose instead of coral
-					hl["@variable.builtin"] = { fg = syn.rose, italic = true }
+					-- self/cls/this distinct from keywords. Banked coral rather than
+					-- the hero coral the keywords themselves use: self *is*
+					-- keyword-adjacent, so staying in the accent family reads
+					-- correctly, and mauve is already spoken for above.
+					hl["@variable.builtin"] = { fg = p.accentDim, italic = true }
 					-- self/cls in a method signature (python captures these as parameter.builtin)
-					hl["@variable.parameter.builtin"] = { fg = syn.rose, italic = true }
-					hl["@module.builtin"] = { fg = syn.rose, italic = true }
-					hl["@lsp.typemod.variable.defaultLibrary"] = { fg = syn.rose, italic = true }
+					hl["@variable.parameter.builtin"] = { fg = p.accentDim, italic = true }
+					hl["@module.builtin"] = { fg = p.accentDim, italic = true }
+					hl["@lsp.typemod.variable.defaultLibrary"] = { fg = p.accentDim, italic = true }
 
 					-- self/cls/this inside method bodies — pyright/ty emit selfParameter
 					-- and clsParameter token types; rust-analyzer emits selfKeyword
 					hl["@lsp.type.selfParameter"] = { link = "@variable.builtin" }
 					hl["@lsp.type.clsParameter"] = { link = "@variable.builtin" }
 					hl["@lsp.type.selfKeyword"] = { link = "@variable.builtin" }
+
+					-- Inlay hints. The theme leaves them on #3e3c38, which is 1.5:1
+					-- against the buffer — legible only if you already know what it says.
+					-- steel is palette.nix's neutral-metadata slot (paths, options, info)
+					-- and a type hint is precisely that, so it lands at 4.6:1 without
+					-- competing with the code it annotates — and its hue alone marks it
+					-- as not-source, since nothing else in the buffer is steel.
+					hl["LspInlayHint"] = { fg = p.steel }
 
 					-- Scroll position indicators in coral, so "where am I in this list"
 					-- reads at a glance. Both default to a muted #585550 that all but
@@ -73,7 +112,7 @@ return {
 					-- pixels and every corner degrades into a chamfer — which is exactly what
 					-- the theme's own base3 (#2e2d2a on #1c1b19) did. Anything substituted
 					-- here wants to stay well clear of the background for that reason.
-					local border = "#b8654c"
+					local border = p.accentDim
 
 					-- `bg` must follow the *buffer*, not the float, for the arc to read as
 					-- the outer edge of the menu. A border cell is still a full rectangular
@@ -114,9 +153,35 @@ return {
 
 			-- Search highlight overrides: gray background, keep the
 			-- underlying foreground (no fg), bold the matched text.
-			local search = { fg = "NONE", bg = "#4c4b49", bold = true }
+			local search = { fg = "NONE", bg = p.divider, bold = true }
 			for _, group in ipairs({ "Search", "IncSearch", "CurSearch" }) do
 				vim.api.nvim_set_hl(0, group, search)
+			end
+
+			-- :terminal renders through these, not through the theme's syntax
+			-- colours, so without them a shell inside nvim disagrees with the same
+			-- shell one keystroke away in kitty/ghostty. Same 16 slots, same order,
+			-- same palette.nix values the terminals themselves are set from.
+			local term = {
+				p.bg,
+				p.accent,
+				p.olive,
+				p.gold,
+				p.steel,
+				p.mauve,
+				p.sage,
+				p.fg,
+				p.muted,
+				p.accentBright,
+				p.oliveBright,
+				p.goldBright,
+				p.steelBright,
+				p.mauveBright,
+				p.sageBright,
+				"#ffffff",
+			}
+			for i, color in ipairs(term) do
+				vim.g["terminal_color_" .. (i - 1)] = color
 			end
 		end,
 	},
