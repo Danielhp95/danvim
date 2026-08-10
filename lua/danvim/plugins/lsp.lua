@@ -46,6 +46,15 @@ local fidget = {
 	opts = {},
 }
 
+-- Diagnostics / LSP reference list. Used by <leader>dP, <leader>db and
+-- <leader>lr. Previously declared inside plugins/telescope.lua; moved here
+-- when telescope was removed so the bindings survive.
+local trouble = {
+	"folke/trouble.nvim",
+	cmd = "Trouble",
+	opts = { auto_preview = true },
+}
+
 -- LSP Configuration & Plugins
 local lspconfig_toplevel = {
 	"neovim/nvim-lspconfig",
@@ -154,4 +163,5 @@ return {
 	fidget,
 	lazydev,
 	Conform,
+	trouble,
 }
