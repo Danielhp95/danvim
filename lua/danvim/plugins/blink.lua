@@ -1,19 +1,47 @@
+-- Toggle the signature help window for the call the cursor sits inside.
+-- Used from normal mode, where blink's own keymap table never reaches: blink
+-- only auto-hides the window on InsertLeave and its CursorMoved handler bails
+-- out outside of insert mode, so a window opened from normal mode would
+-- otherwise hang around over an unrelated line. Hence the one-shot teardown.
+local function toggle_signature()
+	local cmp = require("blink.cmp")
+	if cmp.is_signature_visible() then
+		return cmp.hide_signature()
+	end
+	cmp.show_signature()
+	vim.api.nvim_create_autocmd({ "CursorMoved", "BufLeave" }, {
+		once = true,
+		callback = function()
+			require("blink.cmp").hide_signature()
+		end,
+	})
+end
+
 return {
 	{
 		"saghen/blink.cmp",
-		event = { "InsertEnter", "CmdlineEnter" },
+		-- LspAttach, not just InsertEnter: signature help is useless if it only
+		-- arrives once you have already started typing, and every buffer that can
+		-- produce a signature is by definition one an LSP attached to.
+		event = { "InsertEnter", "CmdlineEnter", "LspAttach" },
+		-- Normal-mode half of <C-k>; the insert-mode half lives in opts.keymap
+		-- below. Going through lazy's `keys` also loads blink when the session
+		-- has not entered insert mode yet.
+		keys = {
+			{
+				"<C-k>",
+				toggle_signature,
+				mode = "n",
+				desc = "Toggle LSP signature help for enclosing call",
+			},
+		},
 		dependencies = {
 			"rafamadriz/friendly-snippets",
 			"moyiz/blink-emoji.nvim",
-			"Kaiser-Yang/blink-cmp-avante",
 			"xzbdmw/colorful-menu.nvim",
 			"fang2hou/blink-copilot",
 			"archie-judd/blink-cmp-words",
 			"daliusd/blink-cmp-fuzzy-path", -- Fuzzy searches paths recursively
-			{
-				"Kaiser-Yang/blink-cmp-git",
-				dependencies = { "nvim-lua/plenary.nvim" },
-			},
 			"mikavilpas/blink-ripgrep.nvim",
 			"ribru17/blink-cmp-spell", -- Spell suggestions from Neovim's spellcheck
 			"MahanRahmati/blink-nerdfont.nvim", -- Nerd Font icon completion (trigger ":")
@@ -44,6 +72,13 @@ return {
 			})
 		end,
 
+		-- Same as lazy's default handler, plus the signature help reformatting
+		-- (which patches a blink internal, so it has to run after setup)
+		config = function(_, opts)
+			require("blink.cmp").setup(opts)
+			require("danvim.blink_signature").setup()
+		end,
+
 		---@module 'blink.cmp'
 		---@type blink.cmp.Config
 		opts = {
@@ -59,9 +94,20 @@ return {
 					end,
 					"fallback",
 				},
-				["K"] = { "show_signature", "hide_signature", "fallback" },
 				["<C-j>"] = { "select_next" },
-				["<C-k>"] = { "select_prev" },
+				-- Menu open: cycle upwards. Otherwise toggle the signature help
+				-- window, matching <C-k> in normal mode (see `keys` above).
+				["<C-k>"] = {
+					function(cmp)
+						if cmp.is_visible() then
+							return cmp.select_prev()
+						end
+						if cmp.is_signature_visible() then
+							return cmp.hide_signature()
+						end
+						return cmp.show_signature()
+					end,
+				},
 				-- Jump half a page (25 items) in completion menu
 				["<a-u>"] = { "scroll_documentation_up", "fallback" },
 				["<a-d>"] = { "scroll_documentation_down", "fallback" },
@@ -179,7 +225,6 @@ return {
 					"ripgrep",
 				},
 				per_filetype = {
-					AvanteInput = { "avante" },
 					markdown = { inherit_defaults = true, "emoji", "nerdfont", "dictionary", "spell" },
 					gitcommit = { inherit_defaults = true, "emoji", "spell" },
 					text = { inherit_defaults = true, "dictionary", "spell" },
@@ -236,21 +281,6 @@ return {
 							max_completions = 2,
 						},
 					},
-					git = {
-						-- NOTE: if you can't see users / issues, it's probably because you need to login via `gh auth login`
-						module = "blink-cmp-git",
-						name = "Git",
-						opts = {
-							-- options for the blink-cmp-git
-						},
-					},
-					avante = {
-						module = "blink-cmp-avante",
-						name = "Avante",
-						opts = {
-							-- options for blink-cmp-avante
-						},
-					},
 					emoji = {
 						module = "blink-emoji",
 						name = "Emoji",
@@ -305,6 +335,11 @@ return {
 				enabled = true,
 				window = {
 					show_documentation = true,
+					-- One line per parameter (see danvim.blink_signature) makes a
+					-- wide signature tall, and the default 10 rows cut the last
+					-- parameters off entirely
+					max_height = 25,
+					scrollbar = true,
 				},
 				trigger = {
 					enabled = true,

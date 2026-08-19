@@ -161,8 +161,8 @@ require('vim._core.ui2').enable({
 local ui2 = require("vim._core.ui2")
 local msgs = require("vim._core.ui2.messages")
 local orig_set_pos = msgs.set_pos
-msgs.set_pos = function(tgt)
-	orig_set_pos(tgt)
+msgs.set_pos = function(tgt, focus)
+	orig_set_pos(tgt, focus)
 	if (tgt == "msg" or tgt == nil) and vim.api.nvim_win_is_valid(ui2.wins.msg) then
 		pcall(vim.api.nvim_win_set_config, ui2.wins.msg, {
 			relative = "editor",

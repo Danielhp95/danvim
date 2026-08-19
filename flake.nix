@@ -17,6 +17,14 @@
       # nixpkgs is what makes the nix-community cache hit; following ours
       # meant compiling neovim locally on every nightly bump.
     };
+
+    # Local, unpublished plugin under active development; picked up by
+    # standardPluginOverlay (see `dependencyOverlays` below) as
+    # `pkgs.neovimPlugins.color-refs`.
+    plugins-color-refs = {
+      url = "path:/home/dani/Projects/color-refs.nvim";
+      flake = false;
+    };
   };
 
   # see :help nixCats.flake.outputs
@@ -85,6 +93,8 @@
 
               marksman # markdown
               texlab # LaTex
+
+              elan
 
               yaml-language-server # yaml
               docker-language-server
@@ -162,12 +172,16 @@
 
               ## Git
               vim-fugitive # tpope git core plugin
-              gitlinker-nvim # open/copy external git forge links (GBrowse replacement)
+              # NOTE: no gitlinker here — nixpkgs still packages ruifm's abandoned
+              # original, so the maintained linrongbin16 fork is lazy-cloned
+              # instead (see git.lua).
               gitsigns-nvim # git signs in the columns  (TODO: look more things in this plugin)
               # Maintained fork; sindrets/diffview.nvim's last commit was 2024-06-13.
               # Drop-in: same commands, same opts, CI runs on nightly.
               diffview-plus-nvim # Diif/Merge view UI
               octo-nvim # GitHub issues/PRs/reviews as buffers (uses `gh`, see lspsAndRuntimeDeps)
+              vim-flog # git branch/commit graph browser, drives fugitive
+              lensline-nvim # inline lenses (blame/author/refs) on LspAttach
 
               # Completion
               colorful-menu-nvim # Better tresitter integration in completion engine
@@ -176,8 +190,7 @@
               firenvim # embed neovim in browser text areas (needs Firenvim browser extension)
 
               ## LSP
-              # TODO(add back)
-              # nvim-lspconfig # Top level LSP configuratio
+              nvim-lspconfig # Top level LSP configuration
               fidget-nvim
               lazydev-nvim # Lua nvim API types (replaces neodev)
 
@@ -187,11 +200,17 @@
               bufferline-nvim
               trouble-nvim
               yazi-nvim
+              markview-nvim # in-buffer markdown rendering (see style.lua)
+              codediff-nvim # side-by-side diff UI behind :CodeDiff (needs nui)
 
               # Library
               snacks-nvim
 
+              pkgs.neovimPlugins.color-refs # colour swatches at variable references
+
               nvim-bqf # TODO: learn this!
+
+              lean-nvim # Lean 4 support (needs `elan`, see lspsAndRuntimeDeps)
 
               ## Treesitter
               nvim-treesitter-textobjects # conceals top part of screen in deeply nested code
@@ -200,6 +219,11 @@
               # AI
               # avante-nvim
               claudecode-nvim # coder/claudecode.nvim: drive the real `claude` CLI in-editor
+              # olimorris/codecompanion.nvim: chat + inline editing against the
+              # local ollama server. Deliberately light -- plenary and
+              # treesitter are its only deps and both are already here, and
+              # unlike avante it builds no native component.
+              codecompanion-nvim
               # inputs.stable.legacyPackages.x86_64-linux.vimPlugins.copilot-lua
               copilot-lua
             ];
@@ -217,12 +241,31 @@
                 nvim-dap-view # minimal modern DAP UI
                 nvim-nio # required by nvim-dap-view
                 nvim-dap-virtual-text # UI / Highlight for DAP virtual text
-                one-small-step-for-vimkind-nvim # lua dap adapter
                 nvim-dap-python # python dap adapter
               ];
             };
             markdown = with pkgs.vimPlugins; [
-              markdown-preview-nvim
+              # Browser preview for markdown/HTML/AsciiDoc/SVG. Replaced
+              # markdown-preview-nvim, whose upstream has been dormant since
+              # 2023-10 (last tag 2022), so nixpkgs could only ever ship a
+              # three-year-old snapshot of it. This one is pure Lua -- no node
+              # bundle, no build step -- and nixpkgs tracks its current tag.
+              #
+              # Pinned past v0.9.6: that tag's Server:start ends in `uv.run()`,
+              # which runs libuv's loop to completion -- but inside Neovim that
+              # loop is already Neovim's own, so it never returns and the editor
+              # freezes on :LivePreview (upstream #362, fixed 2026-03-05). No
+              # release has been cut since, so the tag nixpkgs packages is still
+              # the broken one. Drop the override once a tag > v0.9.6 lands.
+              (live-preview-nvim.overrideAttrs {
+                version = "0.9.6-unstable-2026-07-21";
+                src = pkgs.fetchFromGitHub {
+                  owner = "brianhuster";
+                  repo = "live-preview.nvim";
+                  rev = "a30e54e51e7480d7060c8c8185f2a963ad3518b4";
+                  hash = "sha256-k88cp5kvlfc/9H02PMjEJ4kYgTt5xDIhq9RxspeSAMA=";
+                };
+              })
             ];
             general = {
               ui = with pkgs.vimPlugins; [
@@ -234,13 +277,14 @@
                 nvim-web-devicons # nerd fonts for nvim
                 tiny-cmdline-nvim # floating cmdline popup (top-center), repositions ui2's own window
                 nui-nvim # UI library (required by codediff)
+                mini-icons # icon provider markview is pointed at
+                tiny-devicons-auto-colors-nvim # recolours devicons to the Ember palette
               ];
               blink = with pkgs.vimPlugins; [
-                # blink completion engine
-                # blink-cmp  Too old in nixpkgs
+                # blink completion engine. blink-cmp itself is not listed: the
+                # sources below already pull it in as a dependency, so nix puts
+                # it in `start` regardless.
                 blink-copilot
-                blink-cmp-git
-                blink-cmp-avante
                 blink-emoji-nvim
                 blink-ripgrep-nvim
                 blink-cmp-spell # spell suggestions from Neovim's spellcheck
@@ -255,15 +299,14 @@
                   installQueries = true;
                 })
               ];
-              always = with pkgs.vimPlugins; [
-                # misc
-                fzf-vim # another fuzzy search tool/picker
-                pkgs.fzf # for above
-
-                # Movement / buffer management
-                flash-nvim # jump around with f,t,s
-                harpoon # mark buffers and jump between them
-              ];
+              # Emptied by the 2026-08 dead-weight pass: fzf-vim, harpoon and
+              # one-small-step-for-vimkind were shipped here with no lazy spec
+              # anywhere, so lazy never loaded them; flash-nvim's spec is
+              # commented out in essentials.lua. Re-adding any of them means
+              # re-adding its spec too, or it lands back in `opt` unused.
+              # (`pkgs.fzf` went with fzf-vim, but the fzf *binary* is still on
+              # nvim's PATH via lspsAndRuntimeDeps above.)
+              always = with pkgs.vimPlugins; [ ];
             };
           };
 
@@ -322,6 +365,8 @@
       categories = {
         dani = true;
         general = true;
+        format = true;
+        markdown = true;
         gitPlugins = true;
         customPlugins = true;
         test = true;

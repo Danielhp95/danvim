@@ -179,6 +179,70 @@ return {
 			end, { desc = "Toggle snacks inline image rendering" })
 		end
 
+		-- snacks hides a placement whenever an update ticks while its buffer has
+		-- no window in the CURRENT tabpage (Placement:wins() only scans the
+		-- current tab), and nothing ever un-hides file-viewer placements again —
+		-- Placement:show() is only called from the inline-markdown conceal cycle.
+		-- So view an image, switch tab (any scheduled update fires), switch back:
+		-- the image is permanently blank, with no error anywhere. Upstream closed
+		-- this as wontfix (folke/snacks.nvim#2634). Un-hide on the first update
+		-- that sees the buffer visible again. Inline (markdown-embed) placements
+		-- are excluded: inline.lua's cursor-driven conceal cycle already calls
+		-- show() for them, and un-hiding here would defeat cursor-line conceal.
+		do
+			local Placement = require("snacks.image.placement")
+			local update = Placement.update
+			Placement.update = function(self)
+				if self.hidden and not (self.opts and self.opts.inline) and self:ready() and #self:wins() > 0 then
+					self.hidden = false
+				end
+				return update(self)
+			end
+		end
+
+		-- Inside tmux the pane pty reports rows/cols but xpixel=ypixel=0. snacks'
+		-- terminal.size() only guards rows/cols==0, so cell_width becomes 0/cols=0,
+		-- util.fit() then computes inf/inf=NaN for the placement width, and
+		-- render_grid's `for c = 1, nan` draws an EMPTY placeholder grid: blank
+		-- image, no error anywhere. Treat a zero/NaN cell size as unknown and
+		-- substitute the real cell size tmux learned from the attached client
+		-- (#{client_cell_width}), falling back to snacks' own 9x18 defaults.
+		do
+			local T = require("snacks.image.terminal")
+			local size = T.size
+			local tmux_cell ---@type {w:number,h:number}|false|nil nil=unqueried, false=unavailable
+			local function bad(v)
+				return not v or v == 0 or v ~= v -- 0, nil or NaN
+			end
+			T.size = function()
+				local s = size()
+				if bad(s.cell_width) or bad(s.cell_height) then
+					if tmux_cell == nil then
+						tmux_cell = false
+						if vim.env.TMUX then
+							local ok, out = pcall(vim.fn.system, { "tmux", "display", "-p", "#{client_cell_width}x#{client_cell_height}" })
+							local w, h
+							if ok then
+								w, h = vim.trim(out):match("^(%d+)x(%d+)$")
+							end
+							w, h = tonumber(w), tonumber(h)
+							if w and h and w > 0 and h > 0 then
+								tmux_cell = { w = w, h = h }
+							end
+						end
+					end
+					local dw = tmux_cell and tmux_cell.w or 9
+					local dh = tmux_cell and tmux_cell.h or 18
+					-- s is terminal.lua's memoized table: fixing it in place heals
+					-- every later size() call until the next VimResized recompute
+					s.cell_width, s.cell_height = dw, dh
+					s.width, s.height = s.columns * dw, s.rows * dh
+					s.scale = math.max(1, dw / 8)
+				end
+				return s
+			end
+		end
+
 		local function get_site_packages()
 			local venv = os.getenv("VIRTUAL_ENV")
 			if not venv then

@@ -1,5 +1,31 @@
 return {
-  -- { 'iamcco/markdown-preview.nvim', cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' }, ft = { 'markdown' } },
+	-- Browser-based live preview: markdown, HTML (+CSS/JS), AsciiDoc and SVG,
+	-- with KaTeX and Mermaid. Complements markview.nvim (style.lua) rather than
+	-- duplicating it: markview renders *in* the buffer, this serves the rendered
+	-- document to a real browser and live-updates it as you type, which is what
+	-- you want for checking how a README will actually look.
+	--
+	-- Replaced iamcco/markdown-preview.nvim, dormant since 2023-10 (last tag
+	-- 2022), so nixpkgs could only ever ship a three-year-old snapshot of it.
+	-- This one is pure Lua: no node bundle, no `cd app && yarn install`. What
+	-- went away with it is the wider diagram set -- PlantUML, flowchart.js, dot
+	-- and chart.js all came from that node bundle; Mermaid and KaTeX are the
+	-- only two rendered here.
+	--
+	-- Unlike its predecessor, `cmd` is a real lazy trigger: :LivePreview is a
+	-- global user command, where markdown-preview declared `-buffer` local ones
+	-- from a FileType autocmd that lazy's stub could never reach in time.
+	{
+		"brianhuster/live-preview.nvim",
+		cmd = "LivePreview",
+		config = function()
+			-- Not `opts`: lazy would route it through require('livepreview').setup,
+			-- which upstream marks @deprecated in favour of the config module.
+			require("livepreview.config").set {
+				picker = "snacks.picker", -- snacks is already in the plugin set
+			}
+		end,
+	},
   -- {
   --   'obsidian-nvim/obsidian.nvim',
   --   version = '*', -- recommended, use latest release instead of latest commit

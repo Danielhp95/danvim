@@ -8,6 +8,22 @@
 -- })
 
 return {
+	"Julian/lean.nvim",
+	event = { "BufReadPre *.lean", "BufNewFile *.lean" },
+
+	dependencies = {
+		-- optional dependencies:
+
+		-- 'nvim-telescope/telescope.nvim', -- for Lean-specific pickers
+		-- 'andymass/vim-matchup',          -- for enhanced % motion behavior
+		-- 'andrewradev/switch.vim',        -- for switch support
+		-- 'tomtom/tcomment_vim',           -- for commenting
+	},
+
+	---@type lean.Config
+	opts = { -- see the manual for full configuration options
+		mappings = true,
+	},
 	"folke/which-key.nvim", -- eager: keybindings.lua requires it right after lazy setup
 	{ "declancm/maximize.nvim", config = true },
 	{ "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },
@@ -34,6 +50,10 @@ return {
 		dependencies = { "MunifTanjim/nui.nvim" },
 		cmd = "CodeDiff",
 	},
+	-- Kept commented for the <C-S> note below, which is the expensive part to
+	-- rediscover. flash-nvim is no longer in flake.nix (it was shipping to `opt`
+	-- while this spec was off), so un-commenting this alone makes lazy git-clone
+	-- it — add it back to the `always` category if you want it nix-managed.
 	-- {
 	-- 	"folke/flash.nvim",
 	-- 	event = "VeryLazy",

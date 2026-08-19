@@ -40,12 +40,16 @@ return {
 	ash = "#8a5a3c", -- burnt-umber ramp tail (flame trails); decorative only — 3:1 on bg
 
 	-- Secondary hues, shared with the terminal palette. olive = strings/success,
-	-- gold = needs-attention-not-broken (ration it: at 8.4:1 it outshines
-	-- accent), steel = neutral metadata, mauve = language structure, sage =
-	-- injected/dynamic values, error = failures only.
+	-- gold = emphasis-and-attention (ration it: at 8.4:1 it outshines accent),
+	-- steel = quiet metadata (inlay hints, info diagnostics, ANSI blue slot),
+	-- mauve = language structure, sage = injected/dynamic values, error =
+	-- failures only. "steel" is a historical name — the slot held a steel blue
+	-- until 2026-08, when it became magma orange; the name stays because every
+	-- consumer and palette.nix reference it. Magma is near-equiluminant with
+	-- accent (1.05:1), so never use it to contrast against coral.
 	olive = "#8a9868",
 	gold = "#c8b468",
-	steel = "#7890a0",
+	steel = "#ef7f38",
 	mauve = "#988090",
 	sage = "#7aa88a",
 	error = "#e05252",
@@ -56,7 +60,7 @@ return {
 	-- and in particular not by the statusline.
 	oliveBright = "#acc66d",
 	goldBright = "#e3cc75",
-	steelBright = "#80adcb",
+	steelBright = "#fb9c5f",
 	mauveBright = "#c586b0",
 	sageBright = "#84d19f",
 }

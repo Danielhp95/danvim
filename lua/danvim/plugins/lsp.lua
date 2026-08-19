@@ -141,6 +141,8 @@ local lspconfig_toplevel = {
 			},
 		}
 		vim.lsp.enable("luau_lsp")
+		-- LEAN
+		vim.lsp.enable("leanls")
 		-- latex
 		vim.lsp.enable("texlab")
 		-- NIX
@@ -158,10 +160,26 @@ local lspconfig_toplevel = {
 	end,
 }
 
+local code_actions = {
+	"rachartier/tiny-code-action.nvim",
+	dependencies = {
+		-- For pickers
+		{
+			"folke/snacks.nvim",
+			opts = {
+				terminal = {},
+			},
+		},
+	},
+	event = "LspAttach",
+	opts = {},
+}
+
 return {
 	lspconfig_toplevel,
 	fidget,
 	lazydev,
 	Conform,
 	trouble,
+	code_actions,
 }

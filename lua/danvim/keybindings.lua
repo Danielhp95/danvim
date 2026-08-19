@@ -85,10 +85,17 @@ wk.add({
 	{ "[q", "<cmd>cprev<CR>", desc = "[p]rev item quickfix list" },
 })
 
--- Avante (AI)
+-- AI (codecompanion.nvim, pointed at the local ollama server). Actual keymaps
+-- live in the plugin spec (lua/danvim/plugins/codecompanion.lua); this just
+-- labels the which-key group.
+--
+-- The old "[a]vante" label and its <leader>as -> AvanteStop mapping lived here
+-- until codecompanion took the group over. AvanteStop had been dead since the
+-- avante spec was commented out (plugins/avante.lua returns {} and the package
+-- is commented out in flake.nix), so the mapping only ever produced
+-- "E492: Not an editor command".
 wk.add({
-	{ "<leader>a", group = "[a]vante" },
-	{ "<leader>as", "<cmd>AvanteStop<CR>", desc = "[a]vante [s]top" },
+	{ "<leader>a", group = "[a]I" },
 })
 
 -- Claude Code (coder/claudecode.nvim). Actual keymaps live in the plugin spec
@@ -294,7 +301,7 @@ wk.add({
 	{ "<leader>lHs", "<cmd>lua vim.lsp.buf.typehierarchy('supertypes')<CR>", desc = "[s]upertypes" },
 	{ "<leader>lHd", "<cmd>lua vim.lsp.buf.typehierarchy('subtypes')<CR>", desc = "subtypes ([d]erived)" },
 	{ "<leader>ll", "<cmd>LenslineToggleView<cr>", desc = "Toggle [l]enseline" },
-	{ "<leader>lc", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "[c]ode actions" },
+	{ "<leader>lc", "<cmd>lua	require('tiny-code-action').code_action()<CR>", desc = "[c]ode actions" },
 	{ "<leader>l", group = "LSP", mode = "v" },
 	{ "<leader>lc", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "[c]ode actions", mode = "v" },
 })

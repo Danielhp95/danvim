@@ -185,6 +185,4 @@ return {
 			end
 		end,
 	},
-	{ "serhez/teide.nvim", lazy = true },
-	{ "initsyscall/themeInitNvim", lazy = true },
 }

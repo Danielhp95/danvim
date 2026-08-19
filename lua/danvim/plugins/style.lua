@@ -40,18 +40,11 @@ local g = {
 	diag_hint = "\u{F0336}",
 }
 
--- Dormant colorschemes (ember is the active one, in colorschemes.lua):
--- lazy = true keeps them installed but off the startup path; a
--- require('onedark') or :colorscheme load still pulls them in on demand.
+-- The dormant alternates (dracula, onedark, catppuccin, nightfox) were dropped
+-- in the 2026-08 dead-weight pass — ember has been the only colorscheme loaded
+-- since it landed, and each dormant one was still a clone lazy had to manage.
+-- They were `lazy = true` one-liners; re-add one here if you want to try it.
 local ColorSchemes = {
-	{ "Mofiqul/dracula.nvim", lazy = true },
-	{
-		"navarasu/onedark.nvim",
-		lazy = true,
-		opts = { style = "deep", toggle_style_key = "<C-q>" },
-	},
-	{ "catppuccin/nvim", name = "catppuccin", lazy = true },
-	{ "EdenEast/nightfox.nvim", lazy = true },
 	"nvim-tree/nvim-web-devicons",
 }
 

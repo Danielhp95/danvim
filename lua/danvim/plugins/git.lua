@@ -89,14 +89,24 @@ return {
 			"tpope/vim-fugitive",
 		},
 	},
+	-- Maintained fork of ruifm/gitlinker.nvim (last commit 2024-05-02). Not in
+	-- nixpkgs (which still packages ruifm's), so this one is lazy-cloned rather
+	-- than nix-managed.
+	--
+	-- Three things went away with the fork: plenary (it spawns via uv directly),
+	-- vim-oscyank (Neovim ships vim.ui.clipboard.osc52 since 0.10), and the
+	-- default keymaps — the fork exposes :GitLink instead, so the bindings below
+	-- are now explicit. <leader>gy is the same yank key ruifm's registered; the
+	-- browse key moves off <leader>gb, which gitsigns blame_line already owns in
+	-- keybindings.lua and was silently fighting gitlinker for.
 	{
-		"ruifm/gitlinker.nvim",
-		event = "VeryLazy",
-		dependencies = {
-			"ojroques/vim-oscyank",
-			"nvim-lua/plenary.nvim",
-		},
+		"linrongbin16/gitlinker.nvim",
+		cmd = "GitLink",
 		opts = {},
+		keys = {
+			{ "<leader>gy", "<cmd>GitLink<cr>", mode = { "n", "v" }, desc = "[y]ank git permalink" },
+			{ "<leader>gY", "<cmd>GitLink!<cr>", mode = { "n", "v" }, desc = "[Y] open git permalink" },
+		},
 	},
 	{
 		"oribarilan/lensline.nvim",
