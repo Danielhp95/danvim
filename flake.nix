@@ -120,7 +120,9 @@
               wordnet # `wn` CLI backing blink-cmp-words dictionary source
 
               gnumake # needed for avante
-              python312Packages.pylatexenc # for rendering latex in render-markdown plugin
+              python312Packages.pylatexenc # latex2text; unused while render-markdown's
+              # latex handler is off (snacks.image renders equations instead) -- kept so
+              # flipping `latex.enabled = true` in style.lua just works.
               tectonic # Fore rendering latex equations (snacks.nvim)
               imagemagick # `magick`/`convert` for snacks.image (inline PNGs in markdown)
               ghostscript # `gs` — ImageMagick's delegate for rasterizing PDF pages (snacks.image)
@@ -200,7 +202,7 @@
               bufferline-nvim
               trouble-nvim
               yazi-nvim
-              markview-nvim # in-buffer markdown rendering (see style.lua)
+              render-markdown-nvim # in-buffer markdown rendering (see style.lua)
               codediff-nvim # side-by-side diff UI behind :CodeDiff (needs nui)
 
               # Library
@@ -277,7 +279,7 @@
                 nvim-web-devicons # nerd fonts for nvim
                 tiny-cmdline-nvim # floating cmdline popup (top-center), repositions ui2's own window
                 nui-nvim # UI library (required by codediff)
-                mini-icons # icon provider markview is pointed at
+                mini-icons # icon provider render-markdown auto-detects first
                 tiny-devicons-auto-colors-nvim # recolours devicons to the Ember palette
               ];
               blink = with pkgs.vimPlugins; [

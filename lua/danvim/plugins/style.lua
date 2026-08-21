@@ -512,29 +512,30 @@ local deviconsAutoColors = {
 	end,
 }
 
-local markview = {
-	"OXY2DEV/markview.nvim",
-	-- the README says it is not recommended to lazy load this, I don't know why
-	lazy = false,
+-- Replaced markview.nvim 2026-08-19 after profiling. markview cost 9.4ms of every
+-- BufEnter into a markdown buffer (0.003ms on every other buffer, and nothing on
+-- CursorMoved/TextChanged) -- measured at 5.8ms even in a bare harness, 10-13ms
+-- inside this config. render-markdown does the same job at 0.008-0.024ms, i.e.
+-- indistinguishable from having no plugin attached at all.
+--
+-- The thing that made the swap safe: markview was NOT what rendered our LaTeX.
+-- snacks.image already renders equations as real typeset images (tectonic -> magick,
+-- see snacks.lua `convert.magick.math`), and markview was laying 191 unicode-conceal
+-- extmarks over the same 23 equations in academical_reviews/artint_2024/review.md.
+-- Dropping markview removes that duplication rather than losing a feature -- hence
+-- `latex.enabled = false` below, so render-markdown does not re-create it.
+local RenderMarkdown = {
+	"MeanderingProgrammer/render-markdown.nvim",
+	ft = { "markdown" },
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",
-		"nvim-tree/nvim-web-devicons",
-		"echasnovski/mini.icons", -- Only one is needed, let's try both see which one I like best
+		"echasnovski/mini.icons", -- auto-detected first, then nvim-web-devicons
 	},
-	-- Both of these used to sit at spec level: `preview` where lazy.nvim never
-	-- reads it (so the filetype list and icon_provider silently stayed at their
-	-- defaults), and the markdown block under `config`, which lazy.nvim accepts
-	-- but has deprecated in favour of `opts`.
 	opts = {
-		preview = {
-			filetypes = { "markdown", "Avante" },
-			icon_provider = "mini.icons",
-		},
-		markdown = {
-			list_items = {
-				shift_width = 1,
-			},
-		},
+		file_types = { "markdown" },
+		-- snacks.image owns equations. Leaving this on would render them twice:
+		-- once as latex2text unicode here, once as an image there.
+		latex = { enabled = false },
 	},
 }
 
@@ -549,6 +550,6 @@ return {
 	LuaLine,
 	BufferLine,
 	deviconsAutoColors,
-	markview,
+	RenderMarkdown,
 	ColorRefs,
 }
