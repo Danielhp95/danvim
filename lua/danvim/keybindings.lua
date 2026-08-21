@@ -300,7 +300,6 @@ wk.add({
 	{ "<leader>lHo", "<cmd>lua vim.lsp.buf.outgoing_calls()<CR>", desc = "[o]utgoing calls" },
 	{ "<leader>lHs", "<cmd>lua vim.lsp.buf.typehierarchy('supertypes')<CR>", desc = "[s]upertypes" },
 	{ "<leader>lHd", "<cmd>lua vim.lsp.buf.typehierarchy('subtypes')<CR>", desc = "subtypes ([d]erived)" },
-	{ "<leader>ll", "<cmd>LenslineToggleView<cr>", desc = "Toggle [l]enseline" },
 	{ "<leader>lc", "<cmd>lua	require('tiny-code-action').code_action()<CR>", desc = "[c]ode actions" },
 	{ "<leader>l", group = "LSP", mode = "v" },
 	{ "<leader>lc", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "[c]ode actions", mode = "v" },

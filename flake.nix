@@ -183,7 +183,6 @@
               diffview-plus-nvim # Diif/Merge view UI
               octo-nvim # GitHub issues/PRs/reviews as buffers (uses `gh`, see lspsAndRuntimeDeps)
               vim-flog # git branch/commit graph browser, drives fugitive
-              lensline-nvim # inline lenses (blame/author/refs) on LspAttach
 
               # Completion
               colorful-menu-nvim # Better tresitter integration in completion engine

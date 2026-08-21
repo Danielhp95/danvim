@@ -108,36 +108,4 @@ return {
 			{ "<leader>gY", "<cmd>GitLink!<cr>", mode = { "n", "v" }, desc = "[Y] open git permalink" },
 		},
 	},
-	{
-		"oribarilan/lensline.nvim",
-		event = "LspAttach",
-		opts = {
-			-- placement = 'inline',
-			profiles = {
-				{
-					name = "default",
-					providers = {
-						{
-							name = "references",
-							-- Disabled: fires textDocument/references for every lens in
-							-- every attached buffer, the main source of per-buffer lag
-							enabled = false,
-							quiet_lsp = true, -- suppress noisy LSP log messages (e.g., Pyright reference spam)
-						},
-						{
-							name = "last_author",
-							-- Disabled: runs git blame per buffer
-							enabled = false,
-							cache_max_files = 50, -- maximum number of files to cache blame data for (default: 50)
-						},
-						{
-							name = "complexity",
-							enabled = true,
-							min_level = "L", -- only show L and XL complexity (default)
-						},
-					},
-				},
-			},
-		},
-	},
 }
