@@ -22,9 +22,7 @@ return {
 
 			terminals.setup({
 				keys = {
-					-- defaults use macOS <D-…> (Cmd); remap to match the old
-					-- floaterm setup on Linux
-					toggle = "<leader><leader>f",
+					toggle = "<M-f>",
 					cycle_layout = "<M-m>",
 					-- cycle terminals, same as the old floaterm buffer maps
 					go_right = "<C-S-j>",

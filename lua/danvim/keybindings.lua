@@ -353,22 +353,9 @@ wk.add({
 -- Terminal (terminals.nvim: up to 10 persistent slots with a tab-style header;
 -- <C-S-j>/<C-S-k> cycle terminals, <M-0>…<M-9> jump to a slot — see
 -- plugins/terminal.lua)
-wk.add({
-	{ "<leader><leader>", group = "[t]erminal" },
-	{ "<leader><leader>f", "<cmd>ToggleTerminal<cr>", desc = "[f]loating terminal (toggle)" },
-	-- { "<leader><leader>f", "<cmd>FloatermToggle<cr>", desc = "[f]loating terminal (toggle workspace)" },
-	-- { "<leader><leader>t", "<cmd>Tabterm toggle<cr>", desc = "[t]oggle terminal workspace" },
-	-- { "<leader><leader>h", "<cmd>Tabterm shell<cr>", desc = "new s[h]ell terminal" },
-	-- { "<leader><leader>v", "<cmd>Tabterm command<cr>", desc = "new command terminal (in[v]oke)" },
-	-- -- Send-line/visual: tabterm has no native send-current-line; use ":! cmd"
-	-- -- or paste from the unnamed register inside the panel instead.
-	-- -- New suggested mappings
-	-- { "<leader><leader>o", "<cmd>Tabterm open<cr>", desc = "[o]pen workspace and focus panel" },
-	-- { "<leader><leader>n", "<cmd>Tabterm next<cr>", desc = "[n]ext terminal" },
-	-- { "<leader><leader>p", "<cmd>Tabterm prev<cr>", desc = "[p]revious terminal" },
-	-- { "<leader><leader>r", "<cmd>Tabterm rename<cr>", desc = "[r]ename active terminal" },
-	-- { "<leader><leader>d", "<cmd>Tabterm delete<cr>", desc = "[d]elete active terminal" },
-})
+-- wk.add({
+	-- { "<leader><leader>", group = "[t]erminal" },
+-- })
 
 -- pandoc
 wk.add({
