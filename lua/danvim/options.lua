@@ -102,7 +102,7 @@ vim.diagnostic.config({
 	virtual_text = { current_line = false },
 	virtual_lines = { current_line = true, overflow = "wrap" },
 })
-
+vim.o.messagesopt = "hit-enter,history:500,timeout:3000,maxheight:50" -- timeout in ms; maxheight in % of 'lines' for the cmdline target
 -- Experimental UI2: floating cmdline and messages
 require('vim._core.ui2').enable({
   enable = true,
@@ -143,15 +143,11 @@ require('vim._core.ui2').enable({
       wmsg = 'msg',
       typed_cmd = 'cmd',
     },
-    cmd = {
-      height = 0.5,
-    },
     dialog = {
       height = 0.5,
     },
     msg = {
       height = 0.3,
-      timeout = 5000,
     },
     pager = {
       height = 0.5,
