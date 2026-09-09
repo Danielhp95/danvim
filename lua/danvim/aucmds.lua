@@ -58,6 +58,60 @@ vim.api.nvim_create_autocmd("FileType", {
 				vim.treesitter.select("parent", vim.v.count1)
 			end
 		end, { buffer = args.buf, desc = "Select word, then grow via treesitter" })
+
+		-- <C-b>/<C-i>/<C-x>/<C-u>: toggle bold/italic/strikethrough/underline.
+		-- Visual mode wraps (or unwraps, if already wrapped) the selection.
+		-- Insert mode drops an empty marker pair around the cursor, or skips
+		-- past the closing marker if already sitting on one (so a second
+		-- press exits the formatting instead of nesting it).
+		local function visual_toggle_wrap(open_mark, close_mark)
+			vim.cmd('normal! "zy')
+			local text = vim.fn.getreg("z")
+
+			local result
+			if
+				text:sub(1, #open_mark) == open_mark
+				and text:sub(-#close_mark) == close_mark
+				and #text >= #open_mark + #close_mark
+			then
+				result = text:sub(#open_mark + 1, #text - #close_mark)
+			else
+				result = open_mark .. text .. close_mark
+			end
+
+			vim.fn.setreg("z", result)
+			vim.cmd('normal! gv"zp')
+		end
+
+		local function insert_toggle_wrap(open_mark, close_mark)
+			local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+			local after = vim.api.nvim_get_current_line():sub(col + 1)
+
+			if after:sub(1, #close_mark) == close_mark then
+				vim.api.nvim_win_set_cursor(0, { row, col + #close_mark })
+				return
+			end
+
+			vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { open_mark .. close_mark })
+			vim.api.nvim_win_set_cursor(0, { row, col + #open_mark })
+		end
+
+		local formatting_marks = {
+			{ key = "<C-b>", open = "**", close = "**", desc = "bold" },
+			{ key = "<C-i>", open = "*", close = "*", desc = "italic" },
+			{ key = "<C-x>", open = "~~", close = "~~", desc = "strikethrough" },
+			{ key = "<C-u>", open = "<u>", close = "</u>", desc = "underline" },
+		}
+
+		for _, m in ipairs(formatting_marks) do
+			vim.keymap.set("x", m.key, function()
+				visual_toggle_wrap(m.open, m.close)
+			end, { buffer = args.buf, desc = "Toggle " .. m.desc .. " on selection" })
+
+			vim.keymap.set("i", m.key, function()
+				insert_toggle_wrap(m.open, m.close)
+			end, { buffer = args.buf, desc = "Toggle " .. m.desc .. " at cursor" })
+		end
 	end,
 })
 
