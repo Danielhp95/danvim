@@ -40,7 +40,7 @@ return {
 				},
 				layouts = {
 					-- near-fullscreen
-					{ width = "95%", height = "99%", row = 1 },
+					{ width = "95%", height = "95%", row = 1 },
 					-- left half
 					{ width = "50%", height = height_below_tabline, row = 1, col = 0 },
 					-- right half
