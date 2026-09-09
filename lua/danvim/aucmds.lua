@@ -9,7 +9,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	pattern = "*",
 })
 
--- Sets tab to 2 spaces on markdown files, plus link-aware paste
+-- Sets tab to 2 spaces on markdown files, plus link-aware paste and
+-- word-first treesitter selection
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "markdown",
 	callback = function(args)
@@ -45,6 +46,18 @@ vim.api.nvim_create_autocmd("FileType", {
 			vim.fn.setreg("z", ("[%s](%s)"):format(selected, trimmed))
 			vim.cmd('normal! gv"zp')
 		end, { buffer = args.buf, desc = "Paste as markdown link when clipboard is a URL/path" })
+
+		-- <CR>: markdown's inline grammar has no word-level nodes, so the
+		-- global treesitter parent-select jumps straight to a whole
+		-- paragraph. Select just the word first; once a selection already
+		-- exists, grow it the normal treesitter way.
+		vim.keymap.set({ "n", "x", "o" }, "<CR>", function()
+			if vim.fn.mode() == "n" then
+				vim.cmd("normal! viw")
+			else
+				vim.treesitter.select("parent", vim.v.count1)
+			end
+		end, { buffer = args.buf, desc = "Select word, then grow via treesitter" })
 	end,
 })
 
