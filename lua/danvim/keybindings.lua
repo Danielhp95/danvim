@@ -105,6 +105,19 @@ wk.add({
 	{ "<leader>c", group = "[c]laude code", mode = "v" },
 })
 
+-- Debug Adapter Protocol (dap)
+wk.add({
+	{ "<leader>d", group = "[d]ebug" },
+	{ "<leader>dc", "<cmd>DapContinue<cr>", desc = "[d]ebug [c]ontinue" },
+	{ "<leader>db", "<cmd>DapToggleBreakpoint<cr>", desc = "[d]ebug [b]reakpoint" },
+	{ "<leader>di", "<cmd>DapStepInto<cr>", desc = "[d]ebug [i]nto" },
+	{ "<leader>do", "<cmd>DapStepOver<cr>", desc = "[d]ebug [o]ver" },
+	{ "<leader>dO", "<cmd>DapStepOut<cr>", desc = "[d]ebug [O]ut" },
+	{ "<leader>dl", "<cmd>DapShowLog<cr>", desc = "[d]ebug [l]og" },
+	{ "<leader>dr", "<cmd>DapRestart<cr>", desc = "[d]ebug [r]estart" },
+	{ "<leader>ds", "<cmd>DapToggleBreakpoint<cr>", desc = "[d]ebug [s]tep" },
+})
+
 -- Git
 wk.add({
 	{ "<leader>g", group = "[g]it" },
