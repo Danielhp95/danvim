@@ -52,6 +52,14 @@ local Dap = {
 					"${file}",
 				},
 			},
+			{
+				type = "python",
+				request = "launch",
+				name = "Python Debug in ~/Projects/sai",
+				program = "${file}",
+				console = "integratedTerminal",
+				cwd = "/home/dani/Projects/sai",
+			},
 		}
 	end,
 }
