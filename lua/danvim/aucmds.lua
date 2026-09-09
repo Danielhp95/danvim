@@ -9,13 +9,42 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	pattern = "*",
 })
 
--- Sets tab to 2 spaces on markdown files
+-- Sets tab to 2 spaces on markdown files, plus link-aware paste
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "markdown",
-	callback = function()
+	callback = function(args)
 		vim.bo.shiftwidth = 2
 		vim.bo.softtabstop = 2
 		vim.bo.expandtab = true
+
+		-- Visual `p`: if the clipboard holds a URL/path, wrap the selection
+		-- in a markdown link instead of overwriting it.
+		local function looks_like_link_target(s)
+			if s == "" or s:find("%s") then
+				return false
+			end
+			return s:match("^%a[%w+.-]*://") ~= nil -- scheme://...
+				or s:match("^www%.") ~= nil
+				or s:match("^mailto:") ~= nil
+				or s:match("^~/") ~= nil
+				or s:match("^%.%.?/") ~= nil
+				or s:match("^/") ~= nil
+		end
+
+		vim.keymap.set("x", "p", function()
+			local clip = vim.fn.getreg("+")
+			local trimmed = clip:match("^%s*(.-)%s*$")
+
+			if not looks_like_link_target(trimmed) then
+				vim.cmd("normal! p")
+				return
+			end
+
+			vim.cmd('normal! "zy')
+			local selected = vim.fn.getreg("z")
+			vim.fn.setreg("z", ("[%s](%s)"):format(selected, trimmed))
+			vim.cmd('normal! gv"zp')
+		end, { buffer = args.buf, desc = "Paste as markdown link when clipboard is a URL/path" })
 	end,
 })
 
