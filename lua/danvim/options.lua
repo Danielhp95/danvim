@@ -2,6 +2,8 @@
 -- This file configures various Neovim options for an optimized editor experience.
 -- See `:help vim.o`
 
+local icons = require("danvim.icons")
+
 vim.filetype.add({ pattern = { [".*/hyprland.*%.conf"] = "hyprlang" } }) -- Add custom filetype detection for Hyprland configuration files.
 vim.o.updatetime = 250 -- CursorHold/swap latency; default 4000ms delays gitsigns blame & friends.
 -- THIS IS THE ONLY PLACE TO SET IT. Everything else defers to 'winborder' when
@@ -61,7 +63,7 @@ vim.o.foldlevel = 10 -- Set initial fold level.
 vim.o.scrolloff = 3 -- Keep 3 lines visible above and below the cursor when scrolling.
 vim.o.scrolloffpad = 0 -- Disable vertical centering of the cursor at end-of-file (0.12+).
 vim.o.sidescrolloff = 5 -- Keep 5 columns visible left and right of the cursor when scrolling horizontally.
-vim.o.listchars = "tab:  ,trail:●,nbsp:○" -- Define special characters for whitespace indicators.
+vim.o.listchars = "tab:  ,trail:\u{00B7},nbsp:○" -- Whitespace indicators; trailing spaces as a quiet middle dot.
 vim.o.clipboard = "unnamed,unnamedplus" -- Use the system clipboard for all copy-paste operations.
 vim.o.formatoptions = "tcqj" -- Set formatting options for text handling.
 vim.o.encoding = "utf-8" -- Configure default text encoding to UTF-8.
@@ -86,6 +88,8 @@ vim.o.laststatus = 2 -- Use a global status line across all windows.
 vim.o.cmdheight = 0
 vim.o.fillchars =
 	"eob: ,fold: ,diff:╱,msgsep:─,vert:│,horiz:─,horizup:╴,horizdown:╶,vertleft:╴,vertright:╶" -- Define fill characters for UI items.
+-- Fold markers in the statuscolumn (snacks draws closed folds only).
+vim.opt.fillchars:append({ foldopen = icons.fold.open, foldclose = icons.fold.close })
 vim.o.diffopt = "internal,filler,closeoff,linematch:40,iwhite"
 -- The `diffopt` options explained:
 -- internal: Use Neovim's internal diff library for better performance and integration.
@@ -97,9 +101,17 @@ vim.o.diffopt = "internal,filler,closeoff,linematch:40,iwhite"
 -- [[ Diagnostics ]]
 -- Inline virtual_text everywhere, plus full virtual_lines on the cursor line.
 -- `overflow = "wrap"` wraps lines wider than the window onto extra rows (0.12+).
+-- The gutter sign and the inline prefix use the statusline's icons (icons.lua);
+-- their colours come from the theme's DiagnosticSign*/DiagnosticVirtualText* groups.
 vim.diagnostic.config({
 	severity_sort = true,
-	virtual_text = { current_line = false },
+	signs = { text = icons.diagnostic_by_severity },
+	virtual_text = {
+		current_line = false,
+		prefix = function(diagnostic)
+			return icons.diagnostic_by_severity[diagnostic.severity]
+		end,
+	},
 	virtual_lines = { current_line = true, overflow = "wrap" },
 })
 vim.o.messagesopt = "hit-enter,history:500,timeout:3000,maxheight:50" -- timeout in ms; maxheight in % of 'lines' for the cmdline target

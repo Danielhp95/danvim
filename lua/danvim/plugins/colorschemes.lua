@@ -143,6 +143,18 @@ return {
 					hl["BlinkCmpDocBorder"] = float_border
 					hl["BlinkCmpSignatureHelpBorder"] = float_border
 
+					-- nvim-dap signs (plugins/dap.lua). Coral for a plain breakpoint,
+					-- gold for a conditional one (needs-attention), sage for a
+					-- logpoint, muted for one the adapter rejected. The line
+					-- execution is stopped on gets the hotter coral plus a graphite
+					-- tint across the whole line.
+					hl["DapBreakpoint"] = { fg = p.accent }
+					hl["DapBreakpointCondition"] = { fg = p.gold }
+					hl["DapLogPoint"] = { fg = p.sage }
+					hl["DapBreakpointRejected"] = { fg = p.muted }
+					hl["DapStopped"] = { fg = p.accentBright }
+					hl["DapStoppedLine"] = { bg = p.surface }
+
 					-- Kept for 'winborder' = "shadow"; inert for every other style.
 					-- `blend` is the intensity knob: 0 = solid, 100 = invisible.
 					hl["FloatShadow"] = { bg = border, blend = 80 }

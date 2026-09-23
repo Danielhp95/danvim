@@ -1,4 +1,5 @@
 local p = require("danvim.palette")
+local icons = require("danvim.icons")
 
 -- ┌─────────────────────────────────────────────────────────────────────────────┐
 -- │ Ember chrome — the statusline and buffer list speak the same language as the │
@@ -33,11 +34,6 @@ local g = {
 	removed = "\u{F01B4}", -- starship deleted
 	maximized = "\u{F0293}", -- tmux window_zoomed_flag
 	recording = "\u{F044A}", -- md-record
-
-	diag_error = "\u{F015A}",
-	diag_warn = "\u{F002A}",
-	diag_info = "\u{F02FD}",
-	diag_hint = "\u{F0336}",
 }
 
 -- The dormant alternates (dracula, onedark, catppuccin, nightfox) were dropped
@@ -392,10 +388,11 @@ local LuaLine = {
 				{
 					"diagnostics",
 					symbols = {
-						error = g.diag_error .. " ",
-						warn = g.diag_warn .. " ",
-						info = g.diag_info .. " ",
-						hint = g.diag_hint .. " ",
+						-- The same icons as the gutter signs (icons.lua).
+						error = icons.diagnostic.error .. " ",
+						warn = icons.diagnostic.warn .. " ",
+						info = icons.diagnostic.info .. " ",
+						hint = icons.diagnostic.hint .. " ",
 					},
 					-- Straight off palette.nix's semantics: error = failure, gold =
 					-- needs-attention-not-broken, steel = neutral metadata, sage =

@@ -10,8 +10,14 @@ local Dap = {
 	},
 	config = function()
 		local dap = require("dap")
-		-- Set a red circle emoji as the breakpoint sign
-		vim.fn.sign_define("DapBreakpoint", { text = "🔴", texthl = "", linehl = "", numhl = "" })
+		-- Codicon signs, one per breakpoint state (icons.lua). Each texthl is a
+		-- group of the same name, coloured in plugins/colorschemes.lua.
+		local icons = require("danvim.icons").dap
+		vim.fn.sign_define("DapBreakpoint", { text = icons.breakpoint, texthl = "DapBreakpoint" })
+		vim.fn.sign_define("DapBreakpointCondition", { text = icons.condition, texthl = "DapBreakpointCondition" })
+		vim.fn.sign_define("DapLogPoint", { text = icons.log_point, texthl = "DapLogPoint" })
+		vim.fn.sign_define("DapStopped", { text = icons.stopped, texthl = "DapStopped", linehl = "DapStoppedLine" })
+		vim.fn.sign_define("DapBreakpointRejected", { text = icons.rejected, texthl = "DapBreakpointRejected" })
 
 		require("nvim-dap-virtual-text").setup({
 			commented = true,
