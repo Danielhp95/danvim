@@ -127,6 +127,7 @@
               imagemagick # `magick`/`convert` for snacks.image (inline PNGs in markdown)
               ghostscript # `gs` — ImageMagick's delegate for rasterizing PDF pages (snacks.image)
               ffmpeg # ImageMagick's `video:decode` delegate — extracts a frame from mp4/mkv/webm (snacks.image)
+              mermaid-cli # `mmdc` for snacks.image (renders ```mermaid blocks inline)
 
               nodejs
 
