@@ -82,6 +82,29 @@ return {
 		---@module 'blink.cmp'
 		---@type blink.cmp.Config
 		opts = {
+			-- Keep blink out of dressing.nvim's vim.ui.input prompts.
+			--
+			-- blink already refuses to complete in prompt buffers -- its own
+			-- enabled() ends in `vim.bo.buftype ~= 'prompt'` -- but dressing builds
+			-- its input as buftype=nofile, so that guard never recognises it.
+			-- blink then attaches on InsertEnter and installs the insert-mode <CR>
+			-- below (select_and_accept) as a buffer-local map on the prompt. As
+			-- soon as you type a few words its menu opens (the buffer/words
+			-- sources match ordinary prose), and Enter selects a completion item
+			-- instead of submitting. Dressing's own submit is still underneath as
+			-- the fallback, reachable only with the menu closed (<C-e>, then <CR>).
+			--
+			-- This bit every vim.ui.input prompt, not one plugin: it surfaced as
+			-- <leader>ae (codecompanion.lua) doing nothing, because Enter on a bare
+			-- `:'<,'>CodeCompanion ` opens this prompt for the instruction.
+			--
+			-- Returning false here stops the keymap being installed at all: blink
+			-- only applies it on InsertEnter when enabled() is true. The macro,
+			-- vim.b.completion and real buftype=prompt checks in blink's enabled()
+			-- still run on top of this.
+			enabled = function()
+				return vim.bo.filetype ~= "DressingInput"
+			end,
 			keymap = {
 				["<CR>"] = { "select_and_accept", "fallback" },
 				["<C-CR>"] = {
