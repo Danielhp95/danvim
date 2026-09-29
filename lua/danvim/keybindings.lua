@@ -70,7 +70,7 @@ wk.add({
 	{ "gp", "`[v`]", desc = "[g]o to and visually select last [p]asted text" },
 	{ "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Toggle [u]ndotree" },
 	{ "<leader>tc", "<cmd>TSContextToggle<cr>", desc = "[t]oggle treesitter [c]ontext" },
-	{ "<leader>C", "<cmd>ColorRefs<cr>", desc = "Toggle [C]olour swatches (color-refs)" },
+	-- { "<leader>C", "<cmd>ColorRefs<cr>", desc = "Toggle [C]olour swatches (color-refs)" }, -- plugin disabled, see danvim/flake.nix
 	{
 		"<leader>vi",
 		"<cmd>vnew term://ipython -i %<cr>",

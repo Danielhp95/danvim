@@ -120,26 +120,12 @@
         "type": "github"
       }
     },
-    "plugins-color-refs": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1786127152,
-        "narHash": "sha256-VDpkfaPV4mXabmW4t53YY7HFeVOFdNUodkB04IXOCCM=",
-        "path": "/home/dani/Projects/color-refs.nvim",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/dani/Projects/color-refs.nvim",
-        "type": "path"
-      }
-    },
     "root": {
       "inputs": {
         "flake-compat": "flake-compat",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixCats": "nixCats",
         "nixpkgs": "nixpkgs_2",
-        "plugins-color-refs": "plugins-color-refs",
         "stable": "stable"
       }
     },

@@ -21,10 +21,13 @@
     # Local, unpublished plugin under active development; picked up by
     # standardPluginOverlay (see `dependencyOverlays` below) as
     # `pkgs.neovimPlugins.color-refs`.
-    plugins-color-refs = {
-      url = "path:/home/dani/Projects/color-refs.nvim";
-      flake = false;
-    };
+    # Disabled 2026-09-29: the working copy isn't on the Lenovo yet. Restore
+    # this, the package below, the specs in style.lua / color_refs.lua and
+    # the <leader>C binding once ~/Projects/color-refs.nvim is copied over.
+    # plugins-color-refs = {
+    #   url = "path:/home/dani/Projects/color-refs.nvim";
+    #   flake = false;
+    # };
   };
 
   # see :help nixCats.flake.outputs
@@ -208,7 +211,7 @@
               # Library
               snacks-nvim
 
-              pkgs.neovimPlugins.color-refs # colour swatches at variable references
+              # pkgs.neovimPlugins.color-refs # colour swatches at variable references (disabled, see inputs)
 
               nvim-bqf # TODO: learn this!
 

@@ -536,11 +536,12 @@ local RenderMarkdown = {
 	},
 }
 
-local ColorRefs = {
-	"dhernandez/color-refs.nvim",
-	event = { "BufReadPost", "BufNewFile" },
-	opts = {},
-}
+-- Disabled until ~/Projects/color-refs.nvim is on this machine (see danvim/flake.nix).
+-- local ColorRefs = {
+-- 	"dhernandez/color-refs.nvim",
+-- 	event = { "BufReadPost", "BufNewFile" },
+-- 	opts = {},
+-- }
 
 return {
 	ColorSchemes,
@@ -548,5 +549,5 @@ return {
 	BufferLine,
 	deviconsAutoColors,
 	RenderMarkdown,
-	ColorRefs,
+	-- ColorRefs,
 }

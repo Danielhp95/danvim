@@ -12,15 +12,16 @@
 -- is pushed, swap `dir`/`dev` for the GitHub spec and add it to flake.nix
 -- alongside the other plugins.
 
+-- Disabled until ~/Projects/color-refs.nvim is on this machine (see danvim/flake.nix).
 return {
-	{
-		"color-refs.nvim",
-		dir = vim.fn.expand("~/Projects/color-refs.nvim"),
-		dev = true,
-		event = { "BufReadPost", "BufNewFile" },
-		cmd = "ColorRefs",
-		opts = {
-			modules = { "danvim.palette" },
-		},
-	},
+	-- {
+	-- 	"color-refs.nvim",
+	-- 	dir = vim.fn.expand("~/Projects/color-refs.nvim"),
+	-- 	dev = true,
+	-- 	event = { "BufReadPost", "BufNewFile" },
+	-- 	cmd = "ColorRefs",
+	-- 	opts = {
+	-- 		modules = { "danvim.palette" },
+	-- 	},
+	-- },
 }
