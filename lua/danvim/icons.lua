@@ -12,9 +12,10 @@ local S = vim.diagnostic.severity
 
 local M = {}
 
--- md-close_circle, md-alert, md-information, md-lightbulb_outline
+-- md-fire (the bufferline/starship "modified" flame), md-alert, md-information,
+-- md-lightbulb_outline
 M.diagnostic = {
-	error = "\u{F015A}",
+	error = "\u{F0238}",
 	warn = "\u{F002A}",
 	info = "\u{F02FD}",
 	hint = "\u{F0336}",
