@@ -14,7 +14,14 @@ return {
 			}
 		end,
 	},
-	{ "lewis6991/gitsigns.nvim", event = { "BufReadPre", "BufNewFile" }, opts = {} },
+	{
+		"lewis6991/gitsigns.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		-- Explicit: gitsigns derives these from 'diffopt' via ipairs, but
+		-- nightly's vim.opt.diffopt:get() returns a map, so it silently falls
+		-- back to external `git diff`, which diff.external=difft hijacks.
+		opts = { diff_opts = { internal = true, linematch = 40 } },
+	},
 	{
 		-- Maintained fork of sindrets/diffview.nvim (dead since 2024-06-13).
 		-- The name matters beyond cosmetics: nixCats' dev.path resolver looks up
