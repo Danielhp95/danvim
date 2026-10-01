@@ -283,7 +283,8 @@
                 tiny-cmdline-nvim # floating cmdline popup (top-center), repositions ui2's own window
                 nui-nvim # UI library (required by codediff)
                 mini-icons # icon provider render-markdown auto-detects first
-                tiny-devicons-auto-colors-nvim # recolours devicons to the Ember palette
+                tiny-devicons-auto-colors-nvim # recolours devicons to the palette
+                tokyonight-nvim # base colourscheme for palettes of the "tokyonight" family
               ];
               blink = with pkgs.vimPlugins; [
                 # blink completion engine. blink-cmp itself is not listed: the

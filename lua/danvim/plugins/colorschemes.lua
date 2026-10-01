@@ -17,4 +17,13 @@ return {
 			require("danvim.theme.ember").load(p)
 		end,
 	},
+	{
+		-- In flake.nix as `tokyonight-nvim`; its pack dir is "tokyonight.nvim",
+		-- which is the name lazy derives from this spec.
+		"folke/tokyonight.nvim",
+		cond = family == "tokyonight",
+		config = function()
+			require("danvim.theme.tokyonight").load(p)
+		end,
+	},
 }
