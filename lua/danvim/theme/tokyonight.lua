@@ -121,6 +121,37 @@ function M.on_highlights(hl, p)
 	hl.DiagnosticOk = { fg = p.olive }
 	hl.OkMsg = { fg = p.olive }
 
+	-- tokyonight spends its `orange` role on plugin chrome as well as on
+	-- constants and numbers. Syntax keeps the orange (palette.extra.orange);
+	-- chrome is the accent family, or it reads as Ember's flame in a violet UI.
+	local chrome_accent = {
+		SnacksPickerInputBorder = { fg = p.accentDim, bg = p.bg },
+		SnacksPickerInputTitle = { fg = p.accent, bg = p.bg },
+		SnacksPickerBoxTitle = { fg = p.accent, bg = p.bg },
+		SnacksDashboardKey = { fg = p.accent },
+		TelescopePromptBorder = { fg = p.accentDim, bg = p.bg },
+		TelescopePromptTitle = { fg = p.accent, bg = p.bg },
+		FzfLuaFzfSeparator = { fg = p.accentDim, bg = p.bg },
+		FzfLuaTitle = { fg = p.accent, bg = p.bg },
+		CursorLineNr = { fg = p.accent, bold = true },
+		MatchParen = { fg = p.accentBright, bold = true },
+		DashboardKey = { fg = p.accent },
+		DashboardProjectTitleIcon = { fg = p.accent },
+		AlphaShortcut = { fg = p.accent },
+		AlphaHeaderLabel = { fg = p.accent },
+		GrugFarResultsHeader = { fg = p.accent },
+		NeoTreeGitModified = { fg = p.gold },
+		OctoDirty = { fg = p.gold, bold = true },
+		RenderMarkdownBullet = { fg = p.accent },
+		RenderMarkdownDash = { fg = p.accentDim },
+		RenderMarkdownTableRow = { fg = p.accentDim },
+		["@markup.list.markdown"] = { fg = p.accent, bold = true },
+		["@punctuation.special.markdown"] = { fg = p.accent },
+	}
+	for name, spec in pairs(chrome_accent) do
+		hl[name] = spec
+	end
+
 	-- Whatever tokyonight draws in a float's border row (borders, titles,
 	-- footers) it paints on the float background. chrome.highlights puts
 	-- FloatBorder on the buffer background so rounded corners have no dark
