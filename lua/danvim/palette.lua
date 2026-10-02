@@ -2,7 +2,7 @@
 --
 -- Built by nix_config, the selected palette arrives through the nixCats
 -- wrapper: ~/nix_config/danvim.nix overrides this package with an
--- `extra.palette` built from palette.nix, read here as
+-- `extra.palette` built from nix_config's palette/, read here as
 -- `nixCats.extra("palette")`. A palette change is then a rebuild of the wrapper
 -- only; nothing in this repo is edited.
 --
@@ -11,14 +11,14 @@
 -- embedded Ember table below is used.
 --
 -- Shape, whichever source it came from:
---   25 colour slots, '#rrggbb', named exactly as in palette.nix;
+--   25 colour slots, '#rrggbb', named exactly as in nix_config's palette/;
 --   `orange` and `cyan`, two hues outside the slots that the tokyonight
 --   family's syntax needs (required for that family, unused by ember);
 --   ansi  = 16 colours, terminal slots 0-15 in order;
 --   meta  = { name, slug, family }, family naming the base colourscheme
 --           ("ember" | "tokyonight", see plugins/colorschemes.lua).
 --
--- Slot semantics are shared with tmux/starship/zsh; see palette.nix.
+-- Slot semantics are shared with tmux/starship/zsh; see nix_config's palette/.
 
 ---@class danvim.Palette
 local ember = {

@@ -5,9 +5,9 @@ local chrome = require("danvim.theme.chrome")
 
 local M = {}
 
--- Feed ember's own 21-key palette from ours, so the buffer follows palette.nix
+-- Feed ember's own 21-key palette from ours, so the buffer follows nix_config's palette/
 -- by construction instead of by coincidence. Off: upstream's values, which
--- differ from palette.nix in a few places (a steel blue, an orange, the grey
+-- differ from nix_config's palette/ in a few places (a steel blue, an orange, the grey
 -- ramp), so turning it on is a visible change.
 M.drive_from_palette = false
 
@@ -43,7 +43,7 @@ end
 ---@param p danvim.Palette
 local function syntax(hl, p)
 	if not M.drive_from_palette then
-		-- Upstream's palette has drifted from palette.nix in two hues; rewrite
+		-- Upstream's palette has drifted from nix_config's palette/ in two hues; rewrite
 		-- them wherever they occur. (Dead once drive_from_palette is on.)
 		local drift = {
 			["#80a090"] = p.sage,

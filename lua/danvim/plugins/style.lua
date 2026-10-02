@@ -185,7 +185,7 @@ local BufferLine = {
 
 			-- The current buffer — coral, bold, and nothing else. No underline and
 			-- no fill: with every pill graphite, hue alone is enough to pick it out,
-			-- and it keeps the coral rationed the way palette.nix asks for.
+			-- and it keeps the coral rationed the way nix_config's palette/ asks for.
 			buffer_selected = { fg = p.accent, bg = p.border, bold = true, italic = false },
 			numbers_selected = { fg = p.accentDim, bg = p.border },
 			modified_selected = { fg = p.gold, bg = p.border },
@@ -394,7 +394,7 @@ local LuaLine = {
 						info = icons.diagnostic.info .. " ",
 						hint = icons.diagnostic.hint .. " ",
 					},
-					-- Straight off palette.nix's semantics: error = failure, gold =
+					-- Straight off nix_config's palette/ semantics: error = failure, gold =
 					-- needs-attention-not-broken, steel = neutral metadata, sage =
 					-- suggestion.
 					diagnostics_color = {
@@ -487,7 +487,7 @@ local deviconsAutoColors = {
 		-- Snap every file-type icon to the nearest Ember hue. Without this the
 		-- icons are the loudest palette violation in the editor: they ship with
 		-- vendor brand colours that belong to no theme at all.
-		-- `ash` is deliberately absent: palette.nix marks it decorative-only at
+		-- `ash` is deliberately absent: nix_config's palette/ marks it decorative-only at
 		-- 3:1 against the background, which is fine for a flame trail and not
 		-- fine for a glyph you are meant to identify at a glance.
 		require("tiny-devicons-auto-colors").setup({
