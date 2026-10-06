@@ -119,15 +119,15 @@ local lspconfig_toplevel = {
 		}
 		vim.lsp.enable("lua_ls")
 
-		-- LUAU: noctalia plugin API (noctalia/dart-plugin/*.luau).
+		-- LUAU: noctalia plugin API (nix_config's home/noctalia/dart-plugin/*.luau).
 		-- noctalia injects `noctalia`, `barWidget`, `ui`, `panel`, ... straight
 		-- into each plugin VM's global namespace -- there is nothing to
 		-- require() -- so with a bare luau_lsp every one of them is an unknown
 		-- global. Feeding luau-lsp a definitions file is the counterpart to
 		-- putting $VIMRUNTIME on lua_ls's library above. The definitions are
 		-- hand-written (noctalia ships none) and live next to the plugin they
-		-- describe; the lint config that goes with them is noctalia/.luaurc.
-		local noctalia_defs = vim.fn.expand("~/nix_config/noctalia/noctalia.d.luau")
+		-- describe; the lint config that goes with them is .luaurc beside it.
+		local noctalia_defs = vim.fn.expand("~/nix_config/home/noctalia/noctalia.d.luau")
 		local luau_cmd = { "luau-lsp", "lsp" }
 		if vim.uv.fs_stat(noctalia_defs) then
 			table.insert(luau_cmd, "--definitions=" .. noctalia_defs)

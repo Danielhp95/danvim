@@ -1,7 +1,7 @@
 -- The palette every piece of danvim chrome is painted from.
 --
 -- Built by nix_config, the selected palette arrives through the nixCats
--- wrapper: ~/nix_config/danvim.nix overrides this package with an
+-- wrapper: ~/nix_config/pkgs/danvim.nix overrides this package with an
 -- `extra.palette` built from nix_config's palette/, read here as
 -- `nixCats.extra("palette")`. A palette change is then a rebuild of the wrapper
 -- only; nothing in this repo is edited.
