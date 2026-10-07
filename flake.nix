@@ -141,6 +141,9 @@
               nixfmt
               jq
 
+              # Linters
+              statix # nix (nvim-lint)
+
               # TESTING
               fzf
               python313Packages.pytest
@@ -198,6 +201,7 @@
               nvim-lspconfig # Top level LSP configuration
               fidget-nvim
               lazydev-nvim # Lua nvim API types (replaces neodev)
+              nvim-lint # linters that are not language servers (statix)
 
               ## UI
               lualine-nvim # status line!

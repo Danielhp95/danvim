@@ -183,6 +183,35 @@ local lspconfig_toplevel = {
 	end,
 }
 
+-- Linters that are not language servers. For Nix that is statix, which
+-- nix_config's `nix flake check` gates on; deadnix is not run here because
+-- nixd already reports what it would (unused let bindings and lambda formals).
+local lint = {
+	"mfussenegger/nvim-lint",
+	ft = "nix",
+	config = function()
+		local lint = require("lint")
+		lint.linters_by_ft = { nix = { "statix" } }
+		local function run(buf)
+			-- statix looks for statix.toml from its cwd upwards, so it runs from
+			-- the file's directory, not from wherever nvim was started.
+			local dir = vim.fs.dirname(vim.api.nvim_buf_get_name(buf))
+			vim.api.nvim_buf_call(buf, function()
+				lint.try_lint(nil, { cwd = vim.uv.fs_stat(dir) and dir or nil })
+			end)
+		end
+		vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave", "TextChanged" }, {
+			group = vim.api.nvim_create_augroup("danvim_lint", { clear = true }),
+			callback = function(args)
+				run(args.buf)
+			end,
+		})
+		-- The buffer whose FileType loaded this plugin was read before the
+		-- autocmd above existed
+		run(vim.api.nvim_get_current_buf())
+	end,
+}
+
 local code_actions = {
 	"rachartier/tiny-code-action.nvim",
 	dependencies = {
@@ -203,6 +232,7 @@ return {
 	fidget,
 	lazydev,
 	Conform,
+	lint,
 	trouble,
 	code_actions,
 }
