@@ -145,7 +145,30 @@ local lspconfig_toplevel = {
 		vim.lsp.enable("leanls")
 		-- latex
 		vim.lsp.enable("texlab")
-		-- NIX
+		-- NIX: left alone, nixd reads <nixpkgs>, which is plain nixpkgs and plain
+		-- NixOS: no overlay, no Home Manager, none of the flake's own modules.
+		-- Pointing it at this machine's nixosConfiguration gives it the
+		-- package set and the option tree the config is really built from.
+		-- $NH_FLAKE is the flake `nh os switch` builds (programs.nh), and the
+		-- host's attr name there is its hostname. nixd evaluates these once,
+		-- when it starts: restart it to see a new overlay package or option.
+		local flake = vim.env.NH_FLAKE
+		if flake and vim.uv.fs_stat(flake .. "/flake.nix") then
+			local host = ('(builtins.getFlake "%s").nixosConfigurations."%s"'):format(flake, vim.uv.os_gethostname())
+			vim.lsp.config["nixd"] = {
+				settings = {
+					nixd = {
+						nixpkgs = { expr = host .. ".pkgs" },
+						options = {
+							nixos = { expr = host .. ".options" },
+							-- Home Manager runs as a NixOS module, so its options
+							-- hang off the NixOS ones
+							["home-manager"] = { expr = host .. ".options.home-manager.users.type.getSubOptions []" },
+						},
+					},
+				},
+			}
+		end
 		vim.lsp.enable("nixd")
 		-- BASH
 		vim.lsp.enable("bashls")
