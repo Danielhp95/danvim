@@ -233,8 +233,6 @@
               # treesitter are its only deps and both are already here, and
               # unlike avante it builds no native component.
               codecompanion-nvim
-              # inputs.stable.legacyPackages.x86_64-linux.vimPlugins.copilot-lua
-              copilot-lua
             ];
             format = with pkgs.vimPlugins; [
               conform-nvim
@@ -294,7 +292,6 @@
                 # blink completion engine. blink-cmp itself is not listed: the
                 # sources below already pull it in as a dependency, so nix puts
                 # it in `start` regardless.
-                blink-copilot
                 blink-emoji-nvim
                 blink-ripgrep-nvim
                 blink-cmp-spell # spell suggestions from Neovim's spellcheck

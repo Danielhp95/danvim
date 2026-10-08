@@ -50,7 +50,6 @@ return {
 			"rafamadriz/friendly-snippets",
 			"moyiz/blink-emoji.nvim",
 			"xzbdmw/colorful-menu.nvim",
-			"fang2hou/blink-copilot",
 			"archie-judd/blink-cmp-words",
 			"daliusd/blink-cmp-fuzzy-path", -- Fuzzy searches paths recursively
 			"mikavilpas/blink-ripgrep.nvim",
@@ -59,28 +58,6 @@ return {
 		},
 
 		version = "v1.*",
-
-		-- Hide Copilot ghost suggestions when blink.cmp menu opens
-		init = function()
-			vim.api.nvim_create_autocmd("User", {
-				pattern = "BlinkCmpMenuOpen",
-				callback = function()
-					if vim.g.copilot_enabled ~= false then
-						local ok, copilot = pcall(require, "copilot.suggestion")
-						if ok then
-							copilot.dismiss()
-							vim.b.copilot_suggestion_hidden = true
-						end
-					end
-				end,
-			})
-			vim.api.nvim_create_autocmd("User", {
-				pattern = "BlinkCmpMenuClose",
-				callback = function()
-					vim.b.copilot_suggestion_hidden = false
-				end,
-			})
-		end,
 
 		-- Same as lazy's default handler, plus the signature help reformatting
 		-- (which patches a blink internal, so it has to run after setup)
@@ -252,7 +229,6 @@ return {
 					"lazydev",
 					"fuzzy-path",
 					"lsp",
-					"copilot",
 					"snippets",
 					"buffer",
 					"ripgrep",
@@ -302,17 +278,6 @@ return {
 					},
 					lsp = {
 						async = true,
-					},
-					copilot = {
-						name = "copilot",
-						module = "blink-copilot",
-						-- 0, not 100: with 100 copilot always outranked the LSP and
-						-- its guesses buried real symbols at the top of the menu
-						score_offset = 0,
-						async = true,
-						opts = {
-							max_completions = 2,
-						},
 					},
 					emoji = {
 						module = "blink-emoji",
