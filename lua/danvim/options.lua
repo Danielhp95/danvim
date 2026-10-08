@@ -75,6 +75,8 @@ vim.o.matchpairs = "(:),{:},[:],<:>" -- Specify matching pairs for easier naviga
 -- writes to the first writable spell/ dir on the runtimepath — with wrapRc
 -- that was a random lazy.nvim plugin checkout, dirtying its git tree.
 vim.o.spellfile = vim.fn.stdpath("data") .. "/spell/en.utf-8.add"
+-- Vim creates the file on `zg` but not its directory (E484 otherwise)
+vim.fn.mkdir(vim.fs.dirname(vim.o.spellfile), "p")
 vim.o.expandtab = true -- Replace tabs with spaces.
 vim.o.wildmode = "list:longest,list:full" -- Display autocompletion suggestions in a user-friendly way.
 vim.o.modeline = true -- Enable modelines for file-specific settings.

@@ -134,15 +134,15 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	end,
 })
 
--- Auto-open quickfix when populated, close when empty
+-- Auto-open quickfix when populated, close when empty. The l* commands (lgrep,
+-- lvimgrep, lmake, ...) fill the window's location list instead, which this
+-- used to ignore (it closed the quickfix window and never showed the results).
 vim.api.nvim_create_autocmd("QuickFixCmdPost", {
 	pattern = "*",
-	callback = function()
-		if vim.fn.getqflist({ size = 0 }).size == 0 then
-			vim.cmd("cclose")
-		else
-			vim.cmd("cwindow")
-		end
+	callback = function(args)
+		local loc = args.match:sub(1, 1) == "l"
+		local list = loc and vim.fn.getloclist(0, { size = 0 }) or vim.fn.getqflist({ size = 0 })
+		vim.cmd((loc and "l" or "c") .. (list.size == 0 and "close" or "window"))
 	end,
 })
 
@@ -163,6 +163,14 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 		if mark[1] > 0 and mark[1] <= lcount then
 			pcall(vim.api.nvim_win_set_cursor, 0, mark)
 		end
+	end,
+})
+
+-- The global <CR> (treesitter select, keybindings.lua) would also override
+-- <CR> in the command-line window (q: q/ q?), where Enter has to run the line
+vim.api.nvim_create_autocmd("CmdwinEnter", {
+	callback = function(args)
+		vim.keymap.set("n", "<CR>", "<CR>", { buffer = args.buf, desc = "Run the line (cmdline window)" })
 	end,
 })
 

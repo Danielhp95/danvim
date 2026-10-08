@@ -35,6 +35,10 @@ local lazyOptions = {
   lockfile = getlockfilepath(),
   -- Config lives in the nix store (wrapRc) — nothing to watch for changes
   change_detection = { enabled = false, notify = false },
+  -- Plugins come from nix, and none of the lazy-cloned ones needs luarocks, so
+  -- lazy's hererocks bootstrap is dead weight that :checkhealth lazy reports as
+  -- an ERROR
+  rocks = { enabled = false },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
