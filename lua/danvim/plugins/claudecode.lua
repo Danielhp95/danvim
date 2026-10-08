@@ -58,12 +58,6 @@ return {
 		{ "<leader>cx", "<cmd>ClaudeCodeStop<cr>", desc = "Stop / e[x]it server" },
 		-- Add files to context
 		{ "<leader>cA", "<cmd>ClaudeCodeAdd %<cr>", desc = "[A]dd current file to context" },
-		{
-			"<leader>ca",
-			"<cmd>ClaudeCodeTreeAdd<cr>",
-			desc = "[a]dd file from explorer to context",
-			ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw", "fyler" },
-		},
 		-- Send visually selected code to the chat window (and let Claude edit it)
 		{ "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "[s]end selection to Claude" },
 		-- Accept / reject Claude's proposed diffs

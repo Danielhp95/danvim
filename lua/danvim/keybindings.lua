@@ -69,7 +69,7 @@ wk.add({
 	{ "gf", "<cmd>e <cfile><cr>", desc = "[g]o to [f]ile under cursor even if not existing" },
 	{ "gp", "`[v`]", desc = "[g]o to and visually select last [p]asted text" },
 	{ "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Toggle [u]ndotree" },
-	{ "<leader>tc", "<cmd>TSContextToggle<cr>", desc = "[t]oggle treesitter [c]ontext" },
+	{ "<leader>tc", "<cmd>TSContext toggle<cr>", desc = "[t]oggle treesitter [c]ontext" },
 	-- { "<leader>C", "<cmd>ColorRefs<cr>", desc = "Toggle [C]olour swatches (color-refs)" }, -- plugin disabled, see danvim/flake.nix
 	{
 		"<leader>vi",
@@ -116,7 +116,7 @@ wk.add({
 	{ "<leader>bo", "<cmd>DapStepOver<cr>", desc = "step [o]ver" },
 	{ "<leader>bO", "<cmd>DapStepOut<cr>", desc = "step [O]ut" },
 	{ "<leader>bs", "<cmd>DapTerminate<cr>", desc = "[s]top" },
-	{ "<leader>br", "<cmd>DapRestart<cr>", desc = "[r]estart" },
+	{ "<leader>br", "<cmd>lua require('dap').restart()<cr>", desc = "[r]estart" },
 	{ "<leader>bl", "<cmd>DapShowLog<cr>", desc = "[l]og" },
 })
 
@@ -154,13 +154,11 @@ wk.add({
 	{ "<leader>gd", group = "[g]it diff", mode = "v" },
 	{ "<leader>gdf", "<cmd>DiffviewFileHistory %<cr>", desc = "[d]iff history for current [f]ile" },
 	{ "<leader>gdo", "<cmd>DiffviewOpen<cr>", desc = "[d]iff view [o]pen (jumps to first conflict)" },
-	{ "<leader>gdfb", "<cmd>CodeDiff file<cr>", desc = "[d]iff current [f]ile against [b]ranch" },
 	{ "<leader>gdfm", "<cmd>CodeDiff file master<cr>", desc = "[d]iff current [f]ile against [m]aster" },
 	{ "<leader>gdm", "<cmd>CodeDiff master<cr>", desc = "[d]iff against [m]aster" },
 	{ "<leader>gdh", "<cmd>CodeDiff HEAD<cr>", desc = "[d]iff against [h]ead" },
 	{ "<leader>gdr", "<cmd>DiffviewRefresh<cr>", desc = "[r]efresh git merge state" },
 	{ "<leader>gdw", "<cmd>windo diffthis<cr>", desc = "[d]iff all files in [w]indow" },
-	{ "<leader>gdd", ":'<,'>DiffviewFileHistory<cr>", desc = "[d]iff of changes for selected lines", mode = "v" },
 	{ "<leader>gdd", ":'<,'>DiffviewFileHistory<cr>", desc = "[d]iff of changes for selected lines", mode = "v" },
 })
 
@@ -198,22 +196,16 @@ wk.add({
 })
 
 -- Snacks
+-- snacks.lua disables the notifier, so vim.notify() lands in :messages and
+-- Snacks.notifier has no history to show; read :messages instead.
 Print_last_notification = function()
-	local hist = require("snacks.notifier").get_history()
-	local notification = hist[#hist] -- Most recent notification
-	-- Check if the notification exists and contains a message
-	local msg = "No notifications yet"
-	if notification and notification.msg then
-		-- Extract the message from the notification, removing any surrounding quotes
-		-- (single, double, or backticks) for clean display
-		msg = notification.msg:match("^[\"'`]?(.+?)[\"'`]?$") or notification.msg
-	end
-	print(msg)
+	local lines = vim.split(vim.trim(vim.fn.execute("messages")), "\n")
+	print(lines[#lines] ~= "" and lines[#lines] or "No messages yet")
 end
 wk.add({
 	{ "<leader>S", group = "[S]nacks" },
 	{ "<leader>Sp", "<cmd>lua require('snacks').picker.pickers()<CR>", desc = "Snacks [p]ickers" },
-	{ "<leader>Sn", "<cmd>lua require('snacks').picker.notifications()<CR>", desc = "Snacks [n]notifications" },
+	{ "<leader>Sn", "<cmd>messages<CR>", desc = "Message history ([n]otifications)" },
 	{ "<leader>SN", "<cmd>lua Print_last_notification()<CR>", desc = "Print last <S>nacks <N>otification" },
 })
 
@@ -289,7 +281,6 @@ wk.add({
 	},
 	{ "<leader>lI", "<cmd>checkhealth vim.lsp<cr>", desc = "[I]nformation about LSPs" },
 	{ "<leader>lR", ":LspRestart ", desc = "[R]estart LSP" },
-	{ "<leader>ld", "<cmd>Lspsaga peek_definition<CR>", desc = "Peek [d]efinition" },
 	{ "<leader>lf", "<cmd>lua require('conform').format()<cr>", desc = "[F]ormat file" },
 	{
 		"<leader>lh",

@@ -3,7 +3,20 @@
 local Dap = {
 	url = "https://github.com/mfussenegger/nvim-dap",
 	-- lua keymaps that call require('dap') load it via lazy's module hook
-	cmd = { "DapNew", "DapContinue", "DapToggleBreakpoint", "DapSetLogLevel", "DapShowLog", "DapEval" },
+	-- Every :Dap* command the keymaps in keybindings.lua use has to be listed, or
+	-- pressing one of them before nvim-dap is loaded gives E492
+	cmd = {
+		"DapNew",
+		"DapContinue",
+		"DapToggleBreakpoint",
+		"DapSetLogLevel",
+		"DapShowLog",
+		"DapEval",
+		"DapStepOver",
+		"DapStepInto",
+		"DapStepOut",
+		"DapTerminate",
+	},
 	dependencies = {
 		"theHamsta/nvim-dap-virtual-text",
 		"nvim-neotest/nvim-nio",
