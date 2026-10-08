@@ -17,6 +17,13 @@
 -- works -- config.lua shims it -- so a config written from older docs looks
 -- fine while silently sitting on the deprecated path. Check `interactions` in
 -- the packaged source before trusting any tutorial.
+-- The model's identity (name, window, keep-alive) is written once, in
+-- danvim.ollama, because the adapter schema below and the preload request that
+-- loads the model must agree: a different num_ctx makes ollama restart an
+-- already-loaded runner.
+local ollama = require("danvim.ollama")
+local profile = ollama.profile
+
 return {
 	"olimorris/codecompanion.nvim",
 	dependencies = {
@@ -37,21 +44,69 @@ return {
 				-- apply_extend, so only the fields below are touched.
 				extend = {
 					ollama = {
+						-- Qwen3-Coder writes its tool calls as XML text, and Ollama
+						-- leaves some of them in the message content instead of
+						-- tool_calls (ollama#18530). These two handlers recover them
+						-- while the response streams, before the chat decides the
+						-- turn is over; see danvim.qwen_xml / codecompanion_qwen_adapter.
+						-- Closures, because lazy evaluates `opts` before the plugin is on
+						-- the runtimepath. Keep the handler names FLAT (form_tools,
+						-- chat_output): adding handlers.response/.request/.lifecycle makes
+						-- CodeCompanion ignore every other flat handler of the stock
+						-- ollama adapter.
+						handlers = {
+							form_tools = function(...)
+								return require("danvim.codecompanion_qwen_adapter").form_tools(...)
+							end,
+							chat_output = function(...)
+								return require("danvim.codecompanion_qwen_adapter").chat_output(...)
+							end,
+							-- The stock ollama adapter never tells the chat which call a
+							-- tool result answers, so every earlier call gets a fake
+							-- "did not complete" result on each turn of the loop. `tools` is
+							-- merged into the stock namespace (format_tool_calls stays) and,
+							-- unlike .response/.request/.lifecycle, does not switch the
+							-- adapter to the nested handler format.
+							tools = {
+								output_response = function(...)
+									return require("danvim.codecompanion_qwen_adapter").output_response(...)
+								end,
+							},
+						},
 						schema = {
-							-- Qwen3-Coder-30B-A3B, the model
-							-- non_home_manager_config/ollama.nix pulls. Pinned
-							-- rather than left to the picker so a fresh session
-							-- doesn't start on whatever ollama lists first.
-							model = { default = "qwen3-coder:30b" },
-							-- Match OLLAMA_CONTEXT_LENGTH on the server side.
-							-- Measured free there: 64k costs nothing against 32k
-							-- and leaves ~3GB of VRAM spare.
-							num_ctx = { default = 65536 },
-							-- The adapter otherwise probes the model for thinking
-							-- support. qwen3-coder is not a reasoning model, and
-							-- leaving this to auto-detection risks paying for a
-							-- reasoning preamble on a model that has none.
-							think = { default = false },
+							-- Pinned rather than left to the picker, so a fresh session does not
+							-- start on whatever ollama lists first.
+							model = { default = profile.model },
+							-- Equal to OLLAMA_CONTEXT_LENGTH in nixos/ollama.nix, because a
+							-- request with a different num_ctx makes ollama restart the runner.
+							num_ctx = { default = profile.num_ctx },
+							-- Qwen3.8 thinks by default (and the adapter would otherwise probe
+							-- the model for it). Off: see danvim.ollama for why.
+							think = { default = profile.think },
+							-- The non-thinking preset (the tag bakes the thinking one). The first
+							-- three are in the adapter's schema already; presence_penalty is not,
+							-- so it is declared here and mapped onto the request options.
+							temperature = { default = profile.sampling.temperature },
+							top_p = { default = profile.sampling.top_p },
+							top_k = { default = profile.sampling.top_k },
+							presence_penalty = {
+								mapping = "parameters.options",
+								type = "number",
+								optional = true,
+								default = profile.sampling.presence_penalty,
+							},
+							-- Sent on every request, which also refreshes the unload timer, so the
+							-- model stays loaded while the editor is in use (and the prompt cache
+							-- with it). A Go duration WITH a unit: "-1" is rejected, "-1m" is forever.
+							keep_alive = { default = profile.keep_alive },
+							-- A runaway generation otherwise runs until the window is full. Not in
+							-- the adapter's schema, so declared here and mapped onto the options.
+							num_predict = {
+								mapping = "parameters.options",
+								type = "number",
+								optional = true,
+								default = 16384,
+							},
 						},
 					},
 				},
@@ -68,6 +123,21 @@ return {
 		interactions = {
 			chat = {
 				adapter = "ollama",
+
+				opts = {
+					-- Absolute token counts (a value of 1 or more is taken as tokens,
+					-- below 1 as a fraction of the model's window). The defaults, 0.65
+					-- and 0.85, are fractions of the model's TRAINED window (262144
+					-- for qwen3-coder), so they fired at ~170k and ~223k tokens against
+					-- our 65536 and never did: ollama silently dropped the oldest
+					-- messages instead, which can be the task itself. Sized so that
+					-- trigger + one 8k tool result + a 16k reply still fits:
+					-- first clear old tool results, then summarise.
+					context_management = {
+						editing = { trigger = 28000 },
+						compaction = { trigger = 40000 },
+					},
+				},
 
 				-- Claude-style skills, read straight out of ~/.claude/skills and
 				-- ./.claude/skills so one set of files serves both Claude Code
@@ -94,10 +164,12 @@ return {
 							require_cmd_approval = false,
 							-- Yolo mode (gy in the chat buffer) blanket-approves
 							-- tool calls, and run_command opts out of it by
-							-- default. Nothing consults this while the gate
-							-- above is false; it is here so gy does the obvious
-							-- thing if that gate is ever restored.
-							allowed_in_yolo_mode = true,
+							-- default (`protect = true`). Nothing consults this
+							-- while the gate above is false; it is here so gy does
+							-- the obvious thing if that gate is ever restored.
+							-- (`protect` replaces the deprecated
+							-- `allowed_in_yolo_mode`, which is `not protect`.)
+							protect = false,
 						},
 					},
 					-- The edit tools take a table rather than a boolean here:
@@ -105,6 +177,18 @@ return {
 					-- tool's own prompt_condition, which reads these two keys to
 					-- tell an open buffer from a file on disk.
 					["insert_edit_into_file"] = {
+						opts = {
+							require_approval_before = { buffer = false, file = false },
+							require_confirmation_after = false,
+						},
+					},
+					-- The flat, one-edit-per-call wrapper around the stock edit tool
+					-- (danvim.codecompanion_tools). Same approval keys as above.
+					["edit_file"] = {
+						callback = function()
+							return require("danvim.codecompanion_tools").edit_file()
+						end,
+						description = "Edit a file: replace one piece of its text with another",
 						opts = {
 							require_approval_before = { buffer = false, file = false },
 							require_confirmation_after = false,
@@ -127,59 +211,62 @@ return {
 						description = "Load a user-written skill's instructions",
 					},
 					opts = {
-						-- FIVE. Do not add a sixth without reading this.
+						-- The default of 30000 tokens would let one tool result take
+						-- almost half of a 64k window.
+						max_output_tokens = 8000,
+
+						-- Qwen-friendly tool prompt: the stock one asks for a sentence of
+						-- preamble before every call and for "valid JSON", and the preamble is
+						-- what makes the model skip the `<tool_call>` token Ollama's parser
+						-- keys on (ollama#18530).
+						system_prompt = {
+							prompt = function(args)
+								return require("danvim.codecompanion_tools").system_prompt(args)
+							end,
+						},
+
+						-- FIVE tools, kept as a precaution rather than a rule.
 						--
-						-- qwen3-coder emits proper JSON tool calls while it is
-						-- given roughly five tools or fewer. Past that it
-						-- switches to its native XML form -- `<function=name>
-						-- <parameter=x>` -- inside the message content. Ollama's
-						-- qwen3-coder parser is supposed to pick that up and
-						-- intermittently does not (ollama#17276, open); the call
-						-- then arrives as ordinary prose with `tool_calls`
-						-- empty. CodeCompanion continues a turn only when the
-						-- response carries tool calls -- Chat:done runs them and
-						-- auto_submit_success fires the next request, and that
-						-- loop is the whole agent -- so a dropped call ends the
-						-- turn mid-task and sits there until you press <CR>,
-						-- which just re-rolls the sampling.
+						-- Ollama's parser for qwen3-coder's XML tool calls loses some of them
+						-- (two separate bugs, written up in danvim.qwen_xml), and fewer tools
+						-- went with fewer losses here: 7 tools dropped 6 calls in 21 requests,
+						-- 5 tools dropped none in 10. That control group is small (0/10 against
+						-- 6/21 is p = 0.14), and the mechanism is unexplained: the Qwen3-Coder
+						-- template only knows the XML format, so there is no JSON mode that
+						-- more tools switch it out of. The adapter handlers above now recover
+						-- the bug that leaks calls as prose; look for "[qwen_xml] recovered" in
+						-- the CodeCompanion log (:checkhealth codecompanion prints its path) to
+						-- see how often that happens before adding a tool back.
 						--
-						-- Measured against this exact config, same prompt, one
-						-- tool removed at a time:
-						--   7 tools  6 dropped calls in 21 requests
-						--   5 tools  0 in 10
-						-- block/goose hit the same wall at 11 tools and put the
-						-- threshold at ~5 (goose#6883).
+						-- `skill` has to be resident: its system prompt IS the catalogue, and a
+						-- catalogue the model never sees is a catalogue it never reaches for.
 						--
-						-- `skill` has to be resident: its system prompt IS the
-						-- catalogue, and a catalogue the model never sees is a
-						-- catalogue it never reaches for.
+						-- run_command earns its slot because most of the skills here are
+						-- procedures that shell out -- dart-vibe drives the dart CLI,
+						-- neovim-news-update walks git log. Without it a skill loads and then
+						-- cannot be acted on.
 						--
-						-- run_command earns its slot because most of the skills
-						-- here are procedures that shell out -- dart-vibe drives
-						-- the dart CLI, neovim-news-update walks git log.
-						-- Without it a skill loads and then cannot be acted on.
+						-- edit_file is the only tool here that writes; without it every "change
+						-- this file" turns into the model narrating a patch at you. It is the
+						-- stock insert_edit_into_file with a flat schema (one edit per call):
+						-- that tool's `edits` array of objects is the shape qwen3-coder writes
+						-- malformed and Ollama then discards (ollama#18563), and its schema
+						-- alone is ~2.5k tokens of every request.
 						--
-						-- insert_edit_into_file is the only tool here that
-						-- writes; without it every "change this file" turns into
-						-- the model narrating a patch at you.
+						-- Dropped to keep the list short, and what covers them: file_search ->
+						-- run_command with `rg --files` or `fd`; create_file -> run_command with
+						-- a heredoc, since the edit tools error on a path that does not exist
+						-- yet rather than creating it. Pull either back in for one chat with
+						-- `@create_file`.
 						--
-						-- Dropped to get under the threshold, and what covers
-						-- them: file_search -> run_command with `rg --files` or
-						-- `fd`; create_file -> run_command with a heredoc, since
-						-- insert_edit_into_file errors on a path that does not
-						-- exist yet rather than creating it. Pull either back in
-						-- for one chat with `@create_file` -- which re-crosses
-						-- the threshold for that chat, so expect the stalls back.
-						--
-						-- Nothing in this list prompts -- see the approval
-						-- overrides above -- so trim it back to { "skill" } to
-						-- keep chat read-only.
+						-- Nothing in this list prompts -- see the approval overrides above -- so
+						-- trim it back to { "skill" } to keep chat read-only.
 						default_tools = {
 							"skill",
 							"grep_search",
 							"read_file",
 							"run_command",
-							"insert_edit_into_file",
+							"edit_file",
 						},
 					},
 				},
@@ -239,18 +326,45 @@ return {
 			send_code = true,
 		},
 	},
-	-- lazy.nvim would otherwise call setup(opts) for us; taking the config
-	-- function over means also registering the recovery handler for the tool
-	-- calls ollama drops on the floor. Its header explains the bug in full --
-	-- in short, a dropped call ends the turn mid-task, and the five-tool cap
-	-- above reduces how often that happens without eliminating it.
+	-- Cheap triggers that exist from startup, before the plugin is loaded: the
+	-- chat events (ChatCreated/ChatOpened), the command line (`:CodeCompanion ...`,
+	-- which `<leader>ae` parks you on) and :CodeCompanionWarm.
+	init = function()
+		ollama.setup_triggers()
+	end,
+	-- lazy loads the plugin on the first CodeCompanion command and runs this
+	-- synchronously before re-dispatching it, so the model starts loading while
+	-- that command is still opening its window.
 	config = function(_, opts)
 		require("codecompanion").setup(opts)
-		require("danvim.codecompanion_xml_tools").setup()
+		ollama.wrap_codecompanion()
+		pcall(ollama.warm)
 	end,
 	keys = {
-		{ "<leader>aa", "<cmd>CodeCompanionChat Toggle<cr>", mode = { "n", "v" }, desc = "[a]I chat toggle" },
-		{ "<leader>ac", "<cmd>CodeCompanionChat<cr>", mode = { "n", "v" }, desc = "AI [c]hat (new)" },
+		{ "<leader>at", "<cmd>CodeCompanionChat Toggle<cr>", mode = { "n", "v" }, desc = "[a]I chat [t]oggle" },
+		-- Context: the current file, or any file through the /file picker. Both act on
+		-- the most recent chat, opening it (or a new one) first, so they work cold.
+		{
+			"<leader>ac",
+			function()
+				require("danvim.codecompanion_actions").add_current_file()
+			end,
+			desc = "[a]I add current file to [c]ontext",
+		},
+		{
+			"<leader>aC",
+			function()
+				require("danvim.codecompanion_actions").add_file_picker()
+			end,
+			desc = "[a]I pick a file to add to [C]ontext",
+		},
+		{
+			"<leader>al",
+			function()
+				require("danvim.codecompanion_actions").clear()
+			end,
+			desc = "[a]I c[l]ear the conversation",
+		},
 		-- The visual-range entry points. CodeCompanion, CodeCompanionChat and
 		-- CodeCompanionActions all declare range = true, so a selection is
 		-- passed through rather than silently dropped.
@@ -265,6 +379,9 @@ return {
 			-- instruction. A silent mapping would submit an empty prompt.
 			silent = false,
 		},
+		-- The built-in "Explain code" prompt (alias `explain`) on the selection. The
+		-- leading `:` in visual mode makes the cmdline start with `'<,'>`.
+		{ "<leader>ax", ":CodeCompanion /explain<cr>", mode = "v", desc = "[a]I e[x]plain selection" },
 		{
 			"<leader>ad",
 			"<cmd>CodeCompanionChat Add<cr>",

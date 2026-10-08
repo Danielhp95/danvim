@@ -71,6 +71,18 @@ Uses `nvfetcher` to handle extra vimPlugins.
 nvfetcher -c ./packages/sources.toml -o ./packages/_sources
 ```
 
+## Tests
+
+Pure-Lua tests for the CodeCompanion/Ollama tool-call handling (they need no plugins and no GPU):
+
+```sh
+nvim --headless -u NONE -l tests/qwen_xml_test.lua       # the XML scanner and stream holdback
+nvim --headless -u NONE -l tests/qwen_adapter_test.lua   # the adapter handlers, incl. the per-request adapter copy
+```
+
+Both exit non-zero on failure. The adapter test stubs CodeCompanion; the real check is a live chat
+against Ollama (see `lua/danvim/codecompanion_qwen_adapter.lua` for what to look for in the log).
+
 ## ToDo
 
 - [ ] integrate nixCats splits of categories in lua plugin code
