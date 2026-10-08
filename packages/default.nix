@@ -37,7 +37,7 @@ let
     ]);
   getVimSources = prev: replaceDots (prev.callPackage (import ./_sources/generated.nix) { });
   vimPlugins = final: prev: allVimPlugins prev (getVimSources final);
-  systems = [ "x86_64-linux" ];
+  systems = [ "x86_64-linux" "aarch64-linux" ];
 in
 {
   overlays = {
