@@ -299,7 +299,6 @@
                 blink-ripgrep-nvim
                 blink-cmp-spell # spell suggestions from Neovim's spellcheck
                 blink-cmp-words # dictionary/thesaurus source (needs `wn` from wordnet)
-                blink-nerdfont-nvim # Nerd Font icon completion (trigger ":")
                 blink-cmp-env # environment variable ($VAR) completion
                 friendly-snippets
               ];

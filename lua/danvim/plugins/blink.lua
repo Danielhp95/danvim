@@ -17,6 +17,17 @@ local function toggle_signature()
 	})
 end
 
+-- The menu never truncates what it completes, but colorful-menu does cut its
+-- own output -- label plus the type annotation it appends -- at max_width (60).
+-- That cut has to stay for the annotation: ty sends whole overload sets there
+-- (subprocess.run: 7156 chars), and uncapped a single such row makes the menu
+-- as wide as the screen. So a label that would not survive the cut skips
+-- colorful-menu and is drawn bare, losing its colours and annotation instead
+-- of its tail.
+local function label_too_wide_for_colorful(ctx)
+	return vim.api.nvim_strwidth(ctx.label) >= 60
+end
+
 return {
 	{
 		"saghen/blink.cmp",
@@ -44,7 +55,6 @@ return {
 			"daliusd/blink-cmp-fuzzy-path", -- Fuzzy searches paths recursively
 			"mikavilpas/blink-ripgrep.nvim",
 			"ribru17/blink-cmp-spell", -- Spell suggestions from Neovim's spellcheck
-			"MahanRahmati/blink-nerdfont.nvim", -- Nerd Font icon completion (trigger ":")
 			"bydlw98/blink-cmp-env", -- Environment variable ($VAR) completion
 		},
 
@@ -235,7 +245,7 @@ return {
 			},
 			sources = {
 				-- Code buffers get code sources only; prose/config-only sources
-				-- (emoji, nerdfont, dictionary, spell, env) are added per filetype
+				-- (emoji, dictionary, spell, env) are added per filetype
 				-- so they stop polluting code completions.
 				-- NOTE: we no longer have 'git' because it just got in the way
 				default = {
@@ -248,7 +258,7 @@ return {
 					"ripgrep",
 				},
 				per_filetype = {
-					markdown = { inherit_defaults = true, "emoji", "nerdfont", "dictionary", "spell" },
+					markdown = { inherit_defaults = true, "emoji", "dictionary", "spell" },
 					gitcommit = { inherit_defaults = true, "emoji", "spell" },
 					text = { inherit_defaults = true, "dictionary", "spell" },
 					tex = { inherit_defaults = true, "dictionary", "spell" },
@@ -310,12 +320,6 @@ return {
 						score_offset = 15, -- Tune by preference
 						opts = { insert = true }, -- Insert emoji (default) or complete its name
 					},
-					nerdfont = {
-						module = "blink-nerdfont",
-						name = "Nerd Fonts",
-						score_offset = 15, -- Tune by preference
-						opts = { insert = true }, -- Insert icon (default) or complete its name
-					},
 					spell = {
 						module = "blink-cmp-spell",
 						name = "Spell",
@@ -338,8 +342,13 @@ return {
 					},
 					dictionary = {
 						name = "blink-cmp-words",
-						module = "blink-cmp-words.dictionary",
+						-- blink-cmp-words' dictionary with a lookup that does not
+						-- block typing; see danvim.blink_dictionary
+						module = "danvim.blink_dictionary",
 						min_keyword_length = 4,
+						-- Uncapped it filled the menu (10 of 12 rows) and buried the
+						-- file paths and LSP items around it
+						max_items = 5,
 						-- All available options
 						opts = {
 							-- A score offset applied to returned items.
@@ -376,7 +385,9 @@ return {
 			},
 			appearance = {
 				use_nvim_cmp_as_default = false,
-				nerd_font_variant = "normal",
+				-- Matches fonts.nix (JetBrainsMono Nerd Font Mono): icons are one
+				-- cell wide, so no padding space after them
+				nerd_font_variant = "mono",
 			},
 			completion = {
 				list = {
@@ -397,25 +408,35 @@ return {
 				menu = {
 					draw = {
 						-- No label_description column: colorful-menu already folds
-						-- the item's detail into the label (truncated at 60 chars).
-						-- A separate un-ellipsized column duplicated it at full
-						-- length, and ty puts entire overload signatures there,
-						-- stretching the menu across the screen.
+						-- the item's detail into the label, so a separate column
+						-- only duplicated it.
 						columns = { { "label" }, { "kind_icon", "kind", gap = 1 }, { "source_name" } },
 						components = {
 							label = {
-								width = { fill = true, max = 60 },
+								-- Never truncate: file paths have to be readable in full.
+								-- math.huge rather than leaving `max` out, because blink
+								-- deep-merges this over its default of 60 and an absent
+								-- key would keep it. Shared by the cmdline menu.
+								width = { fill = true, max = math.huge },
 								-- Deferred requires: colorful-menu lives in `opt`, so it is
 								-- not on the rtp when this spec table is built at startup
-								text = function(...)
-									return require("colorful-menu").blink_components_text(...)
+								text = function(ctx)
+									if label_too_wide_for_colorful(ctx) then
+										return ctx.label
+									end
+									return require("colorful-menu").blink_components_text(ctx)
 								end,
-								highlight = function(...)
-									return require("colorful-menu").blink_components_highlight(...)
+								highlight = function(ctx)
+									if label_too_wide_for_colorful(ctx) then
+										return vim.tbl_map(function(idx)
+											return { idx, idx + 1, group = "BlinkCmpLabelMatch" }
+										end, ctx.label_matched_indices)
+									end
+									return require("colorful-menu").blink_components_highlight(ctx)
 								end,
 							},
 							source_name = {
-								width = { max = 15 },
+								width = { max = math.huge },
 								text = function(ctx)
 									return "[" .. ctx.source_name .. "]"
 								end,
