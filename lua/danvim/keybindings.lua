@@ -478,6 +478,7 @@ return {
 	wk({
 		{ "<leader>l", group = "[l]sp" },
 		{ "<leader>l", group = "LSP", mode = "v" },
+		{ "<leader>ld", "<cmd>lua require('danvim.peek').definition()<CR>", desc = "Peek [d]efinition" },
 		{ "<leader>lI", "<cmd>checkhealth vim.lsp<cr>", desc = "[I]nformation about LSPs" },
 		-- Leaves you on the cmdline: <CR> restarts every client on the buffer, or
 		-- name one first. silent = false, or the pre-filled cmdline stays hidden.
