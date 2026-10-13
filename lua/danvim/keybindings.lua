@@ -479,7 +479,9 @@ return {
 		{ "<leader>l", group = "[l]sp" },
 		{ "<leader>l", group = "LSP", mode = "v" },
 		{ "<leader>lI", "<cmd>checkhealth vim.lsp<cr>", desc = "[I]nformation about LSPs" },
-		{ "<leader>lR", ":LspRestart ", desc = "[R]estart LSP" },
+		-- Leaves you on the cmdline: <CR> restarts every client on the buffer, or
+		-- name one first. silent = false, or the pre-filled cmdline stays hidden.
+		{ "<leader>lR", ":lsp restart ", desc = "[R]estart LSP", silent = false },
 		{
 			"<leader>lh",
 			"<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>",
