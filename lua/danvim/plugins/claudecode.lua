@@ -49,19 +49,4 @@ return {
 			auto_resize_terminal = true,
 		},
 	},
-	keys = {
-		{ "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
-		{ "<leader>cf", "<cmd>ClaudeCodeFocus<cr>", desc = "[f]ocus Claude" },
-		{ "<leader>cr", "<cmd>ClaudeCode --resume<cr>", desc = "[r]esume session" },
-		{ "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "[C]ontinue last session" },
-		{ "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select [m]odel" },
-		{ "<leader>cx", "<cmd>ClaudeCodeStop<cr>", desc = "Stop / e[x]it server" },
-		-- Add files to context
-		{ "<leader>cA", "<cmd>ClaudeCodeAdd %<cr>", desc = "[A]dd current file to context" },
-		-- Send visually selected code to the chat window (and let Claude edit it)
-		{ "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "[s]end selection to Claude" },
-		-- Accept / reject Claude's proposed diffs
-		{ "<leader>cy", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "[y]es, accept diff" },
-		{ "<leader>cn", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "[n]o, deny diff" },
-	},
 }

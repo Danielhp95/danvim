@@ -30,8 +30,17 @@ return {
 			mappings = true,
 		},
 	},
-	"folke/which-key.nvim", -- eager: keybindings.lua requires it right after lazy setup
-	{ "declancm/maximize.nvim", config = true },
+	{
+		"folke/which-key.nvim",
+		-- Eager: it creates the keymaps in keybindings.lua that belong to no plugin
+		lazy = false,
+		-- keybindings.lua adds to `spec` from many fragments; lazy would otherwise
+		-- keep only the last one
+		opts_extend = { "spec" },
+	},
+	-- lazy = false: its key in keybindings.lua would otherwise make it load on
+	-- first press, and :Maximize would not exist until then
+	{ "declancm/maximize.nvim", lazy = false, config = true },
 	{ "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },
 	{
 		"kylechui/nvim-surround",

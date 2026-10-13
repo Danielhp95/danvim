@@ -64,9 +64,10 @@ local lazyOptions = {
 -- argument, the path to lazy.nvim as downloaded by nix, or nil, before the normal arguments.
 require('nixCatsUtils.lazyCat').setup(nixCats.pawsible { 'allPlugins', 'start', 'lazy.nvim' }, {
   { import = 'danvim.plugins' },
+  -- Keymaps are spec fragments that merge into the plugins above
+  { import = 'danvim.keybindings' },
 }, lazyOptions)
 
 require 'danvim.options'
 require 'danvim.aucmds'
-require 'danvim.keybindings'
 require 'danvim.builtin_plugins'

@@ -16,6 +16,9 @@ return {
 	},
 	{ -- Review Pull requests in neovim
 		"emrearmagan/atlas.nvim",
+		-- lazy = false: its key in keybindings.lua would otherwise make it load on
+		-- first press, and :Atlas would not exist until then
+		lazy = false,
 		dependencies = {
 			"nvim-tree/nvim-web-devicons", -- optional but recommended
 			"esmuellert/codediff.nvim", -- optional (PullRequest diff)
@@ -195,17 +198,13 @@ return {
 	--
 	-- Three things went away with the fork: plenary (it spawns via uv directly),
 	-- vim-oscyank (Neovim ships vim.ui.clipboard.osc52 since 0.10), and the
-	-- default keymaps — the fork exposes :GitLink instead, so the bindings below
-	-- are now explicit. <leader>gy is the same yank key ruifm's registered; the
-	-- browse key moves off <leader>gb, which gitsigns blame_line already owns in
-	-- keybindings.lua and was silently fighting gitlinker for.
+	-- default keymaps — the fork exposes :GitLink instead, so the bindings in
+	-- keybindings.lua are now explicit. <leader>gy is the same yank key ruifm's
+	-- registered; the browse key moves off <leader>gb, which gitsigns blame_line
+	-- already owns there and was silently fighting gitlinker for.
 	{
 		"linrongbin16/gitlinker.nvim",
 		cmd = "GitLink",
 		opts = {},
-		keys = {
-			{ "<leader>gy", "<cmd>GitLink<cr>", mode = { "n", "v" }, desc = "[y]ank git permalink" },
-			{ "<leader>gY", "<cmd>GitLink!<cr>", mode = { "n", "v" }, desc = "[Y] open git permalink" },
-		},
 	},
 }

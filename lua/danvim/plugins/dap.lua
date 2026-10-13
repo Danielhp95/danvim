@@ -2,9 +2,8 @@
 -- Look into this to have pytest integration https://github.com/mfussenegger/nvim-dap-python
 local Dap = {
 	url = "https://github.com/mfussenegger/nvim-dap",
-	-- lua keymaps that call require('dap') load it via lazy's module hook
-	-- Every :Dap* command the keymaps in keybindings.lua use has to be listed, or
-	-- pressing one of them before nvim-dap is loaded gives E492
+	-- The <leader>b keys in keybindings.lua load nvim-dap on first press; this
+	-- list does the same for a :Dap* command typed by hand
 	cmd = {
 		"DapNew",
 		"DapContinue",
