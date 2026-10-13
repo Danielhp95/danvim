@@ -15,6 +15,13 @@ local function plugin(name, keys)
 	return { name, optional = true, keys = keys }
 end
 
+-- Keeps a which-key menu open until <esc>, for keys pressed several times in a row.
+local function stay(prefix)
+	return function()
+		require("which-key").show({ keys = prefix, loop = true })
+	end
+end
+
 -- Terminal mode: double-tap Ctrl+L to exit (allows programs to use Ctrl+L normally)
 local terminal_exit_state = {
 	pending = false,
@@ -226,6 +233,7 @@ return {
 		{ "<leader>bs", "<cmd>DapTerminate<cr>", desc = "[s]top" },
 		{ "<leader>br", "<cmd>lua require('dap').restart()<cr>", desc = "[r]estart" },
 		{ "<leader>bl", "<cmd>DapShowLog<cr>", desc = "[l]og" },
+		{ "<leader>b<space>", stay("<leader>b"), desc = "Keep this menu open" },
 	}),
 	-- Debugger
 	-- NOTE: commented out — the <leader>b / <space>b group was shadowing
@@ -287,6 +295,7 @@ return {
 		{ "[g", "<cmd>lua require('gitsigns').prev_hunk({wrap = true})<CR>", desc = "[p]revious hunk" },
 		{ "<leader>ghs", "<cmd>lua require('gitsigns').preview_hunk()<CR>", desc = "[s]how hunk diff" },
 		{ "<leader>ghu", "<cmd>Gitsigns undo_stage_hunk<CR>", desc = "[U]ndo stage hunk" },
+		{ "<leader>gh<space>", stay("<leader>gh"), desc = "Keep this menu open" },
 	}),
 	plugin("tpope/vim-fugitive", {
 		{ "<leader>gS", "<cmd>Gtabedit :<cr>", desc = "Git [S]tatus new tab" },
