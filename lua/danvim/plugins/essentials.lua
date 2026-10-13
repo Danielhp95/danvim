@@ -37,6 +37,7 @@ return {
 		-- keybindings.lua adds to `spec` from many fragments; lazy would otherwise
 		-- keep only the last one
 		opts_extend = { "spec" },
+		opts = { preset = "modern" },
 	},
 	-- lazy = false: its key in keybindings.lua would otherwise make it load on
 	-- first press, and :Maximize would not exist until then
