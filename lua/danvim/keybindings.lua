@@ -160,6 +160,7 @@ wk.add({
 	{ "<leader>gdr", "<cmd>DiffviewRefresh<cr>", desc = "[r]efresh git merge state" },
 	{ "<leader>gdw", "<cmd>windo diffthis<cr>", desc = "[d]iff all files in [w]indow" },
 	{ "<leader>gdd", ":'<,'>DiffviewFileHistory<cr>", desc = "[d]iff of changes for selected lines", mode = "v" },
+	{ "<leader>gO", ":Atlas browse . pulls<cr>", desc = "[g]it [O]verview" },
 })
 
 -- Octo (GitHub issues/PRs/reviews). Actual keymaps live in the plugin spec

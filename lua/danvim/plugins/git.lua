@@ -14,6 +14,99 @@ return {
 			}
 		end,
 	},
+	{ -- Review Pull requests in neovim
+		"emrearmagan/atlas.nvim",
+		dependencies = {
+			"nvim-tree/nvim-web-devicons", -- optional but recommended
+			"esmuellert/codediff.nvim", -- optional (PullRequest diff)
+			"dlyongemallo/diffview-plus.nvim",
+		},
+		opts = {
+			ui = {
+				picker = "auto",
+			},
+
+			providers = {
+				github = {
+					cache_ttl = 300,
+				},
+			},
+
+			pulls = {
+				diff = {
+					lsp = {
+						enabled = true,
+					},
+				},
+				github = {
+					views = {
+						{
+							name = "My PRs",
+							key = "1",
+							layout = "plain",
+							search = "author:@me is:open sort:updated-desc",
+						},
+						{
+							name = "Review requested",
+							key = "2",
+							layout = "compact",
+							search = "is:open review-requested:@me",
+						},
+						{
+							name = "Created by me",
+							key = "3",
+							layout = "grouped",
+							search = "author:@me sort:updated-desc",
+						},
+					},
+
+					bookmarks = {
+						key = "S",
+						label = "Search",
+						items = {
+							["Drafts"] = "is:pr is:draft author:@me",
+							["Recently merged"] = "is:pr is:merged author:@me sort:updated-desc",
+							["Needs my review"] = "is:open review-requested:@me",
+						},
+					},
+				},
+			},
+
+			issues = {
+				github = {
+					views = {
+						{
+							name = "Assigned to me",
+							key = "1",
+							layout = "plain",
+							search = "assignee:@me is:open",
+						},
+						{
+							name = "Created by me",
+							key = "2",
+							layout = "compact",
+							search = "author:@me is:open",
+						},
+						{
+							name = "Mentioned",
+							key = "3",
+							layout = "plain",
+							search = "mentions:@me is:open",
+						},
+					},
+
+					bookmarks = {
+						key = "S",
+						label = "Search",
+						items = {
+							["Bugs"] = "is:issue is:open label:bug",
+							["Recently closed"] = "is:issue is:closed author:@me sort:updated-desc",
+						},
+					},
+				},
+			},
+		},
+	},
 	{
 		"lewis6991/gitsigns.nvim",
 		event = { "BufReadPre", "BufNewFile" },
